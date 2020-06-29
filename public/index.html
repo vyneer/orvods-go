@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>OverRustle VODs</title>
+
+	<link rel="icon" type="image/png" href="./favicon.png" />
+
+	<link rel="stylesheet" href="octicons/octicons.css">
+	<link rel="stylesheet" href="css/tooltipster.bundle.min.css" />
+	<link rel="stylesheet" href="css/styles.css"/>
+	<link rel="stylesheet" href="css/bbdgg.css"/>
+
+	<link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
+
+	<script src= "https://player.twitch.tv/js/embed/v1.js"></script>
+	<script async defer src="https://buttons.github.io/buttons.js"></script>
+	<script src="js/lib/split.min.js"></script>
+	<script src="js/lib/moment.min.js"></script>
+	<script src="js/lib/jquery-2.1.4.min.js"></script>
+	<script src="js/lib/tooltipster.bundle.min.js"></script>
+	<script src="js/lib/jquery.tmpl.min.js"></script>
+
+	<script src="js/bbdgg.js"></script>
+	<script src="js/util.js"></script>
+	<script src="js/chat.js"></script>
+	<script src="js/scripts.js"></script>
+	<script src="js/focus.js"></script>
+	<script src="js/lwod.js"></script>
+
+	<base target="_blank">
+</head>
+<body>
+	<script id="vod-tmpl" type="text/x-jquery-tmpl">
+		<div id="${id}" class="vod-entry shadow">
+			<div class="image-container">
+				<img src="${image}"/>
+				<div class="overlay-container">
+					<div class="views"><span class="octicon octicon-eye"></span>&nbsp;${views}</div>
+					<div class="length"><span class="octicon octicon-watch"></span>&nbsp;${length}</div>
+				</div>
+				<div class="game-overlay">${game}</div>
+			</div>
+			<div class="info-container">
+				<div class="title">${title}</div>
+				<div class="date">${date}</div>
+			</div>
+		</div>
+	</script>
+
+	<script id="timestamp-tmpl" type="text/x-jquery-tmpl">
+		<tr starttime="${starttime}" class="timestamp-entry shadow">
+			<td>${starttime}</td>
+			<td>${endtime}</td>
+			<td>${game}</td>
+			<td>${subject}</td>
+			<td>${topic}</td>
+		</tr>
+	</script>
+
+	<script>
+		// detecting if url is yt or twitch
+		function vodURL(url) {
+			var urlCheck = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/gm;
+			var matches = url.matchAll(urlCheck);
+			var matchArray = [...matches];
+			var startTimestamp = $("#start-timestamp").val();
+			var endTimestamp = $("#end-timestamp").val();
+			var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
+			if (matchArray[0][3] === "www.twitch.tv" || matchArray[0][3] === "twitch.tv") {
+				regex = new RegExp('(?=[0-9])[^\/]+', 'gm');
+				replaced = url.match(regex);
+				window.location.href = window.location.origin + "?id=" + replaced[0].replace(/[?]/gm, '&') + timestamps;
+			}
+			if (matchArray[0][3] === "www.youtube.com" || matchArray[0][3] === "www.youtube.com") {
+				window.location.href = window.location.origin + matchArray[0][7] + timestamps;
+			}
+			if (matchArray[0][3] === "youtu.be") {
+				window.location.href = window.location.origin + "?v=" + matchArray[0][6] + matchArray[0][7].replace(/[?]/gm, '&') + timestamps;
+			}
+		};
+
+		function onlyChat() {
+			var startTimestamp = $("#start-timestamp").val();
+			var endTimestamp = $("#end-timestamp").val();
+			var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
+			if (startTimestamp && endTimestamp) {
+				window.location.href = window.location.origin + '?chatonly=true' + timestamps;
+			}
+		}
+
+		// click button on "Enter" press
+		// stolen from https://stackoverflow.com/questions/155188/trigger-a-button-click-with-javascript-on-the-enter-key-in-a-text-box
+		$(document).ready(function (){
+			document.getElementById("customUrlText").addEventListener("keyup", function(event) {
+				event.preventDefault();
+				if (event.keyCode === 13) {
+					document.getElementById("customUrlButton").click();
+				}
+			});
+		});
+		
+		$(document).ready(function () {
+			$("head").append("<style id='timeStyle'></style>");
+			$("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/emotes/emotes.css?_=' + Math.random() + '" type="text/css"/>');
+			$("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/flairs/flairs.css?_=' + Math.random() + '" type="text/css">');
+
+			if (localStorage.getItem('lineLimit')) {
+        		$("#lineLimit").val(localStorage.getItem('lineLimit'));
+    		} else {
+				$("#lineLimit").val(300);
+				localStorage.setItem('lineLimit', $("#lineLimit").val());
+			}
+			
+			if (localStorage.getItem('showTime') === 'true') {
+				$("#showTime").prop('checked', true);
+			} else {
+				$("#showTime").prop('checked', false);
+			}
+			updateShowTime();
+		});
+
+		// stolen from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown
+		function showManualTimestamps() {
+			document.getElementById("manual-content").classList.toggle("show");
+		};
+
+		// stolen from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown
+		function showSettings() {
+			document.getElementById("settings-content").classList.toggle("show");
+		};
+
+		// stolen from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown
+		function showSkipSettings() {
+			document.getElementById("skip-content").classList.toggle("show");
+		};
+
+		function updateLineLimit() {
+			localStorage.setItem('lineLimit', $("#lineLimit").val());
+		}
+
+		function updateShowTime() {
+			state = $("#showTime").is(':checked');
+			localStorage.setItem('showTime', state);
+			if (state) {
+				document.getElementById("timeStyle").sheet.insertRule('.chat-line .time {display: inline !important;}');
+			} else {
+				document.getElementById("timeStyle").sheet.deleteRule(0);
+			}
+		}
+	</script>
+
+	<div id="header" class="shadow">
+		<div id="main-links">
+			<div id="header-title">OverRustle VODs</div>
+			<div id="changelog-button"><a>Changelog</a></div>
+			<div id="lwod-button"><a>LWOD</a></div>
+		</div>
+		<div id="header-links">
+			<div><input type="text" id="customUrlText" name="vodurl" placeholder="Twitch/Youtube link"></div>
+			<div class="manual-dropdown">
+				<div id="manual-button" class="manual-button" onclick="showManualTimestamps()"><span class="octicon octicon-chevron-down"></span></div>
+				<div id="manual-content" class="class-manual-content">
+					<label id="start-timestamp-text" for="lineLimit">Start chat at:</label>
+					<input type="text" id="start-timestamp" name="start-timestamp" placeholder="2020-01-01T12:34:56Z">
+					<label id="end-timestamp-text" for="lineLimit">End chat at:</label>
+					<input type="text" id="end-timestamp" name="end-timestamp" placeholder="2020-01-02T12:34:56Z">
+					<input id="chatonly" value="Chat Only" onclick="onlyChat()" type="button">
+				</div>
+			</div>
+			<div><input id="customUrlButton" value="Submit" onclick="vodURL(document.getElementById('customUrlText').value)" type="button"></div>
+			<div><a href="https://www.destiny.gg">Destiny.gg</a></div>
+			<div><a id="destiny-status" href="https://www.destiny.gg/bigscreen">Destiny is offline.</a></div>
+			<div id="git-buttons">
+				<div><a class="github-button" href="https://github.com/jacobnisnevich/overrustle-vods" data-icon="octicon-repo-forked" aria-label="Fork overrustle-vods on GitHub">Fork</a></div>
+				<div><a class="github-button" href="https://github.com/jacobnisnevich/overrustle-vods/issues" data-icon="octicon-issue-opened" aria-label="Issue jacobnisnevich/overrustle-vods on GitHub">Issue</a></div>
+			</div>
+		</div>
+	</div>
+
+	<div id="body">
+		<div id="changelog" class="view">
+			<div id="close-changelog-button"><span class="octicon octicon-x"></span></div>
+			<div id="changelog-text">
+				2020-06-24: <br>
+				1. added a game skipping feature !experimental <br>
+				2020-06-23: <br>
+				1. added flairs <br>
+				2. reversed delay <br>
+				3. LWOD integration <br>
+				4. chat only mode <br>
+				2020-06-22: <br>
+				1. button for custom timestamps <br>
+				2. added an error msg in case youtube vid isn't a stream recording <br>
+				3. moved some stuff around <br>
+				2020-06-20: <br>
+				1. custom start and end timestamps <br>
+				2. delay is now in a textbox <br>
+				3. negative delay <br>
+				2020-06-06: <br>
+				1. now checking for start and end timestamps of a vod before parsing logs (logs for short vods should load A LOT faster) <br>
+				2020-06-02: <br>
+				1. added time to messages (UTC, toggle in settings) <br>
+				2020-06-01: <br>
+				1. experimental change to chat syncing (thanks to Jabelonske for the ideas Wowee) <br>
+				2. change max lines in chat <br>
+				3. you can now focus usernames (click on any message to unfocus) <br>
+				4. hardcoded colors for some people <br>
+				2020-05-26: <br>
+				1. converting special characters in messages to html now (some messages disappeared before) !im not sure this worked! <br>
+				2020-05-24: <br>
+				1. playback speed up to 2x should be synced with chat now (decreased setinterval delay, hopefully this doesn't cause any problems) <br>
+			</div>
+		</div>
+		<div id="lwod" class="view">
+			<div id="close-lwod-button"><span class="octicon octicon-x"></span></div>
+			<div id="table-container">
+				<div id="scoot-credit">Source: <a href="https://drive.google.com/drive/folders/1aRv251i5bZIk223SDssmdvksKvrEYHdK">LWOD spreadsheets</a> (huge thanks to Scoot301!)</div>
+				<table id="lwod-timestamps">
+					<tbody class="lwod-insert">
+						<tr>
+							<th>Start Time</th>
+							<th>End Time</th>
+							<th>Game</th>
+							<th>Subject</th>
+							<th>Topic</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div id="browse" class="view container">
+			<div id="page-selector">
+				<div id="previous-page-button" class="disabled"><span class="octicon octicon-arrow-left"></span></div>
+				<div id="page-number-container">Page <span id="page-number">1</span></div>
+				<div id="next-page-button"><span class="octicon octicon-arrow-right"></span></div>
+			</div>
+			<div id="vod-list"></div>
+		</div>
+		<div id="player" class="view" style="flex-direction: row;">
+			<div id="video-player"></div>
+			<div id="chat-container">
+				<div id="chat-controls">
+					<div id="delay-controls">
+						<div id="dec-delay-button"><span class="octicon octicon-arrow-left"></span></div>
+						<div id="delay-container">Delay: <input id="delay" value="2"> sec.</div>
+						<div id="inc-delay-button"><span class="octicon octicon-arrow-right"></span></div>
+					</div>
+					<div id="settings">
+						<div class="skip-dropdown">
+							<div id="skip-button" class="skip-button" onclick="showSkipSettings()"><span class="octicon octicon-history"></span></div>
+							<div id="skip-content" class="class-skip-content">
+								<label id="skip-text" for="lineLimit">Select the game that you want to skip:</label>
+								<select id="skipGameSelect"></select>
+								<div id="skip-buttons">
+									<input id="skipGameButton" value="Submit" type="button">
+									<input id="stopSkipGameButton" value="Stop" type="button">
+								</div>
+								<div id="time-msg"></div>
+								<div id="time-container"></div>
+							</div>
+						</div>
+						<div class="settings-dropdown">
+							<div id="settings-button" class="settings-button" onclick="showSettings()"><span class="octicon octicon-settings"></span></div>
+							<div id="settings-content" class="class-settings-content">
+								<label id="lineLimit-text" for="lineLimit">Max. lines in chat (0 for unlim.):</label>
+								<input type="text" id="lineLimit" name="lineLimit" oninput="updateLineLimit()">
+								<label id="showTime-text" for="showTime">Show time:</label>
+								<input type="checkbox" id="showTime" name="showTime" onclick="updateShowTime()">
+							</div>
+						</div>
+						<div id="switch-sides-button"><span class="octicon octicon-mirror"></span></div>
+					</div>
+				</div>
+				<div id="chat-stream"></div>
+			</div>
+		</div>
+	</div>
+
+	<div id="footer"></div>
+</body>
+</html>
