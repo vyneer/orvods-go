@@ -303,6 +303,7 @@ var loadPlayer = function(id, time, type, start, end) {
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     } else if (type === "chatonly") {
         var chat = new Chat(id, player, type, start, end);
+        $("#pause-controls").show();
         chat.startChatStream();
     }
 

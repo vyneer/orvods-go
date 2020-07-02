@@ -167,6 +167,10 @@ body {
 	opacity: 100%;
 }
 
+#scoot-credit-link {
+	color: white;
+}
+
 #table-container {
 	overflow: hidden;
 }
@@ -320,6 +324,17 @@ body {
 	background: #080808;
 }
 
+#pause-controls {
+	display: none;
+	padding: 5px;
+	border-radius: 2px;
+	cursor: pointer;
+	background: gray;
+	color: white;
+	text-align: center;
+	font-size: 16px;
+}
+
 #delay-controls {
 	display: flex;
 	align-items: center;
@@ -460,6 +475,10 @@ body {
 	color: #999999;
 }
 
+.chat-line .message-divider {
+	vertical-align: middle;
+}
+
 .chat-line .emote {
 	background-repeat: no-repeat;
 	display: inline-block;
@@ -467,7 +486,7 @@ body {
 	z-index: 1;
 	overflow: hidden;
 	text-indent: -90000px;
-	vertical-align: middle;
+	vertical-align: bottom;
 }
 
 .chat-line a.externallink {
