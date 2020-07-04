@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -269,6 +270,19 @@ func getEmotes(w http.ResponseWriter, r *http.Request) {
 	w.Write(body)
 }
 
+// maxClients limits the amount of simultaneous clients
+// stolen from https://www.pauladamsmith.com/blog/2016/04/max-clients-go-net-http.html
+func maxClients(h http.Handler, n int) http.Handler {
+	sema := make(chan struct{}, n)
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		sema <- struct{}{}
+		defer func() { <-sema }()
+
+		h.ServeHTTP(w, r)
+	})
+}
+
 func getChat(w http.ResponseWriter, r *http.Request) {
 	var jsonData []byte
 	urlsParam := r.URL.Query()["urls"]
@@ -294,6 +308,12 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	maxclients, _ := strconv.Atoi(os.Getenv("MAX_CLIENTS"))
+	if maxclients == 0 {
+		maxclients = 15
+	}
+
+	log.Printf("Got port %s with max concurrent clients %d.", port, maxclients)
 
 	mux := http.NewServeMux()
 
@@ -303,7 +323,9 @@ func main() {
 	mux.HandleFunc("/vodinfo", getVODInfo)
 	mux.HandleFunc("/userinfo", getUserInfo)
 	mux.HandleFunc("/emotes", getEmotes)
-	mux.HandleFunc("/chat", getChat)
+
+	getChatHandler := http.HandlerFunc(getChat)
+	mux.Handle("/chat", maxClients(getChatHandler, maxclients))
 
 	log.Println("Starting the server...")
 	http.ListenAndServe(":"+port, mux)
