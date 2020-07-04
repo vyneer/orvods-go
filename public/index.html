@@ -102,7 +102,7 @@
 		});
 		
 		$(document).ready(function () {
-			$("head").append("<style id='timeStyle'></style>");
+			$("head").append("<style id='timeFormatStyle'></style>");
 			$("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/emotes/emotes.css?_=' + Math.random() + '" type="text/css"/>');
 			$("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/flairs/flairs.css?_=' + Math.random() + '" type="text/css">');
 
@@ -112,13 +112,13 @@
 				$("#lineLimit").val(300);
 				localStorage.setItem('lineLimit', $("#lineLimit").val());
 			}
-			
-			if (localStorage.getItem('showTime') === 'true') {
-				$("#showTime").prop('checked', true);
+
+			if (localStorage.getItem('timeFormat')) {
+				$(`#timeFormat option[value=${localStorage.getItem('timeFormat')}]`).prop('selected', true);
 			} else {
-				$("#showTime").prop('checked', false);
+				$(`#timeFormat option[value=None]`).prop('selected', true);
 			}
-			updateShowTime();
+			updateTimeFormat();
 		});
 
 		// stolen from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown
@@ -140,13 +140,26 @@
 			localStorage.setItem('lineLimit', $("#lineLimit").val());
 		}
 
-		function updateShowTime() {
-			state = $("#showTime").is(':checked');
-			localStorage.setItem('showTime', state);
-			if (state) {
-				document.getElementById("timeStyle").sheet.insertRule('.chat-line .time {display: inline !important;}');
+		function updateTimeFormat() {
+			state = $("#timeFormat").val();
+			localStorage.setItem('timeFormat', state);
+			sheet = document.getElementById("timeFormatStyle").sheet;
+			len = sheet.cssRules.length;
+			for (let i = 0; i < len; i++) {
+				sheet.deleteRule(sheet.cssRules[i]);
+			}
+			if (state == "hms") {
+				sheet.insertRule('.chat-line .time {display: inline !important;}');
+				sheet.insertRule('.chat-line .time {padding-right: 0;}');
+				sheet.insertRule('.chat-line .time-seconds {display: inline !important;}');
+			} else if (state == "hm") {
+				sheet.insertRule('.chat-line .time {display: inline !important;}');
+				sheet.insertRule('.chat-line .time {padding-right: .3em;}');
+				sheet.insertRule('.chat-line .time-seconds {display: none !important;}');
 			} else {
-				document.getElementById("timeStyle").sheet.deleteRule(0);
+				sheet.insertRule('.chat-line .time {display: none !important;}');
+				sheet.insertRule('.chat-line .time {padding-right: 0;}');
+				sheet.insertRule('.chat-line .time-seconds {display: none !important;}');
 			}
 		}
 	</script>
@@ -269,8 +282,12 @@
 								<div id="pause-controls">Stop chat</div>
 								<label id="lineLimit-text" for="lineLimit">Max. lines in chat (0 for unlim.):</label>
 								<input type="text" id="lineLimit" name="lineLimit" oninput="updateLineLimit()">
-								<label id="showTime-text" for="showTime">Show time:</label>
-								<input type="checkbox" id="showTime" name="showTime" onclick="updateShowTime()">
+								<label id="timeFormat-text" for="timeFormat">Time format:</label>
+								<select id="timeFormat" oninput="updateTimeFormat()">
+									<option value="none">None</option>
+									<option value="hm">HH:mm</option>
+									<option value="hms">HH:mm:ss</option>
+								</select>
 							</div>
 						</div>
 						<div id="switch-sides-button"><span class="octicon octicon-mirror"></span></div>

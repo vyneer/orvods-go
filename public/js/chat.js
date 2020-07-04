@@ -187,7 +187,7 @@ var Chat = function(id, player, type, start, end) {
 		var timeFormatted = "";
 		var featuresList = "";
 		if (time) {
-			timeFormatted = "<span class='time'>" + moment(time).utc().format("HH:mm") + " </span>";
+			timeFormatted = "<span class='time'>" + moment(time).utc().format("HH:mm") + "</span><span class='time-seconds'>" + moment(time).utc().format(":ss") + " </span>";
 		}
 		if (username in self.features) {
 			let flairArray = self.features[username].slice(1,-1).split(",");

@@ -405,7 +405,7 @@ body {
 	width: 28px;
 }
 
-#lineLimit-text, #showTime-text, #skip-text, .skip-timestamps {
+#lineLimit-text, #timeFormat-text, #skip-text, .skip-timestamps {
 	font-size: 16px;
 }
 
@@ -445,7 +445,13 @@ body {
 	display: none;
 	font-size: 0.8em;
     color: #414141;
-    padding-right: .3em;
+}
+
+.chat-line .time-seconds {
+	display: none;
+	font-size: 0.8em;
+    color: #414141;
+	padding-right: .3em;
 }
 
 .chat-line .user {
