@@ -250,13 +250,18 @@ var Chat = function(id, player, type, start, end) {
 		self.actualPreviousTimeOffset = 0
 	}
 
+	/* can't make it work properly right now
 	$('#chat-stream').on('scroll', function() { 
+		console.log($(this).scrollTop())
+		console.log($(this).innerHeight())
+		console.log($(this)[0].scrollHeight)
 		if ($(this).scrollTop() + $(this).innerHeight() >=  $(this)[0].scrollHeight) { 
 			self.bottomDetector = true;
 		} else {
 			self.bottomDetector = false;
 		}
-	}); 
+	});
+	*/
 
 	$("#pause-controls").click(function() {
 		if (self.status === "running") {
@@ -308,11 +313,11 @@ var Chat = function(id, player, type, start, end) {
 						}
 	
 						self.previousMessage = chatLine.message;
-						if (self.bottomDetector) {
+						//if (self.bottomDetector) {
 							self.chatStream.animate({
 								scrollTop: self.chatStream.prop("scrollHeight")
 							}, 0);
-						}
+						//}
 					});
 				});
 
