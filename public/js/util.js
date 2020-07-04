@@ -16,6 +16,12 @@ var months = [
 var featuresUrl = "https://vyneer.me/tools/features";
 var lwodUrl = "https://vyneer.me/tools/lwod";
 
+var servicesUrl = {
+    "twitch" : "/vodinfo?id=",
+    "youtube" : "/vidinfo?id=",
+    "chatonly" : ""
+}
+
 var cuteEmotes = ['ASLAN', 'AYAYA', 'Blubstiny', 'Cutestiny', 'DestiSenpaii', 'FeelsOkayMan', 
                     'FerretLOL', 'FrankerZ', 'Hhhehhehe', 'NOBULLY', 'OhMyDog', 'PepoTurkey',
                     'POTATO', 'Slugstiny', 'SoDoge', 'TeddyPepe', 'widepeepoHappy', 'WOOF',

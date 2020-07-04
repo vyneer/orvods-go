@@ -34,19 +34,7 @@ var Chat = function(id, player, type, start, end) {
 
 	var self = this;
 
-	// $.get('/users', function(data) {
-	//   self._parseUserData(JSON.parse(data));
-	// });
-
-	if (this.playerType === "twitch") {
-		infoUrl = "/vodinfo?id=";
-	} else if (this.playerType === "youtube") {
-		infoUrl = "/vidinfo?id=";
-	} else if (this.playerType === "chatonly") {
-		infoUrl = "/emotes"
-	}
-
-	$.get(infoUrl + this.videoId, function(vodData) {
+	$.get(servicesUrl[self.playerType] + this.videoId, function(vodData) {
 		self.hReplace = new RegExp('([h])', 'gm');
 		self.mReplace = new RegExp('([m])', 'gm');
 		self.sReplace = new RegExp('([s])', 'gm');
