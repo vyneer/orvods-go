@@ -11,8 +11,20 @@ $(document).ready(function() {
     var playerActive = 0;
     var changelogActive = 0;
     var lwodActive = 0;
+    var chatSide = localStorage.getItem('chatSide');
     var playerType = (id) ? "twitch" : (v) ? "youtube" : (chatonly) ? "chatonly" : null;
     globals.sizes = localStorage.getItem('split-sizes');
+
+    if (!chatSide) { 
+        chatSide = 'right'
+        localStorage.setItem('chatSide', chatSide); 
+    }
+
+    if (chatSide === 'right') {
+        document.getElementById("player").style["flex-direction"] = "row";
+    } else if (chatSide === 'left') {
+        document.getElementById("player").style["flex-direction"] = "row-reverse";
+    }
 
     if (globals.sizes) {
         globals.sizes = JSON.parse(globals.sizes);
@@ -179,6 +191,7 @@ $(document).ready(function() {
 
     $("#switch-sides-button").click(function() {
         if (document.getElementById("player").style["flex-direction"] === "row") {
+            localStorage.setItem('chatSide', 'left');
             document.getElementById("player").style["flex-direction"] = "row-reverse";
             globals.splitInstance.destroy();
             globals.splitInstance = Split(['#video-player', '#chat-container'], {
@@ -194,6 +207,7 @@ $(document).ready(function() {
             return true;
         }
         if (document.getElementById("player").style["flex-direction"] === "row-reverse") {
+            localStorage.setItem('chatSide', 'right');
             document.getElementById("player").style["flex-direction"] = "row";
             globals.splitInstance.destroy();
             globals.splitInstance = Split(['#video-player', '#chat-container'], {
