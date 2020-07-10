@@ -299,7 +299,7 @@ var loadPlayer = function(id, time, type, start, end) {
         replacedDiv.id = "yt-player";
         document.querySelector("#video-player").appendChild(replacedDiv);
         window.onYouTubeIframeAPIReady = function() {
-            player = new YT.Player("yt-player", { videoId: id , playerVars: {"start": time, "autoplay": 1}});
+            player = new YT.Player("yt-player", { videoId: id , playerVars: {"start": time, "autoplay": 1, "playsinline": 1}});
             chat = new Chat(id, player, type, start, end);
             player.addEventListener("onStateChange", function(event) {
                 if (event.data == YT.PlayerState.PLAYING) {
