@@ -109,6 +109,10 @@ body {
 	width: 90%;
 }
 
+#changelog-text a:visited {
+	color: #A66BE5;
+}
+
 #close-changelog-button {
 	position: absolute;
 	right: 1em;
