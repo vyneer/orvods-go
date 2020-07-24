@@ -289,28 +289,29 @@ var Chat = function(id, player, type, start, end) {
 				});
 
 				utcFormat.forEach((element) => {
-					self.chat[element].forEach(function(chatLine) {
-
+					var randomTimeouts = Array.from({length: self.chat[element].length}, () => Math.random());
+					randomTimeouts.sort();
+					self.chat[element].forEach(function(chatLine, i) {
 						// Add a random delay between chat messages, makes it more readable
 						// https://i.imgur.com/OJG6xft.gif
 						setTimeout(function(){
-						if (self.previousMessage == chatLine.message && self.emoteList[self.previousMessage]) {
-							self.comboCount++;
-							$("#chat-stream .chat-line").last().remove();
-							var comboMessage = self._renderComboMessage(self.previousMessage, self.comboCount);
-							self._renderChatMessage(null, null, comboMessage);
-						} else {
-							self.comboCount = 1;
-							self._renderChatMessage(element, chatLine.username, self._formatMessage(chatLine.message));
-						}
-	
-						self.previousMessage = chatLine.message;
-						//if (self.bottomDetector) {
-							self.chatStream.animate({
-								scrollTop: self.chatStream.prop("scrollHeight")
-							}, 0);
-						//}
-						}, Math.random() * 1000)
+							if (self.previousMessage == chatLine.message && self.emoteList[self.previousMessage]) {
+								self.comboCount++;
+								$("#chat-stream .chat-line").last().remove();
+								var comboMessage = self._renderComboMessage(self.previousMessage, self.comboCount);
+								self._renderChatMessage(null, null, comboMessage);
+							} else {
+								self.comboCount = 1;
+								self._renderChatMessage(element, chatLine.username, self._formatMessage(chatLine.message));
+							}
+					
+							self.previousMessage = chatLine.message;
+							//if (self.bottomDetector) {
+								self.chatStream.animate({
+									scrollTop: self.chatStream.prop("scrollHeight")
+								}, 0);
+							//}
+						}, randomTimeouts[i] * 1000)
 					});
 				});
 
