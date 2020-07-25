@@ -1,4 +1,7 @@
 var Chat = function(id, player, type, start, end) {
+	var setIntervalAsync = SetIntervalAsync.dynamic.setIntervalAsync
+	var clearIntervalAsync = SetIntervalAsync.clearIntervalAsync
+
 	if (id === "nothing") {
 		this.videoId = "";
 	} else {
@@ -12,6 +15,7 @@ var Chat = function(id, player, type, start, end) {
 	this.timestampStart = start;
 	this.timestampEnd = end;
 	this.features = [];
+	this.usedTimestamps = [];
 
 	this.chatStream = $("#chat-stream");
 	this.lineLimit = $("#lineLimit");
@@ -226,15 +230,18 @@ var Chat = function(id, player, type, start, end) {
 
 	if (self.playerType == "twitch") {
 		self.videoPlayer.addEventListener(Twitch.Player.PLAYING, function() {
+			self.usedTimestamps = [];
 			self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.getCurrentTime());
 		});
 	} else if (self.playerType == "youtube") {
 		self.videoPlayer.addEventListener('onStateChange', function(event) {
 			if (event.data == YT.PlayerState.PLAYING) {
+				self.usedTimestamps = [];
 				self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.getCurrentTime());
 			}
 		});
 	} else if (self.playerType == "chatonly") {
+		self.usedTimestamps = [];
 		self.actualPreviousTimeOffset = 0
 	}
 
@@ -255,15 +262,34 @@ var Chat = function(id, player, type, start, end) {
 		if (self.status === "running") {
 			$("#pause-controls").text("Start chat")
 			self.status = "paused";
-			clearInterval(self.chatInterval)
+			clearIntervalAsync(self.chatInterval)
 		} else if (self.status === "paused") {
 			$("#pause-controls").text("Stop chat")
 			self.status = "running";
-			self.chatInterval = window.setInterval(function() {self.chatFunction()}, 500);
+			self.chatInterval = setIntervalAsync(async () => {self.chatFunction()}, 500);
 		}
 	});
 
-	self.chatFunction = function() {
+	// self-explainatory
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	// function that calculates an array of ints that all sum up to max number
+	function genArrayWithMaxSum(max, thecount) {
+		var r = [];
+		var currsum = 0;
+		for(var i=0; i<thecount; i++) {
+			r.push(Math.random());
+			currsum += r[i];
+		}
+		for(var i=0; i<r.length; i++) {
+			r[i] = Math.floor(r[i] / currsum * max);
+		}
+		return r;
+	}
+
+	self.chatFunction = async () => {
 		if (self.status == "running" && self.chat) {
 			self.chatonlyCounter += 0.5;
 			var currentTimeOffset = (self.playerType === "chatonly") ? Math.floor(self.chatonlyCounter) : Math.floor(self.videoPlayer.getCurrentTime());
@@ -288,32 +314,49 @@ var Chat = function(id, player, type, start, end) {
 					}
 				});
 
-				utcFormat.forEach((element) => {
-					var randomTimeouts = Array.from({length: self.chat[element].length}, () => Math.random());
-					randomTimeouts.sort();
-					self.chat[element].forEach(function(chatLine, i) {
-						// Add a random delay between chat messages, makes it more readable
-						// https://i.imgur.com/OJG6xft.gif
-						setTimeout(function(){
-							if (self.previousMessage == chatLine.message && self.emoteList[self.previousMessage]) {
+				// calculate the amount of messages within the timeframe
+				let msgAmount = 0;
+				for (let i = 0; i < utcFormat.length; i++) {
+					msgAmount += self.chat[utcFormat[i]].length;
+				};
+
+				// calculate msg delay array with max sum
+				// based on the amount of messages (400 ms since processing/adding/rendering messages takes time as well)
+				randomTimeouts = genArrayWithMaxSum(400, msgAmount);
+				let k = 0;
+				// using for-loops instead of forEach so that await can work
+				for (let i = 0; i < utcFormat.length; i++) {
+					// for whatever reason with this setup messages sometimes appear twice
+					// this is a workaround that can mess with seeking (if seeking by like 2 seconds)
+					// still, should be okay
+					if (!(utcFormat[i] in self.usedTimestamps)) {
+						for (let y = 0; y < self.chat[utcFormat[i]].length; y++) {
+							if (self.previousMessage == self.chat[utcFormat[i]][y].message && self.emoteList[self.previousMessage]) {
 								self.comboCount++;
 								$("#chat-stream .chat-line").last().remove();
 								var comboMessage = self._renderComboMessage(self.previousMessage, self.comboCount);
 								self._renderChatMessage(null, null, comboMessage);
 							} else {
 								self.comboCount = 1;
-								self._renderChatMessage(element, chatLine.username, self._formatMessage(chatLine.message));
+								self._renderChatMessage(utcFormat[i], self.chat[utcFormat[i]][y].username, self._formatMessage(self.chat[utcFormat[i]][y].message));
 							}
-					
-							self.previousMessage = chatLine.message;
+							
+							self.previousMessage = self.chat[utcFormat[i]][y].message;
 							//if (self.bottomDetector) {
 								self.chatStream.animate({
 									scrollTop: self.chatStream.prop("scrollHeight")
 								}, 0);
-							//}
-						}, randomTimeouts[i] * 1000)
-					});
-				});
+							//};
+							// if there are less than a certain amount of msges in the timeframe, add delay
+							// adding a delay for every message increases processing time by a lot, so the limit should be somewhat conservative
+							if (msgAmount <= 6) {
+								await sleep(randomTimeouts[k]);
+							}
+							k++;
+						};
+					}
+					self.usedTimestamps.push(utcFormat[i]);
+				}
 
 				self.actualPreviousTimeOffset = currentTimeOffset;
 
@@ -328,9 +371,9 @@ var Chat = function(id, player, type, start, end) {
 			self.previousTimeOffset = currentTimeOffset;
 
 		}
-	}
+	};
 
-	self.chatInterval = window.setInterval(function() {self.chatFunction()}, 500);
+	self.chatInterval = setIntervalAsync(async () => {self.chatFunction()}, 500);
 };
 
 // From https://stackoverflow.com/a/3890175
