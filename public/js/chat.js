@@ -288,10 +288,19 @@ var Chat = function(id, player, type, start, end) {
 					}
 				});
 
+				// calculate the amount of messages within the timeframe
+				let msgAmount = 0;
+				for (let i = 0; i < utcFormat.length; i++) {
+					msgAmount += self.chat[utcFormat[i]].length;
+				};
+
+				var randomTimeouts = Array.from({length: msgAmount}, () => Math.random());
+				randomTimeouts.sort();
+
+				i=0;
+
 				utcFormat.forEach((element) => {
-					var randomTimeouts = Array.from({length: self.chat[element].length}, () => Math.random());
-					randomTimeouts.sort();
-					self.chat[element].forEach(function(chatLine, i) {
+					self.chat[element].forEach(function(chatLine) {
 						// Add a random delay between chat messages, makes it more readable
 						// https://i.imgur.com/OJG6xft.gif
 						setTimeout(function(){
@@ -311,7 +320,8 @@ var Chat = function(id, player, type, start, end) {
 									scrollTop: self.chatStream.prop("scrollHeight")
 								}, 0);
 							//}
-						}, randomTimeouts[i] * 1000)
+						}, randomTimeouts[i] * 400);
+						i++;
 					});
 				});
 
