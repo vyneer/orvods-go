@@ -338,6 +338,12 @@ body {
 	font-size: 16px;
 }
 
+#pause-controls:hover, #log-fallback-button:hover {
+	border: white;
+	border-style: solid;
+	border-radius: 2px;
+}
+
 #pause-controls {
 	display: none;
 }
