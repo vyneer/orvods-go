@@ -24,6 +24,15 @@ func indexOf(word string, data []string) int {
 	return -1
 }
 
+func indexOfReverse(word string, data []string) int {
+	for i := len(data) - 1; i >= 0; i-- {
+		if word == data[i] {
+			return i
+		}
+	}
+	return -1
+}
+
 // GetTextFiles downloads logs from OverRustleLogs
 // starting and ending at specific timestamps
 // and returns an array of chatlines.
@@ -33,6 +42,8 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 	var timestamps []string
 	fromStamp := from
 	toStamp := to
+	startCheck := false
+	endCheck := false
 	startPos := 0
 	endPos := 0
 	pattern := `^([01]?[0-9]|2[0-3])\:[0-5][0-9]\:[0-5][0-9]$`
@@ -68,31 +79,46 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 	}
 
 	if len(flat) > 0 {
+		// get all the timestamps to a slice
 		for _, page := range flat {
 			timestamps = append(timestamps, page[1:24])
 		}
 
+		// check if it's actually timestamps in the timestamp slice
 		matched, err := regexp.Match(pattern, []byte(timestamps[0][11:19]))
 		if err != nil {
-			return []string{"error"}, err
+			return []string{}, err
 		}
 		if matched {
-			for startPos == 0 {
+			// search for "from" and "to" timestamps with 1 second adjustments in case the exact timestamps dont exists
+			firstTimestamp, _ := time.Parse("2006-01-02 15:04:05 UTC", timestamps[0])
+			lastTimestamp, _ := time.Parse("2006-01-02 15:04:05 UTC", timestamps[len(timestamps)-1])
+			for startCheck == false {
 				index := indexOf(fromStamp, timestamps)
 				if index != -1 {
 					startPos = index
+					startCheck = true
 				} else {
 					t, _ := time.Parse("2006-01-02 15:04:05 UTC", fromStamp)
+					if int(t.Sub(firstTimestamp).Seconds()) < 0 {
+						startPos = 0
+						startCheck = true
+					}
 					t = t.Add(-1 * time.Second)
 					fromStamp = t.Format("2006-01-02 15:04:05 UTC")
 				}
 			}
-			for endPos == 0 {
-				index := indexOf(toStamp, timestamps)
+			for endCheck == false {
+				index := indexOfReverse(toStamp, timestamps)
 				if index != -1 {
 					endPos = index
+					endCheck = true
 				} else {
 					t, _ := time.Parse("2006-01-02 15:04:05 UTC", toStamp)
+					if int(t.Sub(lastTimestamp).Seconds()) < 0 {
+						endPos = len(timestamps) - 1
+						endCheck = true
+					}
 					t = t.Add(-1 * time.Second)
 					toStamp = t.Format("2006-01-02 15:04:05 UTC")
 				}
