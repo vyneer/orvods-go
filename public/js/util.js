@@ -16,6 +16,11 @@ var months = [
 var featuresUrl = "https://vyneer.me/tools/features";
 var lwodUrl = "https://vyneer.me/tools/lwod";
 
+var chatUrl = {
+    "orl" : "/chat",
+    "vyneer" : "https://vyneer.me/tools/logs"
+}
+
 var servicesUrl = {
     "twitch" : "/vodinfo?id=",
     "youtube" : "/vidinfo?id=",

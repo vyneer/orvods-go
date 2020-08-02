@@ -1,4 +1,4 @@
-var Chat = function(id, player, type, start, end) {
+var Chat = function(id, player, type, start, end, provider) {
 	if (id === "nothing") {
 		this.videoId = "";
 	} else {
@@ -9,6 +9,7 @@ var Chat = function(id, player, type, start, end) {
 	this.videoPlayer = player;
 	this.previousTimeOffset = -1;
 	this.playerType = type;
+	this.logProvider = provider;
 	this.timestampStart = start;
 	this.timestampEnd = end;
 	this.features = [];
@@ -101,7 +102,7 @@ var Chat = function(id, player, type, start, end) {
 			self.features = data;
 		});
 
-		$.get("/chat", {
+		$.get(chatUrl[self.logProvider], {
 			urls: JSON.stringify(overrustleLogsDates),
 			from: self.recordedTime.clone().format("YYYY-MM-DD HH:mm:ss UTC"),
 			to: self.endTime.clone().format("YYYY-MM-DD HH:mm:ss UTC")

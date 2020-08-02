@@ -7,6 +7,7 @@ $(document).ready(function() {
     var time = (getUrlParameter("t")) ? getUrlParameter("t") : 0;
     var start = getUrlParameter("start");
     var end = getUrlParameter("end");
+    var provider = (getUrlParameter("provider")) ? getUrlParameter("provider") : "orl";
     var page = 1;
     var playerActive = 0;
     var changelogActive = 0;
@@ -34,7 +35,7 @@ $(document).ready(function() {
 
     if (id || v || chatonly) {
         var vidId = (playerType === "twitch") ? id : (playerType === "youtube") ? v : (playerType === "chatonly") ? "nothing" : null;
-        loadPlayer(vidId, time, playerType, start, end);
+        loadPlayer(vidId, time, playerType, start, end, provider);
         $("#browse").hide();
         $("#player").show();
         $("#changelog").hide();
@@ -224,6 +225,10 @@ $(document).ready(function() {
         }
     });
 
+    $("#log-fallback-button").click(function () {
+        window.location.href += "&provider=vyneer";
+    });
+
     // Check if Destiny is online every 5 minutes
     setInterval(loadDestinyStatus(), 300000);
 
@@ -277,12 +282,12 @@ var loadDestinyStatus = function() {
     })
 }
 
-var loadPlayer = function(id, time, type, start, end) {
+var loadPlayer = function(id, time, type, start, end, provider) {
     $("#player").css("display", "flex");
 
     if (type === "twitch") {
         var player = new Twitch.Player("video-player", { video: id , time: time });
-        var chat = new Chat(id, player, type, start, end);
+        var chat = new Chat(id, player, type, start, end, provider);
         var lwod = new LWOD(id, player);
         player.addEventListener(Twitch.Player.PLAYING, function() {
             chat.startChatStream();
@@ -300,7 +305,7 @@ var loadPlayer = function(id, time, type, start, end) {
         document.querySelector("#video-player").appendChild(replacedDiv);
         window.onYouTubeIframeAPIReady = function() {
             player = new YT.Player("yt-player", { videoId: id , playerVars: {"start": time, "autoplay": 1, "playsinline": 1}});
-            chat = new Chat(id, player, type, start, end);
+            chat = new Chat(id, player, type, start, end, provider);
             player.addEventListener("onStateChange", function(event) {
                 if (event.data == YT.PlayerState.PLAYING) {
                     chat.startChatStream();
@@ -316,7 +321,7 @@ var loadPlayer = function(id, time, type, start, end) {
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     } else if (type === "chatonly") {
-        var chat = new Chat(id, player, type, start, end);
+        var chat = new Chat(id, player, type, start, end, provider);
         $("#pause-controls").show();
         chat.startChatStream();
     }
