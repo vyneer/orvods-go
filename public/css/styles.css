@@ -366,11 +366,12 @@ body {
 
 #settings {
 	display: flex;
+	justify-content: space-between;
+	width: 18%;
 }
 
 .settings-dropdown, .manual-dropdown, .skip-dropdown {
 	position: relative;
-	padding-right: 25%;
 	z-index: 9999;
 }
 
