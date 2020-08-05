@@ -115,7 +115,7 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 					endCheck = true
 				} else {
 					t, _ := time.Parse("2006-01-02 15:04:05 UTC", toStamp)
-					if int(t.Sub(lastTimestamp).Seconds()) < 0 {
+					if int(t.Sub(lastTimestamp).Seconds()) > 0 {
 						endPos = len(timestamps) - 1
 						endCheck = true
 					}
