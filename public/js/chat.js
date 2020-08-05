@@ -130,20 +130,6 @@ var Chat = function(id, player, type, start, end, provider) {
 		this.status = "paused";
 	};
 
-	this._parseUserData = function(data) {
-		var styleString = "<style>\n";
-
-		Object.keys(data).forEach(function(username) {
-			styleString += ".user-" + username + " {\n";
-			styleString += "\t color: " + data[username].color + " !important;\n";
-			styleString += "}\n"
-		});
-
-		styleString += "</style>"
-
-		$("head").append(styleString);
-	};
-
 	this._htmlEncode = function(s) {
 		return $('<div>').text(s).html();
 	};
@@ -210,21 +196,6 @@ var Chat = function(id, player, type, start, end, provider) {
 		} else {
 			return message;
 		}
-	}
-
-	this._formatTimeNumber = function(number) {
-		return ("0" + number).slice(-2);
-	}
-
-	this._formatTime = function(milliseconds) {
-		var secondsTotal = milliseconds / 1000;
-		var hours = Math.floor(secondsTotal / 3600)
-		var minutes = Math.floor((secondsTotal - hours * 3600) / 60);
-		var seconds = secondsTotal % 60;
-
-		return this._formatTimeNumber(hours) + ":" + 
-					 this._formatTimeNumber(minutes) + ":" + 
-					 this._formatTimeNumber(seconds);
 	}
 
 	if (self.playerType == "twitch") {

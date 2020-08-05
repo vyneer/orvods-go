@@ -232,8 +232,6 @@ $(document).ready(function() {
     // Check if Destiny is online every 5 minutes
     setInterval(loadDestinyStatus(), 300000);
 
-    $(".tooltip").tooltipster();
-
     $("#header-title").click(function() {
         window.location = "/";
     });
@@ -322,7 +320,6 @@ var loadPlayer = function(id, time, type, start, end, provider) {
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     } else if (type === "chatonly") {
         var chat = new Chat(id, player, type, start, end, provider);
-        $("#pause-controls").show();
         chat.startChatStream();
     }
 
@@ -337,8 +334,7 @@ var createVodEntries = function(vodData) {
             image: vod.thumbnail_url.replace(/%([\s\S]*)(?=\.)/, "320x180"), 
             views: vod.view_count, 
             date: formatDate(vod.created_at), 
-            length: vod.duration,
-            game: vod.game
+            length: vod.duration
         });
     })
 };

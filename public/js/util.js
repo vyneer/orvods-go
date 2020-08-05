@@ -27,6 +27,19 @@ var servicesUrl = {
     "chatonly" : ""
 }
 
+var bbdggEmotes = {
+	"bbdgg":[
+	   "ComfyAYA", "ComfyFerret", "SOY", "RaveDoge", "SourPls",
+	   "CuckCrab", "MiyanoHype", "ECH", "MingLee", "DESBRO",
+	   "TooSpicy", "NiceMeMe", "CUX", "ITSRAWWW", "Riperino",
+	   "WEOW", "4Head", "BabyRage", "DansGame", "EleGiggle",
+	   "Kreygasm", "PJSalt", "PogChamp", "ResidentSleeper", "SMOrc",
+	   "NotLikeThis", "POGGERS", "PepOk", "PepoComfy", "PepoWant",
+	   "PepeHands", "ApeHands", "OMEGALUL", "COGGERS", "PepoWant",
+	   "Clap", "FeelsWeirdMan", "monkaSMEGA", "ComfyDog", "FeelsGimiMan", "D:"
+	]
+ }
+
 var cuteEmotes = ['ASLAN', 'AYAYA', 'Blubstiny', 'Cutestiny', 'DestiSenpaii', 'FeelsOkayMan', 
                     'FerretLOL', 'FrankerZ', 'Hhhehhehe', 'NOBULLY', 'OhMyDog', 'PepoTurkey',
                     'POTATO', 'Slugstiny', 'SoDoge', 'TeddyPepe', 'widepeepoHappy', 'WOOF',

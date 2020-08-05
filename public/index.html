@@ -7,7 +7,6 @@
 	<link rel="icon" type="image/png" href="./favicon.png" />
 
 	<link rel="stylesheet" href="octicons/octicons.css">
-	<link rel="stylesheet" href="css/tooltipster.bundle.min.css" />
 	<link rel="stylesheet" href="css/styles.css"/>
 	<link rel="stylesheet" href="css/bbdgg.css"/>
 
@@ -19,12 +18,10 @@
 	<script src="js/lib/split.min.js"></script>
 	<script src="js/lib/moment.min.js"></script>
 	<script src="js/lib/jquery-2.1.4.min.js"></script>
-	<script src="js/lib/tooltipster.bundle.min.js"></script>
 	<script src="js/lib/jquery.tmpl.min.js"></script>
 	<script src="js/lib/linkify.min.js"></script>
 	<script src="js/lib/linkify-string.min.js"></script>
 
-	<script src="js/bbdgg.js"></script>
 	<script src="js/util.js"></script>
 	<script src="js/chat.js"></script>
 	<script src="js/scripts.js"></script>
@@ -42,7 +39,6 @@
 					<div class="views"><span class="octicon octicon-eye"></span>&nbsp;${views}</div>
 					<div class="length"><span class="octicon octicon-watch"></span>&nbsp;${length}</div>
 				</div>
-				<div class="game-overlay">${game}</div>
 			</div>
 			<div class="info-container">
 				<div class="title">${title}</div>
@@ -53,10 +49,10 @@
 
 	<script id="timestamp-tmpl" type="text/x-jquery-tmpl">
 		<tr starttime="${starttime}" class="timestamp-entry shadow">
-			<td>${starttime}</td>
-			<td>${endtime}</td>
-			<td>${game}</td>
-			<td>${subject}</td>
+			<td class="table-padding">${starttime}</td>
+			<td class="table-padding">${endtime}</td>
+			<td class="table-padding">${game}</td>
+			<td class="table-padding">${subject}</td>
 			<td>${topic}</td>
 		</tr>
 	</script>
@@ -199,7 +195,7 @@
 			<div id="close-changelog-button"><span class="octicon octicon-x"></span></div>
 			<div id="changelog-text">
 				2020-07-24: <br>
-				1. randomized delay between messages (huge thanks to <a href="https://github.com/Jatarie">Jatarie</a> and <a href="https://github.com/gabrieljablonski">gabrieljablonski</a>) <br>
+				1. randomized delay between messages (huge thanks to <a class="white-link" href="https://github.com/Jatarie">Jatarie</a> and <a class="white-link" href="https://github.com/gabrieljablonski">gabrieljablonski</a>) <br>
 				2020-06-24: <br>
 				1. added a game skipping feature !experimental <br>
 				2020-06-23: <br>
@@ -224,24 +220,20 @@
 				2. change max lines in chat <br>
 				3. you can now focus usernames (click on any message to unfocus) <br>
 				4. hardcoded colors for some people <br>
-				2020-05-26: <br>
-				1. converting special characters in messages to html now (some messages disappeared before) !im not sure this worked! <br>
-				2020-05-24: <br>
-				1. playback speed up to 2x should be synced with chat now (decreased setinterval delay, hopefully this doesn't cause any problems) <br>
 			</div>
 		</div>
 		<div id="lwod" class="view">
 			<div id="close-lwod-button"><span class="octicon octicon-x"></span></div>
 			<div id="table-container">
-				<div id="scoot-credit">Source: <a id="scoot-credit-link" href="https://drive.google.com/drive/folders/1aRv251i5bZIk223SDssmdvksKvrEYHdK">LWOD spreadsheets</a> (huge thanks to Scoot301!)</div>
+				<div id="scoot-credit">Source: <a class="white-link" href="https://drive.google.com/drive/folders/1aRv251i5bZIk223SDssmdvksKvrEYHdK">LWOD spreadsheets</a> (huge thanks to Scoot301!)</div>
 				<table id="lwod-timestamps">
 					<tbody class="lwod-insert">
 						<tr>
-							<th>Start Time</th>
-							<th>End Time</th>
-							<th>Game</th>
-							<th>Subject</th>
-							<th>Topic</th>
+							<th class="start">Start Time</th>
+							<th class="end">End Time</th>
+							<th class="game">Game</th>
+							<th class="subject">Subject</th>
+							<th class="topic">Topic</th>
 						</tr>
 					</tbody>
 				</table>
@@ -259,11 +251,6 @@
 			<div id="video-player"></div>
 			<div id="chat-container">
 				<div id="chat-controls">
-					<div id="delay-controls">
-						<div id="dec-delay-button"><span class="octicon octicon-arrow-left"></span></div>
-						<div id="delay-container">Delay: <input id="delay" value="2"> sec.</div>
-						<div id="inc-delay-button"><span class="octicon octicon-arrow-right"></span></div>
-					</div>
 					<div id="settings">
 						<div class="skip-dropdown">
 							<div id="skip-button" class="skip-button" onclick="showSkipSettings()"><span class="octicon octicon-history"></span></div>
@@ -283,9 +270,15 @@
 							<div id="settings-content" class="class-settings-content">
 								<div id="pause-controls">Stop chat</div>
 								<div id="log-fallback-button">Use log fallback</div>
-								<label id="lineLimit-text" for="lineLimit">Max. lines in chat (0 for unlim.):</label>
-								<input type="text" id="lineLimit" name="lineLimit" oninput="updateLineLimit()">
-								<label id="timeFormat-text" for="timeFormat">Time format:</label>
+								<label class="label-text">Chat delay:</label>
+								<div id="delay-controls">
+									<div id="dec-delay-button"><span class="octicon octicon-arrow-left"></span></div>
+									<div id="delay-container"><input id="delay" value="2"> sec.</div>
+									<div id="inc-delay-button"><span class="octicon octicon-arrow-right"></span></div>
+								</div>
+								<label class="label-text">Max. lines in chat (0 for unlim.):</label>
+								<input type="text" id="lineLimit" oninput="updateLineLimit()">
+								<label class="label-text">Time format:</label>
 								<select id="timeFormat" oninput="updateTimeFormat()">
 									<option value="none">None</option>
 									<option value="hm">HH:mm</option>
