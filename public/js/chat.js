@@ -153,7 +153,7 @@ var Chat = function(id, player, type, start, end, provider) {
 	};
 
 	this._formatMessage = function(message) {
-		var messageReplaced = this._htmlDecode(message).linkify();
+		var messageReplaced = this._htmlDecode(message).linkify({className: "externallink"});
 
 		function replacer(p1) {
 			return self._generateDestinyEmoteImage(p1.replace(/ /g,''));
@@ -344,15 +344,4 @@ var Chat = function(id, player, type, start, end, provider) {
 	}
 
 	self.chatInterval = window.setInterval(function() {self.chatFunction()}, 500);
-};
-
-// From https://stackoverflow.com/a/3890175
-String.prototype.linkify = function() {
-	// http://, https://, ftp://
-	var urlPattern = /\b(?:https?|ftp):\/\/[a-z0-9-+&@#\/%?=~_|!:,.;]*[a-z0-9-+&@#\/%=~_|]/gim;
-	// www. sans http:// or https://
-	var pseudoUrlPattern = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
-
-	return this.replace(urlPattern, '<a class="externallink" href="$&">$&</a>')
-						 .replace(pseudoUrlPattern, '$1<a class="externallink" href="http://$2">$2</a>');
 };
