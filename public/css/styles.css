@@ -521,6 +521,18 @@ body {
 	color: #A66BE5;
 }
 
+.chat-line .nsfw-link {
+    border-style: dashed;
+    border-color: transparent transparent red transparent;
+    border-width: 1px 0 1px 0
+}
+
+.chat-line .nsfl-link {
+    border-style: dashed;
+    border-color: transparent transparent #FFF000 transparent;
+    border-width: 1px 0 1px 0
+}
+
 .chat-line .greentext {
 	color: #6CA528;
 }

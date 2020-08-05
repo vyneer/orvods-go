@@ -139,7 +139,10 @@ var Chat = function(id, player, type, start, end, provider) {
 	};
 
 	this._formatMessage = function(message) {
-		var messageReplaced = this._htmlDecode(message).linkify({className: "externallink"});
+		let nsfwClass = "";
+		if (/\b(?:NSFW|SPOILER)\b/i.test(message)) { nsfwClass = "nsfw-link"; }
+		if (/\b(?:NSFL)\b/i.test(message)) { nsfwClass = "nsfl-link"; }
+		var messageReplaced = this._htmlDecode(message).linkify({className: `externallink ${nsfwClass}`});
 
 		function replacer(p1) {
 			return self._generateDestinyEmoteImage(p1.replace(/ /g,''));
@@ -190,9 +193,9 @@ var Chat = function(id, player, type, start, end, provider) {
 
 	this._greenTextify = function(message) {
 		if (this._htmlDecode(message)[0] === '>') {
-			return "<span class='greentext'>" + message + "</span>";
+			return `<span class='greentext'>${message}</span>`;
 		} else if (this._htmlDecode(message).substring(0, 3) === '/me') {
-			return "<span class='me-text'>" + message.slice(3, message.length) + "</span>";
+			return `<span class='me-text'>${message.slice(3, message.length)}</span>`;
 		} else {
 			return message;
 		}
