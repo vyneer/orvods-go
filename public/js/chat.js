@@ -205,6 +205,8 @@ var Chat = function(id, player, type, start, end, provider) {
 	this._greenTextify = function(message) {
 		if (this._htmlDecode(message)[0] === '>') {
 			return "<span class='greentext'>" + message + "</span>";
+		} else if (this._htmlDecode(message).substring(0, 3) === '/me') {
+			return "<span class='me-text'>" + message.slice(3, message.length) + "</span>";
 		} else {
 			return message;
 		}

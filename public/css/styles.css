@@ -532,9 +532,8 @@ body {
 	color: #6CA528;
 }
 
-.skip-message {
-	background-color: #222;
-	padding: 10px;
+.chat-line .me-text {
+	font-style: italic;
 }
 
 .x {
