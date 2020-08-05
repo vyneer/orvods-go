@@ -198,12 +198,12 @@ body {
 	width: 100%;
 }
 
-#lwod-timestamps th.subject{
-	width: 16%;
+#lwod-timestamps td.nowrap {
+	white-space: nowrap;
 }
 
 #lwod-timestamps td.table-padding {
-	padding: 0 15px 0 15px;
+	padding: 0 12px 0 12px;
 }
 
 .timestamp-entry {
