@@ -449,6 +449,9 @@ body {
 	padding: 3px 20px 3px 5px;
 	vertical-align: middle;
 	line-height: 1.5em;
+	font-family: "Roboto",Helvetica,"Trebuchet MS",Verdana,sans-serif;
+	text-rendering: optimizeLegibility;
+	font-feature-settings: "kern";
 	color: grey;
 }
 
@@ -466,10 +469,10 @@ body {
 }
 
 .chat-line .user {
-	font-weight: bold;
+	font-weight: 500;
 	cursor: pointer;
 	vertical-align: middle;
-	color: #CACACA;
+	color: #dcdcdc;
 }
 
 .chat-line .features {
@@ -489,7 +492,7 @@ body {
 
 .chat-line .message {
 	vertical-align: middle;
-	color: #999999;
+	color: #B9B9B9;
 }
 
 .chat-line .message-divider {
