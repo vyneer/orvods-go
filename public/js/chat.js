@@ -170,6 +170,7 @@ var Chat = function(id, player, type, start, end, provider) {
 		if (username in self.features) {
 			let flairArray = (self.features[username].slice(1,-1).length === 0) ? [] : self.features[username].slice(1,-1).split(",");
 			let flairList = "";
+			flairList =+ (username === "vyneer_") ? "<span class='flair cute'>💗</span>" : "";
 			flairArray.forEach(function(flair) {
 				flair = flair.replace(/\s+/g, '').slice(1, -1);
 				featuresList += flair + " ";

@@ -580,6 +580,12 @@ body {
 	color: #b002c7 !important;	
 }
 
+.flair.cute {
+	height: 16px;
+	width: 16px;
+	order: 1;
+}
+
 .chat-line[data-username="Broadcast"], .chat-line[data-username="Subscriber"], .chat-line[data-username="SubscriberMessage"] {
     color: transparent !important;
 }
@@ -592,6 +598,10 @@ body {
 	background-color: #151515;
     color: #EDEA12 !important;
     font-size: 1.2em !important;
+}
+
+.chat-line[data-username="vyneer_"] .user {
+	color: #f5a9b8 !important;
 }
 
 /* Scroll Bar Style */
