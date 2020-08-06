@@ -293,9 +293,7 @@ var Chat = function(id, player, type, start, end, provider) {
 					
 							self.previousMessage = chatLine.message;
 							//if (self.bottomDetector) {
-								self.chatStream.animate({
-									scrollTop: self.chatStream.prop("scrollHeight")
-								}, 0);
+								self.chatStream.scrollTop( function () { return this.scrollHeight } );
 							//}
 						}, randomTimeouts[i] * 400);
 						i++;
