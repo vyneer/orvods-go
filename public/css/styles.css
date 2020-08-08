@@ -584,6 +584,14 @@ body {
 }
 
 .flair.cute {
+	background-image: url(flairs/heart.png);
+	height: 16px;
+	width: 16px;
+	order: 1;
+}
+
+.flair.ban {
+	background-image: url(flairs/ban.png);
 	height: 16px;
 	width: 16px;
 	order: 1;
@@ -593,7 +601,7 @@ body {
     color: transparent !important;
 }
 
-.chat-line[data-username="Broadcast"] .user, .chat-line[data-username="Subscriber"] .user, .chat-line[data-username="SubscriberMessage"] .user {
+.chat-line[data-username="Broadcast"] .user, .chat-line[data-username="Subscriber"] .user, .chat-line[data-username="SubscriberMessage"] .user, .chat-line[data-username="Ban"] .user {
     display: none !important;
 }
 
@@ -601,6 +609,14 @@ body {
 	background-color: #151515;
     color: #EDEA12 !important;
     font-size: 1.2em !important;
+}
+
+.chat-line[data-username="Ban"] .flair:not(.ban) {
+    display: none !important;
+}
+
+.chat-line[data-username="Ban"] .message-divider {
+    display: none !important;
 }
 
 .chat-line[data-username="vyneer_"] .user {

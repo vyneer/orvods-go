@@ -27,6 +27,11 @@ var servicesUrl = {
     "chatonly" : ""
 }
 
+var customFlairs = {
+    "Ban" : "ban",
+    "vyneer_" : "cute"
+}
+
 var bbdggEmotes = {
 	"bbdgg":[
 	   "ComfyAYA", "ComfyFerret", "SOY", "RaveDoge", "SourPls",
