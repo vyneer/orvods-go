@@ -102,6 +102,7 @@
 		
 		$(document).ready(function () {
 			$("head").append("<style id='timeFormatStyle'></style>");
+			$("head").append("<style id='flairStyle'></style>");
 			$("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/emotes/emotes.css?_=' + Math.random() + '" type="text/css"/>');
 			$("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/flairs/flairs.css?_=' + Math.random() + '" type="text/css">');
 
@@ -118,6 +119,13 @@
 				$(`#timeFormat option[value=None]`).prop('selected', true);
 			}
 			updateTimeFormat();
+
+			if (localStorage.getItem('hideFlairs')) {
+				document.getElementById("hideFlairs").checked = (localStorage.getItem('hideFlairs') === "true") ? true : false;
+			} else {
+				document.getElementById("hideFlairs").checked = false;
+			}
+			updateFlairVisibility();
 		});
 
 		// stolen from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown
@@ -152,9 +160,18 @@
 				sheet.insertRule('.chat-line .time {padding-right: 0;}');
 				sheet.insertRule('.chat-line .time-seconds {display: inline !important;}');
 			} else if (state == "hm") {
-				sheet.insertRule('.chat-line .time {display: inline !important;}');
-				sheet.insertRule('.chat-line .time {padding-right: .3em;}');
-				sheet.insertRule('.chat-line .time-seconds {display: none !important;}');
+		function updateFlairVisibility() {
+			state = document.getElementById("hideFlairs").checked;
+			localStorage.setItem('hideFlairs', state);
+			sheet = document.getElementById("flairStyle").sheet;
+			len = sheet.cssRules.length;
+			for (let i = 0; i < len; i++) {
+				sheet.deleteRule(sheet.cssRules[i]);
+			}
+			if (state) {
+				sheet.insertRule('.msg-chat .features .flair {display: none !important;}');
+			}
+		}
 			} else {
 				sheet.insertRule('.chat-line .time {display: none !important;}');
 				sheet.insertRule('.chat-line .time {padding-right: 0;}');
@@ -288,11 +305,13 @@
 								<label class="label-text">Max. lines in chat (0 for unlim.):</label>
 								<input type="text" id="lineLimit" oninput="updateLineLimit()">
 								<label class="label-text">Time format:</label>
-								<select id="timeFormat" oninput="updateTimeFormat()">
+								<select class="settings-options" id="timeFormat" oninput="updateTimeFormat()">
 									<option value="none">None</option>
 									<option value="hm">HH:mm</option>
 									<option value="hms">HH:mm:ss</option>
-								</select>
+								</select> <br>
+								<label class="label-text">Hide flairs:</label>
+								<input class="settings-options" type="checkbox" id="hideFlairs" onchange="updateFlairVisibility()">
 							</div>
 						</div>
 						<div id="switch-sides-button"><span class="octicon octicon-mirror"></span></div>
