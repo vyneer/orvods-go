@@ -442,108 +442,100 @@ body {
 	background: #080808;
 }
 
-.hide-on-focus .chat-line {
+.hide-on-focus .msg-chat {
 	opacity: 0.3;
 }
 
-.chat-line {
+.msg-chat {
 	clear: both;
 	word-wrap: break-word;
-	padding: 3px 20px 3px 5px;
-	vertical-align: middle;
-	line-height: 1.5em;
+	padding: .2em 1.2em .2em .6em;
+	line-height: 1.65em;
 	font-family: "Roboto",Helvetica,"Trebuchet MS",Verdana,sans-serif;
 	text-rendering: optimizeLegibility;
 	font-feature-settings: "kern";
 	color: grey;
 }
 
-.chat-line .time {
+.msg-chat .time {
 	display: none;
 	font-size: 0.8em;
     color: #414141;
 }
 
-.chat-line .time-seconds {
+.msg-chat .time-seconds {
 	display: none;
 	font-size: 0.8em;
     color: #414141;
 	padding-right: .3em;
 }
 
-.chat-line .user {
+.msg-chat .user {
 	font-weight: 500;
 	cursor: pointer;
-	vertical-align: middle;
+	padding-left: .3em;
 	color: #dcdcdc;
 }
 
-.chat-line .features {
+.msg-chat .features {
 	display: -webkit-inline-box;
 	display: inline-flex;
 	vertical-align: text-top;
 	-webkit-box-align: center;
 	align-items: center;
 	margin-left: -.2em;
-	margin-right: .2em
 }
 
-.chat-line .features .flair {
+.msg-chat .features .flair {
 	margin-left: .2em;
 	margin-right: .2em
 }
 
-.chat-line .message {
-	vertical-align: middle;
+.msg-chat .message {
 	color: #B9B9B9;
 }
 
-.chat-line .message-divider {
-	vertical-align: middle;
-}
-
-.chat-line .emote {
+.msg-chat .emote {
 	background-repeat: no-repeat;
 	display: inline-block;
 	position: relative;
 	z-index: 1;
 	overflow: hidden;
 	text-indent: -90000px;
-	vertical-align: bottom;
 }
 
-.chat-line a.externallink {
+.msg-chat a.externallink {
 	color: #02C2FF;
 	position: relative;
 	z-index: 120;
 	text-decoration: none;
 }
 
-.chat-line a.externallink:hover {
+.msg-chat a.externallink:hover {
 	text-decoration: underline;
 }
 
-.chat-line a.externallink:visited {
+.msg-chat a.externallink:visited {
 	color: #A66BE5;
 }
 
-.chat-line .nsfw-link {
+.msg-chat .nsfw-link {
     border-style: dashed;
     border-color: transparent transparent red transparent;
     border-width: 1px 0 1px 0
 }
 
-.chat-line .nsfl-link {
+.msg-chat .nsfl-link {
     border-style: dashed;
     border-color: transparent transparent #FFF000 transparent;
     border-width: 1px 0 1px 0
 }
 
-.chat-line .greentext {
+.msg-chat .greentext {
 	color: #6CA528;
 }
 
-.chat-line .me-text {
+.msg-chat .me-text {
 	font-style: italic;
 }
 
@@ -600,29 +592,36 @@ body {
 	order: 1;
 }
 
-.chat-line[data-username="Broadcast"], .chat-line[data-username="Subscriber"], .chat-line[data-username="SubscriberMessage"] {
-    color: transparent !important;
+.msg-chat[data-username="Broadcast"], .msg-chat[data-username="Subscriber"], .msg-chat[data-username="SubscriberMessage"] {
+	background-color: #151515;
+    font-weight: 400;
+    padding-top: .6em;
+    padding-bottom: .6em;
 }
 
-.chat-line[data-username="Broadcast"] .user, .chat-line[data-username="Subscriber"] .user, .chat-line[data-username="SubscriberMessage"] .user, .chat-line[data-username="Ban"] .user {
+.msg-chat[data-username="Broadcast"] .user, .msg-chat[data-username="Subscriber"] .user, .msg-chat[data-username="SubscriberMessage"] .user, .msg-chat[data-username="Ban"] .user {
     display: none !important;
 }
 
-.chat-line[data-username="Broadcast"] .message, .chat-line[data-username="Subscriber"] .message, .chat-line[data-username="SubscriberMessage"] .message {
+.msg-chat[data-username="Broadcast"] .message-divider, .msg-chat[data-username="Subscriber"] .message-divider, .msg-chat[data-username="SubscriberMessage"] .message-divider {
+    display: none !important;
+}
+
+.msg-chat[data-username="Broadcast"] .message, .msg-chat[data-username="Subscriber"] .message, .msg-chat[data-username="SubscriberMessage"] .message {
 	background-color: #151515;
     color: #EDEA12 !important;
-    font-size: 1.2em !important;
+    font-size: 1.1em !important;
 }
 
-.chat-line[data-username="Ban"] .flair:not(.ban) {
+.msg-chat[data-username="Ban"] .flair:not(.ban) {
     display: none !important;
 }
 
-.chat-line[data-username="Ban"] .message-divider {
+.msg-chat[data-username="Ban"] .message-divider {
     display: none !important;
 }
 
-.chat-line[data-username="vyneer_"] .user {
+.msg-chat[data-username="vyneer_"] .user {
 	color: #f5a9b8 !important;
 }
 

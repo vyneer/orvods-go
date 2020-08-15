@@ -7,7 +7,7 @@ $(document).ready(function() {
 		
 		this._addFocusRule = function(username) {
 			self._removeFocusRule();
-			let rule = `.chat-line[data-username="${username}"]{opacity:1 !important;}`;
+			let rule = `.msg-chat[data-username="${username}"]{opacity:1 !important;}`;
 			document.getElementById("focusStyle").sheet.insertRule(rule);
 			self.focused = username;
 			self._redraw();

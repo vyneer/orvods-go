@@ -164,10 +164,20 @@
 				sheet.deleteRule(sheet.cssRules[i]);
 			}
 			if (state == "hms") {
-				sheet.insertRule('.chat-line .time {display: inline !important;}');
-				sheet.insertRule('.chat-line .time {padding-right: 0;}');
-				sheet.insertRule('.chat-line .time-seconds {display: inline !important;}');
+				sheet.insertRule('.msg-chat .time {display: inline !important;}');
+				sheet.insertRule('.msg-chat .time {padding-right: 0;}');
+				sheet.insertRule('.msg-chat .time-seconds {display: inline !important;}');
 			} else if (state == "hm") {
+				sheet.insertRule('.msg-chat .time {display: inline !important;}');
+				sheet.insertRule('.msg-chat .time {padding-right: .6em;}');
+				sheet.insertRule('.msg-chat .time-seconds {display: none !important;}');
+			} else {
+				sheet.insertRule('.msg-chat .time {display: none !important;}');
+				sheet.insertRule('.msg-chat .time {padding-right: 0;}');
+				sheet.insertRule('.msg-chat .time-seconds {display: none !important;}');
+			}
+		}
+
 		function updateFlairVisibility() {
 			state = document.getElementById("hideFlairs").checked;
 			localStorage.setItem('hideFlairs', state);
@@ -260,11 +270,6 @@
 				1. now checking for start and end timestamps of a vod before parsing logs (logs for short vods should load A LOT faster) <br>
 				2020-06-02: <br>
 				1. added time to messages (UTC, toggle in settings) <br>
-				2020-06-01: <br>
-				1. experimental change to chat syncing (thanks to Jabelonske for the ideas Wowee) <br>
-				2. change max lines in chat <br>
-				3. you can now focus usernames (click on any message to unfocus) <br>
-				4. hardcoded colors for some people <br>
 			</div>
 		</div>
 		<div id="lwod" class="view">
@@ -300,7 +305,7 @@
 						<div class="skip-dropdown">
 							<div id="skip-button" class="skip-button" onclick="showSkipSettings()"><span class="octicon octicon-history"></span></div>
 							<div id="skip-content" class="class-skip-content">
-								<label id="skip-text" for="lineLimit">Select the game that you want to skip:</label>
+								<label id="skip-text" class="label-text">Select the game that you want to skip:</label>
 								<select id="skipGameSelect"></select>
 								<div id="skip-buttons">
 									<input id="skipGameButton" value="Submit" type="button">

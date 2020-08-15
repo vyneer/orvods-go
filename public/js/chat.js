@@ -29,9 +29,9 @@ var Chat = function(id, player, type, start, end, provider) {
 	const randomMessage = memeMessages[Math.floor(Math.random() * memeMessages.length)];
 	const loadingEmote = " <div class='emote " + randomEmote + "' title=" + randomEmote + "/>";
 
-	this.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='chat-line'><span class='username loading-message'>Loading logs!</span></div>"
-		+ "<div id='loading-message-2' class='chat-line'><span class='message'>Please wait " + loadingEmote + "</span></div>"
-		+ "<div id='loading-message-3' class='chat-line'><span class='message'>" + randomMessage + "</span></div></div>";
+	this.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='msg-chat'><span class='username loading-message'>Loading logs!</span></div>"
+		+ "<div id='loading-message-2' class='msg-chat'><span class='message'>Please wait " + loadingEmote + "</span></div>"
+		+ "<div id='loading-message-3' class='msg-chat'><span class='message'>" + randomMessage + "</span></div></div>";
 
 	var self = this;
 
@@ -59,9 +59,9 @@ var Chat = function(id, player, type, start, end, provider) {
 						self.recordedTime = moment(data["items"][0]["liveStreamingDetails"]["actualStartTime"]).utc();
 						self.endTime = moment(data["items"][0]["liveStreamingDetails"]["actualEndTime"]).utc();
 					} else {
-						self.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='chat-line'><span class='username loading-message'>Youtube error!</span></div>"
-							+ "<div id='loading-message-2' class='chat-line'><span class='message'>Looks like this video isn't a stream recording</span></div>"
-							+ "<div id='loading-message-3' class='chat-line'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
+						self.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='msg-chat'><span class='username loading-message'>Youtube error!</span></div>"
+							+ "<div id='loading-message-2' class='msg-chat'><span class='message'>Looks like this video isn't a stream recording</span></div>"
+							+ "<div id='loading-message-3' class='msg-chat'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
 					}
 				}
 		} else if (self.playerType === "chatonly") {
@@ -69,9 +69,9 @@ var Chat = function(id, player, type, start, end, provider) {
 				self.recordedTime = moment(self.timestampStart).utc();
 				self.endTime = moment(self.timestampEnd).utc();
 			} else {
-				self.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='chat-line'><span class='username loading-message'>Chat error!</span></div>"
-					+ "<div id='loading-message-2' class='chat-line'><span class='message'>You shouldn't be here >:(</span></div>"
-					+ "<div id='loading-message-3' class='chat-line'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
+				self.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='msg-chat'><span class='username loading-message'>Chat error!</span></div>"
+					+ "<div id='loading-message-2' class='msg-chat'><span class='message'>You shouldn't be here >:(</span></div>"
+					+ "<div id='loading-message-3' class='msg-chat'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
 			}
 		}
 		
@@ -182,7 +182,7 @@ var Chat = function(id, player, type, start, end, provider) {
 			usernameField = `<span onclick='document._addFocusRule("${username}")' class='user-${username} user ${featuresList}'>${username}</span><span class='message-divider'>:</span> `;
 		}
 
-		self.chatStream.append("<div class='chat-line' data-username='" + username + "'>" + 
+		self.chatStream.append("<div class='msg-chat' data-username='" + username + "'>" + 
 			timeFormatted + featuresField + usernameField + 
 			"<span class='message' onclick='document._removeFocusRule()'>" +
 		  	message + "</span></div>");
@@ -284,7 +284,7 @@ var Chat = function(id, player, type, start, end, provider) {
 						setTimeout(function(){
 							if (self.previousMessage == chatLine.message && self.emoteList[self.previousMessage]) {
 								self.comboCount++;
-								$("#chat-stream .chat-line").last().remove();
+								$("#chat-stream .msg-chat").last().remove();
 								var comboMessage = self._renderComboMessage(self.previousMessage, self.comboCount);
 								self._renderChatMessage(null, null, comboMessage);
 							} else {
