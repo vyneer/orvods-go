@@ -593,10 +593,15 @@ body {
 }
 
 .msg-chat[data-username="Broadcast"], .msg-chat[data-username="Subscriber"], .msg-chat[data-username="SubscriberMessage"] {
+	text-shadow: 1px 1px 3px #000;
 	background-color: #151515;
-    font-weight: 400;
     padding-top: .6em;
     padding-bottom: .6em;
+}
+
+.msg-chat[data-username="Broadcast"] .time, .msg-chat[data-username="Subscriber"] .time, .msg-chat[data-username="SubscriberMessage"] .time {
+	font-size: 1.1em !important;
+	font-weight: 400;
 }
 
 .msg-chat[data-username="Broadcast"] .user, .msg-chat[data-username="Subscriber"] .user, .msg-chat[data-username="SubscriberMessage"] .user, .msg-chat[data-username="Ban"] .user {
@@ -610,7 +615,8 @@ body {
 .msg-chat[data-username="Broadcast"] .message, .msg-chat[data-username="Subscriber"] .message, .msg-chat[data-username="SubscriberMessage"] .message {
 	background-color: #151515;
     color: #EDEA12 !important;
-    font-size: 1.1em !important;
+	font-size: 1.1em !important;
+	font-weight: 400;
 }
 
 .msg-chat[data-username="Ban"] .flair:not(.ban) {

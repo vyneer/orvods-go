@@ -155,7 +155,7 @@ var Chat = function(id, player, type, start, end, provider) {
 
 	this._renderComboMessage = function(emote, comboCount) {
 		return self._generateDestinyEmoteImage(emote) + 
-			"<span class='x'> x" + comboCount + " </span>" + 
+			"<span class='x'> " + comboCount + "x </span>" + 
 			"<span class='combo'>C-C-C-COMBO</span>";
 	}
 
@@ -286,7 +286,7 @@ var Chat = function(id, player, type, start, end, provider) {
 								self.comboCount++;
 								$("#chat-stream .msg-chat").last().remove();
 								var comboMessage = self._renderComboMessage(self.previousMessage, self.comboCount);
-								self._renderChatMessage(null, null, comboMessage);
+								self._renderChatMessage(element, null, comboMessage);
 							} else {
 								self.comboCount = 1;
 								self._renderChatMessage(element, chatLine.username, self._formatMessage(chatLine.message));
