@@ -14,6 +14,8 @@ $(document).ready(function() {
     var lwodActive = 0;
     var chatSide = localStorage.getItem('chatSide');
     var playerType = (id) ? "twitch" : (v) ? "youtube" : (chatonly) ? "chatonly" : null;
+    const twitchButton = document.getElementById("twitch-button");
+    const youtubeButton = document.getElementById("youtube-button");
     globals.sizes = localStorage.getItem('split-sizes');
 
     if (!chatSide) { 
@@ -42,12 +44,16 @@ $(document).ready(function() {
         $("#lwod").hide();
         playerActive = 1;
     } else {
-        // preloading all vods since twitch api pagination is inconsistent and bad >:(
-        loadVODs().then(result => {
+        loadVODs("twitch").then(result => {
             allVODs = result;
+            console.log(allVODs)
+            console.log(result)
             return result.slice(0, 9);
         }).then(nineEntries => {
-            createVodEntries(nineEntries);
+            createVodEntries(nineEntries, "twitch");
+        });
+        loadVODs("youtube").then(result => {
+            allVids = result;
         });
         $("#player").hide();
         $("#browse").show();
@@ -136,16 +142,42 @@ $(document).ready(function() {
         }
     });
 
-    $("#next-page-button").click(function() {
-        if (page != Math.ceil(allVODs.length/9)) {
-            page += 1;
+    $("#twitch-button").click(function() {
+        if (!twitchButton.classList.contains("active")) {
+            twitchButton.classList.add("active");
+            youtubeButton.classList.remove("active");
+            page = 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
             nineEntries = allVODs.slice((page-1)*9,page*9);
-            createVodEntries(nineEntries);
+            createVodEntries(nineEntries, "twitch");
+        }
+    })
+
+    $("#youtube-button").click(function() {
+        if (!youtubeButton.classList.contains("active")) {
+            youtubeButton.classList.add("active");
+            twitchButton.classList.remove("active");
+            page = 1;
+            $("#page-number").text(page);
+            $("#vod-list").empty();
+            nineEntries = allVids.slice((page-1)*9,page*9);
+            createVodEntries(nineEntries, "youtube");
+        }
+    })
+
+    $("#next-page-button").click(function() {
+        vodinfo = twitchButton.classList.contains("active") ? allVODs : allVids;
+        type = twitchButton.classList.contains("active") ? "twitch" : "youtube";
+        if (page != Math.ceil(vodinfo.length/9)) {
+            page += 1;
+            $("#page-number").text(page);
+            $("#vod-list").empty();
+            nineEntries = vodinfo.slice((page-1)*9,page*9);
+            createVodEntries(nineEntries, type);
         }
 
-        if (page === Math.ceil(allVODs.length/9)) {
+        if (page === Math.ceil(vodinfo.length/9)) {
             $("#next-page-button").addClass("disabled");
         } else {
             $("#next-page-button").removeClass("disabled");
@@ -159,15 +191,17 @@ $(document).ready(function() {
     });
 
     $("#previous-page-button").click(function() {
+        vodinfo = twitchButton.classList.contains("active") ? allVODs : allVids;
+        type = twitchButton.classList.contains("active") ? "twitch" : "youtube";
         if (page > 1) { 
             page -= 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            nineEntries = allVODs.slice((page-1)*9,page*9);
-            createVodEntries(nineEntries);
+            nineEntries = vodinfo.slice((page-1)*9,page*9);
+            createVodEntries(nineEntries, type);
         }
 
-        if (page === Math.ceil(allVODs.length/9)) {
+        if (page === Math.ceil(vodinfo.length/9)) {
             $("#next-page-button").addClass("disabled");
         } else {
             $("#next-page-button").removeClass("disabled");
@@ -239,26 +273,39 @@ $(document).ready(function() {
     $("body").on("click", ".vod-entry", function() {
         window.location.href += "?id=" + $(this).attr("id"); 
     });
+
+    $("body").on("click", ".vid-entry", function() {
+        window.location.href += "?v=" + $(this).attr("id") + "&start=" + $(this).attr("starttime") + "&end=" + $(this).attr("endtime"); 
+    });
 });
 
 var allVODs = [];
+var allVids = [];
 
-async function loadVODs() {
-    vodArray = [];
-    var destinyVODsURL = "/vodinfo?user_id=" + destinyUserID + "&first=100&type=archive";
-    let response = await fetch(destinyVODsURL);
-    let data = await response.json();
-    pageCursor = data.pagination.cursor;
-    vodArray.push(...data.data);
-    // if there are more than 100 vods, check next page and add everything there to the array; repeat until done
-    while (data.data.length === 100 && pageCursor != ("" || null)) {
-        destinyVODsURL = "/vodinfo?user_id=" + destinyUserID + "&first=100&type=archive&after=" + pageCursor;
-        response = await fetch(destinyVODsURL);
-        data = await response.json();
+async function loadVODs(type) {
+    let vodArray = [];
+    if (type === "twitch") {
+        var destinyVODsURL = "/vodinfo?user_id=" + destinyUserID + "&first=100&type=archive";
+        let response = await fetch(destinyVODsURL);
+        let data = await response.json();
         pageCursor = data.pagination.cursor;
         vodArray.push(...data.data);
-    };
-    return vodArray;
+        // if there are more than 100 vods, check next page and add everything there to the array; repeat until done
+        while (data.data.length === 100 && pageCursor != ("" || null)) {
+            destinyVODsURL = "/vodinfo?user_id=" + destinyUserID + "&first=100&type=archive&after=" + pageCursor;
+            response = await fetch(destinyVODsURL);
+            data = await response.json();
+            pageCursor = data.pagination.cursor;
+            vodArray.push(...data.data);
+        };
+        return vodArray;
+    } else if (type === "youtube") {
+        var destinyVidsURL = "https://vyneer.me/tools/ytvods";
+        let response = await fetch(destinyVidsURL);
+        let data = await response.json();
+        vodArray.push(...data);
+        return vodArray;
+    }
 };
 
 var destinyUserID = 18074328;
@@ -286,7 +333,7 @@ var loadPlayer = function(id, time, type, start, end, provider) {
     if (type === "twitch") {
         var player = new Twitch.Player("video-player", { video: id , time: time });
         var chat = new Chat(id, player, type, start, end, provider);
-        var lwod = new LWOD(id, player);
+        var lwod = new LWOD(id, type, player);
         player.addEventListener(Twitch.Player.PLAYING, function() {
             chat.startChatStream();
         });
@@ -297,6 +344,7 @@ var loadPlayer = function(id, time, type, start, end, provider) {
     } else if (type === "youtube") {
         var player;
         var chat;
+        var lwod;
         // creating a div to be replaced by yt's iframe
         replacedDiv = document.createElement('div');
         replacedDiv.id = "yt-player";
@@ -304,6 +352,7 @@ var loadPlayer = function(id, time, type, start, end, provider) {
         window.onYouTubeIframeAPIReady = function() {
             player = new YT.Player("yt-player", { videoId: id , playerVars: {"start": time, "autoplay": 1, "playsinline": 1}});
             chat = new Chat(id, player, type, start, end, provider);
+            lwod = new LWOD(id, type, player);
             player.addEventListener("onStateChange", function(event) {
                 if (event.data == YT.PlayerState.PLAYING) {
                     chat.startChatStream();
@@ -326,33 +375,70 @@ var loadPlayer = function(id, time, type, start, end, provider) {
     $("body").css("overflow", "hidden");
 }
 
-var createVodEntries = function(vodData) {
-    vodData.forEach(function(vod) {
-        createVodEntry({
-            id: vod.id, 
-            title: vod.title, 
-            image: vod.thumbnail_url.replace(/%([\s\S]*)(?=\.)/, "320x180"), 
-            views: vod.view_count, 
-            date: formatDate(vod.created_at), 
-            length: vod.duration
-        });
-    })
+var createVodEntries = function(vodData, type) {
+    if (type === "twitch") {
+        vodData.forEach(function(vod) {
+            createVodEntry({
+                id: vod.id, 
+                title: vod.title, 
+                image: vod.thumbnail_url.replace(/%([\s\S]*)(?=\.)/, "320x180"), 
+                views: vod.view_count, 
+                date: formatDate(vod.created_at), 
+                length: vod.duration
+            });
+        })
+    } else {
+        vodData.forEach(function(vod) {
+            createVidEntry({
+                id: vod[0], 
+                title: vod[1], 
+                image: vod[4], 
+                date: formatDate(vod[2]),
+                starttime: vod[2],
+                endtime: vod[3]
+            });
+        })
+    }
+
 };
 
 var createVodEntry = function(vod) {
     $("#vod-tmpl").tmpl(vod).appendTo("#vod-list");
 };
 
-var createLWODTimestamps = function(data) {
-    data.forEach(function(timestamp) {
-        createLWODEntry({
-            starttime: timestamp[0], 
-            endtime: timestamp[1], 
-            game: timestamp[2], 
-            subject: timestamp[3], 
-            topic: timestamp[4]
-        });
-    })
+var createVidEntry = function(vod) {
+    $("#vid-tmpl").tmpl(vod).appendTo("#vod-list");
+};
+
+var createLWODTimestamps = function(data, type) {
+    if (type === "twitch") {
+        data.forEach(function(timestamp) {
+            createLWODEntry({
+                starttime: timestamp[0], 
+                endtime: timestamp[1], 
+                game: timestamp[2], 
+                subject: timestamp[3], 
+                topic: timestamp[4]
+            });
+        })
+    } else {
+        data.forEach(function(timestamp) {
+            var fullSec = timestamp[0];
+            var hoursFloat = fullSec/(60*60);
+            var hoursInt = Math.floor(hoursFloat);
+            var minutesFloat = (hoursFloat - hoursInt)*60;
+            var minutesInt = Math.floor(minutesFloat);
+            var secInt = fullSec - (minutesInt*60 + hoursInt*60*60);
+            createLWODEntry({
+                starttime: `${hoursInt.toString().padStart(2, "0")}:${minutesInt.toString().padStart(2, "0")}:${secInt.toString().padStart(2, "0")}`, 
+                endtime: "", 
+                game: timestamp[1], 
+                subject: timestamp[2], 
+                topic: timestamp[3]
+            });
+        })
+    }
+
 };
 
 var createLWODEntry = function(timestamp) {

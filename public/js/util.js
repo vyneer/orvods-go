@@ -29,7 +29,8 @@ var servicesUrl = {
 
 var customFlairs = {
     "Ban" : "ban",
-    "vyneer_" : "cute"
+    "vyneer_" : "cute",
+    "vyneer" : "cute"
 }
 
 var bbdggEmotes = {

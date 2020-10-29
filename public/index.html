@@ -48,6 +48,18 @@
 		</div>
 	</script>
 
+	<script id="vid-tmpl" type="text/x-jquery-tmpl">
+		<div id="${id}" starttime="${starttime}" endtime="${endtime}" class="vid-entry shadow">
+			<div class="image-container">
+				<img src="${image}"/>
+			</div>
+			<div class="info-container">
+				<div class="title">${title}</div>
+				<div class="date">${date}</div>
+			</div>
+		</div>
+	</script>
+
 	<script id="timestamp-tmpl" type="text/x-jquery-tmpl">
 		<tr starttime="${starttime}" class="timestamp-entry shadow">
 			<td class="table-padding">${starttime}</td>
@@ -241,6 +253,8 @@
 		<div id="changelog" class="view">
 			<div id="close-changelog-button"><span class="octicon octicon-x"></span></div>
 			<div id="changelog-text">
+				2020-10-29: <br>
+				1. youtube support <br>
 				2020-08-15: <br>
 				1. chat is even closer to dgg <br>
 				2. font size selection <br>
@@ -272,14 +286,12 @@
 				3. negative delay <br>
 				2020-06-06: <br>
 				1. now checking for start and end timestamps of a vod before parsing logs (logs for short vods should load A LOT faster) <br>
-				2020-06-02: <br>
-				1. added time to messages (UTC, toggle in settings) <br>
 			</div>
 		</div>
 		<div id="lwod" class="view">
 			<div id="close-lwod-button"><span class="octicon octicon-x"></span></div>
 			<div id="table-container">
-				<div id="scoot-credit">Source: <a class="white-link" href="https://drive.google.com/drive/folders/1aRv251i5bZIk223SDssmdvksKvrEYHdK">LWOD spreadsheets</a> (huge thanks to Scoot301!)</div>
+				<div id="scoot-credit">Source: <a class="white-link" href="https://drive.google.com/drive/folders/1aRv251i5bZIk223SDssmdvksKvrEYHdK">LWOD spreadsheets</a> (huge thanks to Scoot!)</div>
 				<table id="lwod-timestamps">
 					<tbody class="lwod-insert">
 						<tr>
@@ -294,6 +306,10 @@
 			</div>
 		</div>
 		<div id="browse" class="view container">
+			<div id="site-selector">
+				<div id="twitch-button" class="site-selector-button active">Twitch</div>
+				<div id="youtube-button" class="site-selector-button">Youtube</div>
+			</div>
 			<div id="page-selector">
 				<div id="previous-page-button" class="disabled"><span class="octicon octicon-arrow-left"></span></div>
 				<div id="page-number-container">Page <span id="page-number">1</span></div>

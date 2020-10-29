@@ -1,12 +1,11 @@
-var LWOD = function(id, player) {
+var LWOD = function(id, type, player) {
 	this.player = player;
 	this.data = [];
-
+	
+	this.requestType = (type === "twitch") ? "id" : "v";
 	var self = this;
 
-	$.get(lwodUrl, {
-		id: id
-	}, function (data) {
+	$.get(`${lwodUrl}?${this.requestType}=${id}`, function (data) {
 		self.data = data;
 		if (data != "") {
 			var uniqueGames = new Set();
@@ -21,7 +20,7 @@ var LWOD = function(id, player) {
 			});
 			$("#lwod-button").show();
 			$("#skip-button").show();
-			createLWODTimestamps(data);
+			createLWODTimestamps(data, type);
 		}
 	});
 
@@ -96,7 +95,11 @@ var LWOD = function(id, player) {
 
 	$("body").on("click", ".timestamp-entry", function() {
 		timestamp = moment.duration($(this).attr("starttime")).asSeconds();
-		player.seek(timestamp);
+		if (type === "twitch") {
+			player.seek(timestamp);
+		} else {
+			player.seekTo(timestamp);
+		}
 		$("#lwod").hide();
 		$("#player").show();
 	});

@@ -34,84 +34,120 @@ var Chat = function(id, player, type, start, end, provider) {
 		+ "<div id='loading-message-3' class='msg-chat'><span class='message'>" + randomMessage + "</span></div></div>";
 
 	var self = this;
-
-	$.get(servicesUrl[self.playerType] + this.videoId, function(vodData) {
-		self.hReplace = new RegExp('([h])', 'gm');
-		self.mReplace = new RegExp('([m])', 'gm');
-		self.sReplace = new RegExp('([s])', 'gm');
-		data = vodData;
-		if (self.playerType === "twitch") {
-			if (self.timestampStart && self.timestampEnd) {
-				self.recordedTime = moment(self.timestampStart).utc();
-				self.endTime = moment(self.timestampEnd).utc();
-			} else {
-				self.recordedTime = moment(data["data"][0]["created_at"]).utc();
-				self.durationString = "PT" + data["data"][0]["duration"].replace(self.hReplace, 'H').replace(self.mReplace, 'M').replace(self.sReplace, 'S');
-				self.duration = moment.duration(self.durationString).asSeconds();
-				self.endTime = moment(self.recordedTime).add(self.duration, 'seconds').utc();
+	if (self.timestampStart && self.timestampEnd && self.playerType === "youtube") {
+			self.recordedTime = moment(self.timestampStart).utc();
+			self.endTime = moment(self.timestampEnd).utc();
+			
+			self.chatStream.append(self.loadingMsg);
+	
+			self.difference = self.endTime.clone().startOf('day').diff(self.recordedTime.clone().startOf('day'), 'days');
+	
+			var overrustleLogsDates = [];
+	
+			for (let i = 0; i <= self.difference; i++) {
+				if (self.recordedTime.format("MM") === self.recordedTime.clone().add(i, 'days').format("MM")) {
+					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
+						self.recordedTime.format("MMMM") + "%20" + 
+						self.recordedTime.format("YYYY") + "/" + 
+						self.recordedTime.format("YYYY") + "-" +
+						self.recordedTime.format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
+				} else {
+					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
+						self.recordedTime.clone().add(i, 'days').format("MMMM") + "%20" + 
+						self.recordedTime.clone().add(i, 'days').format("YYYY") + "/" + 
+						self.recordedTime.clone().add(i, 'days').format("YYYY") + "-" +
+						self.recordedTime.clone().add(i, 'days').format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
+				}
+				overrustleLogsDates.push(overrustleLogsStr);
 			}
-		} else if (self.playerType === "youtube") {
+	
+			$.get(featuresUrl, {}, function (data) {
+				self.features = data;
+			});
+	
+			$.get(chatUrl[self.logProvider], {
+				urls: JSON.stringify(overrustleLogsDates),
+				from: self.recordedTime.clone().format("YYYY-MM-DD HH:mm:ss UTC"),
+				to: self.endTime.clone().format("YYYY-MM-DD HH:mm:ss UTC")
+			}, function(data) {
+				self.chat = data;
+				self.startChatStream();
+				$("#loading-message").remove();
+			});
+	} else {
+		$.get(servicesUrl[self.playerType] + this.videoId, function(vodData) {
+			self.hReplace = new RegExp('([h])', 'gm');
+			self.mReplace = new RegExp('([m])', 'gm');
+			self.sReplace = new RegExp('([s])', 'gm');
+			data = vodData;
+			if (self.playerType === "twitch") {
 				if (self.timestampStart && self.timestampEnd) {
 					self.recordedTime = moment(self.timestampStart).utc();
 					self.endTime = moment(self.timestampEnd).utc();
 				} else {
-					if (data["items"][0]["liveStreamingDetails"]) {
-						self.recordedTime = moment(data["items"][0]["liveStreamingDetails"]["actualStartTime"]).utc();
-						self.endTime = moment(data["items"][0]["liveStreamingDetails"]["actualEndTime"]).utc();
-					} else {
-						self.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='msg-chat'><span class='username loading-message'>Youtube error!</span></div>"
-							+ "<div id='loading-message-2' class='msg-chat'><span class='message'>Looks like this video isn't a stream recording</span></div>"
-							+ "<div id='loading-message-3' class='msg-chat'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
-					}
+					self.recordedTime = moment(data["data"][0]["created_at"]).utc();
+					self.durationString = "PT" + data["data"][0]["duration"].replace(self.hReplace, 'H').replace(self.mReplace, 'M').replace(self.sReplace, 'S');
+					self.duration = moment.duration(self.durationString).asSeconds();
+					self.endTime = moment(self.recordedTime).add(self.duration, 'seconds').utc();
 				}
-		} else if (self.playerType === "chatonly") {
-			if (self.timestampStart && self.timestampEnd) {
-				self.recordedTime = moment(self.timestampStart).utc();
-				self.endTime = moment(self.timestampEnd).utc();
-			} else {
-				self.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='msg-chat'><span class='username loading-message'>Chat error!</span></div>"
-					+ "<div id='loading-message-2' class='msg-chat'><span class='message'>You shouldn't be here >:(</span></div>"
-					+ "<div id='loading-message-3' class='msg-chat'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
+			} else if (self.playerType === "youtube") {
+				if (data["items"][0]["liveStreamingDetails"]) {
+					self.recordedTime = moment(data["items"][0]["liveStreamingDetails"]["actualStartTime"]).utc();
+					self.endTime = moment(data["items"][0]["liveStreamingDetails"]["actualEndTime"]).utc();
+				} else {
+					self.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='msg-chat'><span class='username loading-message'>Youtube error!</span></div>"
+						+ "<div id='loading-message-2' class='msg-chat'><span class='message'>Looks like this video isn't a stream recording</span></div>"
+						+ "<div id='loading-message-3' class='msg-chat'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
+				}	
+			} else if (self.playerType === "chatonly") {
+				if (self.timestampStart && self.timestampEnd) {
+					self.recordedTime = moment(self.timestampStart).utc();
+					self.endTime = moment(self.timestampEnd).utc();
+				} else {
+					self.loadingMsg = "<div id='loading-message'><div id='loading-message-1' class='msg-chat'><span class='username loading-message'>Chat error!</span></div>"
+						+ "<div id='loading-message-2' class='msg-chat'><span class='message'>You shouldn't be here >:(</span></div>"
+						+ "<div id='loading-message-3' class='msg-chat'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
+				}
 			}
-		}
-		
-		self.chatStream.append(self.loadingMsg);
-
-		self.difference = self.endTime.clone().startOf('day').diff(self.recordedTime.clone().startOf('day'), 'days');
-
-		var overrustleLogsDates = [];
-
-		for (let i = 0; i <= self.difference; i++) {
-			if (self.recordedTime.format("MM") === self.recordedTime.clone().add(i, 'days').format("MM")) {
-				var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
-					self.recordedTime.format("MMMM") + "%20" + 
-					self.recordedTime.format("YYYY") + "/" + 
-					self.recordedTime.format("YYYY") + "-" +
-					self.recordedTime.format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
-			} else {
-				var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
-					self.recordedTime.clone().add(i, 'days').format("MMMM") + "%20" + 
-					self.recordedTime.clone().add(i, 'days').format("YYYY") + "/" + 
-					self.recordedTime.clone().add(i, 'days').format("YYYY") + "-" +
-					self.recordedTime.clone().add(i, 'days').format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
+			
+			self.chatStream.append(self.loadingMsg);
+	
+			self.difference = self.endTime.clone().startOf('day').diff(self.recordedTime.clone().startOf('day'), 'days');
+	
+			var overrustleLogsDates = [];
+	
+			for (let i = 0; i <= self.difference; i++) {
+				if (self.recordedTime.format("MM") === self.recordedTime.clone().add(i, 'days').format("MM")) {
+					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
+						self.recordedTime.format("MMMM") + "%20" + 
+						self.recordedTime.format("YYYY") + "/" + 
+						self.recordedTime.format("YYYY") + "-" +
+						self.recordedTime.format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
+				} else {
+					var overrustleLogsStr = "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" + 
+						self.recordedTime.clone().add(i, 'days').format("MMMM") + "%20" + 
+						self.recordedTime.clone().add(i, 'days').format("YYYY") + "/" + 
+						self.recordedTime.clone().add(i, 'days').format("YYYY") + "-" +
+						self.recordedTime.clone().add(i, 'days').format("MM") + "-" + self.recordedTime.clone().add(i, 'days').format("DD") + ".txt";
+				}
+				overrustleLogsDates.push(overrustleLogsStr);
 			}
-			overrustleLogsDates.push(overrustleLogsStr);
-		}
-
-		$.get(featuresUrl, {}, function (data) {
-			self.features = data;
+	
+			$.get(featuresUrl, {}, function (data) {
+				self.features = data;
+			});
+	
+			$.get(chatUrl[self.logProvider], {
+				urls: JSON.stringify(overrustleLogsDates),
+				from: self.recordedTime.clone().format("YYYY-MM-DD HH:mm:ss UTC"),
+				to: self.endTime.clone().format("YYYY-MM-DD HH:mm:ss UTC")
+			}, function(data) {
+				self.chat = data;
+				self.startChatStream();
+				$("#loading-message").remove();
+			});
 		});
-
-		$.get(chatUrl[self.logProvider], {
-			urls: JSON.stringify(overrustleLogsDates),
-			from: self.recordedTime.clone().format("YYYY-MM-DD HH:mm:ss UTC"),
-			to: self.endTime.clone().format("YYYY-MM-DD HH:mm:ss UTC")
-		}, function(data) {
-			self.chat = data;
-			self.startChatStream();
-			$("#loading-message").remove();
-		});
-	});
+	}
 
 	$.get("/emotes", function(data) {
 		self.emotes = data;
