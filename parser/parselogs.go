@@ -119,7 +119,7 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 						endPos = len(timestamps) - 1
 						endCheck = true
 					}
-					t = t.Add(-1 * time.Second)
+					t = t.Add(1 * time.Second)
 					toStamp = t.Format("2006-01-02 15:04:05 UTC")
 				}
 			}
