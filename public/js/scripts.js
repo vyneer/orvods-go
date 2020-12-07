@@ -46,14 +46,12 @@ $(document).ready(function() {
     } else {
         loadVODs("twitch").then(result => {
             allVODs = result;
-            console.log(allVODs)
-            console.log(result)
-            return result.slice(0, 9);
-        }).then(nineEntries => {
-            createVodEntries(nineEntries, "twitch");
         });
         loadVODs("youtube").then(result => {
             allVids = result;
+            return result.slice(0, 9);
+        }).then(nineEntries => {
+            createVodEntries(nineEntries, "youtube");
         });
         $("#player").hide();
         $("#browse").show();
