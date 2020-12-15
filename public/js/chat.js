@@ -154,7 +154,7 @@ var Chat = function(id, player, type, start, end, provider) {
 		// stolen from ceneza Blesstiny
 		self.emoteList = {};
 		self.emotes.forEach(v => self.emoteList[v.prefix] = v);
-		const emoticons = self.emotes.map(v => v['prefix']).join('|') + "|" + bbdggEmotes["bbdgg"].join('|');
+		const emoticons = self.emotes.map(v => v['prefix']).join('|');
 		self.emoteRegexNormal = new RegExp(`(^|\\s)(${emoticons})(?=$|\\s)`, 'gm');
 	});
 

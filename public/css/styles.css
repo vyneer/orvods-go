@@ -529,7 +529,6 @@ body {
 }
 
 .msg-chat .emote {
-	background-repeat: no-repeat;
 	display: inline-block;
 	position: relative;
 	z-index: 1;
