@@ -39,6 +39,10 @@
 					<div class="views"><span class="octicon octicon-eye"></span>&nbsp;${views}</div>
 					<div class="length"><span class="octicon octicon-watch"></span>&nbsp;${length}</div>
 				</div>
+				<div class="clipboard-container">
+					<div class="copy-link" copy="https://vyneer.me/?id=${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
+					<div class="copy-orig" copy="https://twitch.tv/videos/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+				</div>
 			</div>
 			<div class="info-container">
 				<div class="title">${title}</div>
@@ -51,6 +55,10 @@
 		<div id="${id}" starttime="${starttime}" endtime="${endtime}" class="vid-entry shadow">
 			<div class="image-container">
 				<img src="${image}"/>
+				<div class="clipboard-container">
+					<div class="copy-link" copy="https://vyneer.me/?v=${id}&start=${starttime}&end=${endtime}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
+					<div class="copy-orig" copy="https://youtu.be/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+				</div>
 			</div>
 			<div class="info-container">
 				<div class="title">${title}</div>
@@ -63,6 +71,15 @@
 		<tr starttime="${starttime}" class="timestamp-entry shadow">
 			<td class="table-padding">${starttime}</td>
 			<td class="table-padding">${endtime}</td>
+			<td class="table-padding nowrap">${game}</td>
+			<td class="table-padding nowrap">${subject}</td>
+			<td>${topic}</td>
+		</tr>
+	</script>
+
+	<script id="timestamp-tmpl-yt" type="text/x-jquery-tmpl">
+		<tr starttime="${starttime}" class="timestamp-entry shadow">
+			<td class="table-padding">${starttime}</td>
 			<td class="table-padding nowrap">${game}</td>
 			<td class="table-padding nowrap">${subject}</td>
 			<td>${topic}</td>
@@ -225,6 +242,7 @@
 			<div id="header-title">OverRustle VODs</div>
 			<div id="changelog-button"><a>Changelog</a></div>
 			<div id="lwod-button"><a>LWOD</a></div>
+			<div id="copy-button"><a>Copy with time</a></div>
 		</div>
 		<div id="header-links">
 			<div><input type="text" id="customUrlText" name="vodurl" placeholder="Twitch/Youtube link"></div>
