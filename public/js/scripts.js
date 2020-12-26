@@ -10,7 +10,6 @@ $(document).ready(function() {
     var provider = (getUrlParameter("provider")) ? getUrlParameter("provider") : "orl";
     var page = 1;
     var playerActive = 0;
-    var changelogActive = 0;
     var lwodActive = 0;
     var chatSide = localStorage.getItem('chatSide');
     var playerType = (id) ? "twitch" : (v) ? "youtube" : (chatonly) ? "chatonly" : null;
@@ -40,7 +39,6 @@ $(document).ready(function() {
         loadPlayer(vidId, time, playerType, start, end, provider);
         $("#browse").hide();
         $("#player").show();
-        $("#changelog").hide();
         $("#lwod").hide();
         playerActive = 1;
     } else {
@@ -55,7 +53,6 @@ $(document).ready(function() {
         });
         $("#player").hide();
         $("#browse").show();
-        $("#changelog").hide();
         $("#lwod").hide();
         $("#copy-button").hide();
         playerActive = 0;
@@ -71,32 +68,9 @@ $(document).ready(function() {
         }
     });
 
-    $("#changelog-button").click(function() {
-        if (changelogActive === 0) {
-            $("#changelog").show();
-            $("#player").hide();
-            $("#browse").hide();
-            $("#lwod").hide();
-            changelogActive = 1
-        } else {
-            $("#changelog").hide();
-            changelogActive = 0
-            if (playerActive === 1) {
-                $("#player").show();
-                $("#browse").hide();
-                $("#lwod").hide();
-            } else {
-                $("#player").hide();
-                $("#browse").show();
-                $("#lwod").hide();
-            }
-        }
-    });
-
     $("#lwod-button").click(function() {
         if (lwodActive === 0) {
             $("#lwod").show();
-            $("#changelog").hide();
             $("#player").hide();
             $("#browse").hide();
             lwodActive = 1
@@ -106,25 +80,10 @@ $(document).ready(function() {
             if (playerActive === 1) {
                 $("#player").show();
                 $("#browse").hide();
-                $("#changelog").hide();
             } else {
                 $("#player").hide();
                 $("#browse").show();
-                $("#changelog").hide();
             }
-        }
-    });
-
-    $("#close-changelog-button").click(function() {
-        $("#changelog").hide();
-        if (playerActive === 1) {
-            $("#player").show();
-            $("#browse").hide();
-            $("#lwod").hide();
-        } else {
-            $("#player").hide();
-            $("#browse").show();
-            $("#lwod").hide();
         }
     });
 
@@ -133,11 +92,9 @@ $(document).ready(function() {
         if (playerActive === 1) {
             $("#player").show();
             $("#browse").hide();
-            $("#changelog").hide();
         } else {
             $("#player").hide();
             $("#browse").show();
-            $("#changelog").hide();
         }
     });
 

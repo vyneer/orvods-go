@@ -42,7 +42,7 @@ body {
 	color: white;
 }
 
-#changelog-button, #lwod-button, #copy-button {
+#lwod-button, #copy-button {
 	color: #DDD;
 	font-size: 20px;
 	padding: 15px;
@@ -53,7 +53,7 @@ body {
 	display: none;
 }
 
-#changelog-button:hover, #lwod-button:hover, #copy-button:hover {
+#lwod-button:hover, #copy-button:hover {
 	color: white;
 }
 
@@ -86,31 +86,6 @@ body {
 
 #git-buttons .github-button{
 	display: inline-block;
-}
-
-/* Changelog */
-
-#changelog {
-	display: none;
-	color: white;
-	font-size: 20px;
-	width: 60%;
-	margin: 20px auto;
-	position: relative;
-}
-
-#changelog-text {
-	width: 90%;
-}
-
-#changelog-text a:visited {
-	color: #A66BE5;
-}
-
-#close-changelog-button {
-	position: absolute;
-	right: 1em;
-	cursor: pointer;
 }
 
 /* Page Selector */
