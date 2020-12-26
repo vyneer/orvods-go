@@ -293,10 +293,8 @@ body {
 }
 
 .vod-entry .clipboard-container, .vid-entry .clipboard-container {
-	position: absolute;
-	top: 100px;
-	left: 5px;
-	right: 5px;
+	position: relative;
+	bottom: 5px;
 	display: flex;
 	justify-content: space-between;
 }
@@ -305,6 +303,8 @@ body {
 	background-color: rgba(0, 0, 0, 0.6);
 	border-radius: 3px;
 	padding: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
 	color: white;
 }
 
