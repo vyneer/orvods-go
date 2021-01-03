@@ -301,7 +301,9 @@ var loadPlayer = function(id, time, type, start, end, provider) {
 
         $("#copy-button").show();
         $("#copy-button").click(function () {
-            navigator.clipboard.writeText(`${window.location.href}&t=${Math.round(player.getCurrentTime())}s`);
+            let params = new URLSearchParams(window.location.href);
+            params.set("t", `${Math.round(player.getCurrentTime())}s`);
+            navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
         });
 
         var chat = new Chat(id, player, type, start, end, provider);
