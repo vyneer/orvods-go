@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>OverRustle VODs</title>
+	<title>orvods</title>
 
 	<link rel="icon" type="image/png" href="./favicon.png" />
 
@@ -239,13 +239,13 @@
 
 	<div id="header" class="shadow">
 		<div id="main-links">
-			<div id="header-title">OverRustle VODs</div>
+			<div id="header-title">orvods</div>
 			<div id="lwod-button"><a>LWOD</a></div>
 			<div id="copy-button"><a>Copy with time</a></div>
 		</div>
 		<div id="header-links">
-			<div><input type="text" id="customUrlText" name="vodurl" placeholder="Twitch/Youtube link"></div>
-			<div class="manual-dropdown">
+			<div class="header-links"><input type="text" id="customUrlText" name="vodurl" placeholder="Twitch/Youtube link"></div>
+			<div class="manual-dropdown header-links">
 				<div id="manual-button" class="manual-button" onclick="showManualTimestamps()"><span class="octicon octicon-chevron-down"></span></div>
 				<div id="manual-content" class="class-manual-content">
 					<label id="start-timestamp-text" for="lineLimit">Start chat at:</label>
@@ -253,12 +253,12 @@
 					<label id="end-timestamp-text" for="lineLimit">End chat at:</label>
 					<input type="text" id="end-timestamp" name="end-timestamp" placeholder="2020-01-02 12:34:56 UTC">
 					<input id="chatonly" value="Chat Only" onclick="onlyChat()" type="button">
+					<input id="customUrlButton2" value="Submit" onclick="vodURL(document.getElementById('customUrlText').value)" type="button">
 				</div>
 			</div>
-			<div><input id="customUrlButton" value="Submit" onclick="vodURL(document.getElementById('customUrlText').value)" type="button"></div>
-			<div><a href="https://www.destiny.gg">Destiny.gg</a></div>
-			<div><a id="destiny-status" href="https://www.destiny.gg/bigscreen">Destiny is offline.</a></div>
-			<div id="git-buttons">
+			<div id="custom-url-wrapper" class="header-links"><input id="customUrlButton" value="Submit" onclick="vodURL(document.getElementById('customUrlText').value)" type="button"></div>
+			<div class="header-links"><a id="destiny-status" href="https://www.destiny.gg/bigscreen">Destiny is offline.</a></div>
+			<div id="git-buttons" class="header-links">
 				<div><a class="github-button" href="https://github.com/vyneer/orvods-go/commits/master" data-icon="octicon-repo-forked" aria-label="Check the commits for orvods-go">Commits</a></div>
 				<div><a class="github-button" href="https://github.com/vyneer/orvods-go/issues" data-icon="octicon-issue-opened" aria-label="Issue vyneer/orvods-go on GitHub">Issue</a></div>
 			</div>

@@ -10,7 +10,9 @@ body {
 }
 
 .container {
-	margin: 0 20%;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 1200px;
 }
 
 .shadow {
@@ -64,10 +66,12 @@ body {
 	color: white;
 	font-size: 20px;
 	margin-right: 10px;
+	width: 550px;
 }
 
-#header-links div {
-	margin-right: 24px;
+.header-links {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #header-links div a {
@@ -103,6 +107,8 @@ body {
 	border-radius: 3px;
 	box-shadow: -5px 5px 10px #222;
 	cursor: pointer;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #previous-page-button.disabled, #next-page-button.disabled {
@@ -195,16 +201,23 @@ body {
 	justify-content: space-between;
 	padding-top: 1em;
 	align-items: center;
+	margin-right: auto;
+	margin-left: auto;
+	width: 400px;
 }
 
 .site-selector-button {
 	font-size: larger;
 	color: black;
+	text-align: center;
+	width: 80px;
 	padding: 10px 30px;
 	background-color: #CCC;
 	border-radius: 3px;
 	box-shadow: -5px 5px 10px #222;
 	cursor: pointer;
+	margin-right: auto;
+	margin-left: auto;
 }
 
 .site-selector-button.active {
@@ -213,14 +226,6 @@ body {
 
 .site-selector-button:hover {
 	box-shadow: 0px 0px 10px white;
-}
-
-.site-selector-button:nth-child(2n-1) {
-	margin-left: 35%;
-}
-
-.site-selector-button:nth-child(2n) {
-	margin-right: 35%;
 }
 
 /* VOD Browser */
@@ -258,6 +263,55 @@ body {
 	right: 5px;
 	display: flex;
 	justify-content: space-between;
+}
+
+#customUrlButton2 {
+	display: none;
+}
+
+@media only screen and (max-width: 800px) {
+	.vod-entry, .vid-entry {
+		width: 47%;
+	}
+}
+
+@media only screen and (max-width: 660px) {
+	#git-buttons {
+		display: none;
+	}
+}
+
+@media only screen and (max-width: 580px) {
+	#destiny-status {
+		display: none;
+	}
+}
+
+@media only screen and (max-width: 435px) {
+	.vod-entry, .vid-entry {
+		width: 97%;
+	}
+
+	#site-selector {
+		display: block;
+		width: auto;
+	}
+
+	.site-selector-button {
+		margin-top: 5px;
+	}
+
+	#custom-url-wrapper {
+		display: none;
+	}
+
+	#customUrlButton2 {
+		display: block;
+	}
+
+	#vod-list {
+		margin-top: 10px;
+	}
 }
 
 .overlay-container div {
@@ -422,7 +476,6 @@ body {
 
 .manual-dropdown {
 	padding-right: 0;
-	margin-right: 0 !important;
 }
   
 .class-settings-content, .class-manual-content, .class-skip-content {
