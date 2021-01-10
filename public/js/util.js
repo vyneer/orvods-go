@@ -16,6 +16,12 @@ var months = [
 var featuresUrl = "https://vyneer.me/tools/features";
 var lwodUrl = "https://vyneer.me/tools/lwod";
 
+var cdnUrl = {
+    "ttv" : "vod-secure.twitch.tv",
+    "cf1" : "d2e2de1etea730.cloudfront.net",
+    "cf2" : "d2nvs31859zcd8.cloudfront.net"
+}
+
 var chatUrl = {
     "orl" : "/chat",
     "vyneer" : "https://vyneer.me/tools/logs"
@@ -24,7 +30,8 @@ var chatUrl = {
 var servicesUrl = {
     "twitch" : "/vodinfo?id=",
     "youtube" : "/vidinfo?id=",
-    "chatonly" : ""
+    "chatonly" : "",
+    "m3u8" : "",
 }
 
 var customFlairs = {

@@ -3,7 +3,9 @@ var globals = {};
 $(document).ready(function() {
     var id = getUrlParameter("id");
     var v = getUrlParameter("v");
+    var hash = getUrlParameter("hash");
     var chatonly = getUrlParameter("chatonly");
+    var cdn = getUrlParameter("cdn");
     var time = (getUrlParameter("t")) ? getUrlParameter("t") : 0;
     var start = getUrlParameter("start");
     var end = getUrlParameter("end");
@@ -12,7 +14,7 @@ $(document).ready(function() {
     var playerActive = 0;
     var lwodActive = 0;
     var chatSide = localStorage.getItem('chatSide');
-    var playerType = (id) ? "twitch" : (v) ? "youtube" : (chatonly) ? "chatonly" : null;
+    var playerType = (id) ? "twitch" : (v) ? "youtube" : (hash) ? "m3u8" : (chatonly) ? "chatonly" : null;
     const twitchButton = document.getElementById("twitch-button");
     const youtubeButton = document.getElementById("youtube-button");
     globals.sizes = localStorage.getItem('split-sizes');
@@ -34,9 +36,9 @@ $(document).ready(function() {
         globals.sizes = [80, 20];
     }
 
-    if (id || v || chatonly) {
-        var vidId = (playerType === "twitch") ? id : (playerType === "youtube") ? v : (playerType === "chatonly") ? "nothing" : null;
-        loadPlayer(vidId, time, playerType, start, end, provider);
+    if (id || v || hash || chatonly) {
+        var vidId = (playerType === "twitch") ? id : (playerType === "youtube") ? v : (playerType === "m3u8") ? hash : (playerType === "chatonly") ? "nothing" : null;
+        loadPlayer(vidId, time, playerType, cdn, start, end, provider);
         $("#browse").hide();
         $("#player").show();
         $("#lwod").hide();
@@ -293,7 +295,7 @@ var loadDestinyStatus = function() {
     })
 }
 
-var loadPlayer = function(id, time, type, start, end, provider) {
+var loadPlayer = function(id, time, type, cdn, start, end, provider) {
     $("#player").css("display", "flex");
 
     if (type === "twitch") {
@@ -352,6 +354,34 @@ var loadPlayer = function(id, time, type, start, end, provider) {
     } else if (type === "chatonly") {
         var chat = new Chat(id, player, type, start, end, provider);
         chat.startChatStream();
+    } else if (type === "m3u8") {
+        var replacedVideo = document.createElement('video');
+        replacedVideo.controls = true;
+        replacedVideo.autoplay = true;
+        replacedVideo.muted = true;
+        replacedVideo.id = "m3u8-player";
+        replacedVideo.style.width = "100%";
+        replacedVideo.style.objectFit = "contain";
+        replacedVideo.style.height = "100%";
+        document.querySelector("#video-player").appendChild(replacedVideo);
+        var videoSrc = `https://immense-bayou-94249.herokuapp.com/https://${cdnUrl[cdn]}/${id}/chunked/index-dvr.m3u8`;
+        if (Hls.isSupported()) {
+            var hls = new Hls();
+            hls.loadSource(videoSrc);
+            hls.attachMedia(replacedVideo);
+        }
+        else if (replacedVideo.canPlayType('application/vnd.apple.mpegurl')) {
+            replacedVideo.src = videoSrc;
+        }
+
+        var chat = new Chat(id, replacedVideo, type, start, end, provider);
+        replacedVideo.addEventListener("play", function () {
+            chat.startChatStream();
+        })
+    
+        replacedVideo.addEventListener("pause", function() {
+            chat.pauseChatStream();
+        });
     }
 
     $("body").css("overflow", "hidden");

@@ -34,7 +34,7 @@ var Chat = function(id, player, type, start, end, provider) {
 		+ "<div id='loading-message-3' class='msg-chat'><span class='message'>" + randomMessage + "</span></div></div>";
 
 	var self = this;
-	if (self.timestampStart && self.timestampEnd && self.playerType === "youtube") {
+	if (self.timestampStart && self.timestampEnd && (self.playerType === "youtube" || self.playerType === "m3u8")) {
 			self.recordedTime = moment(self.timestampStart).utc();
 			self.endTime = moment(self.timestampEnd).utc();
 			
@@ -99,7 +99,7 @@ var Chat = function(id, player, type, start, end, provider) {
 						+ "<div id='loading-message-2' class='msg-chat'><span class='message'>Looks like this video isn't a stream recording</span></div>"
 						+ "<div id='loading-message-3' class='msg-chat'><span class='message'>Please input start and end timestamps using the button next to url input and try again " + loadingEmote + "</span></div></div>";
 				}	
-			} else if (self.playerType === "chatonly") {
+			} else if (self.playerType === "chatonly" || self.playerType === "m3u8") {
 				if (self.timestampStart && self.timestampEnd) {
 					self.recordedTime = moment(self.timestampStart).utc();
 					self.endTime = moment(self.timestampEnd).utc();
@@ -250,6 +250,10 @@ var Chat = function(id, player, type, start, end, provider) {
 		});
 	} else if (self.playerType == "chatonly") {
 		self.actualPreviousTimeOffset = 0
+	} else if (self.playerType == "m3u8") {
+		self.videoPlayer.addEventListener('progress', function() {
+			self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.currentTime);
+		});
 	}
 
 	/* can't make it work properly right now
@@ -280,7 +284,7 @@ var Chat = function(id, player, type, start, end, provider) {
 	self.chatFunction = function() {
 		if (self.status == "running" && self.chat) {
 			self.chatonlyCounter += 0.5;
-			var currentTimeOffset = (self.playerType === "chatonly") ? Math.floor(self.chatonlyCounter) : Math.floor(self.videoPlayer.getCurrentTime());
+			var currentTimeOffset = (self.playerType === "chatonly") ? Math.floor(self.chatonlyCounter) : (self.playerType === "m3u8") ? Math.floor(self.videoPlayer.currentTime) : Math.floor(self.videoPlayer.getCurrentTime());
 			var utcFormat = [];
 			var timestamps = [];
 

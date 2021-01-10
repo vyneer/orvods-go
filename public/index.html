@@ -15,6 +15,7 @@
 
 	<script src= "https://player.twitch.tv/js/embed/v1.js"></script>
 	<script async defer src="https://buttons.github.io/buttons.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 	<script src="js/lib/split.min.js"></script>
 	<script src="js/lib/moment.min.js"></script>
 	<script src="js/lib/jquery-2.1.4.min.js"></script>
@@ -114,6 +115,26 @@
 			var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
 			if (startTimestamp && endTimestamp) {
 				window.location.href = window.location.origin + '?chatonly=true' + timestamps;
+			}
+		}
+
+		function m3u8(url) {
+			var urlCheck = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/gm;
+			var matches = url.matchAll(urlCheck);
+			var matchArray = [...matches];
+			var startTimestamp = ($("#start-timestamp").val() === "") ? "" : moment($("#start-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
+			var endTimestamp = ($("#end-timestamp").val() === "") ? "" : moment($("#end-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
+			var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
+			if (startTimestamp && endTimestamp) {
+				if (matchArray[0][3] == "vod-secure.twitch.tv") {
+					window.location.href = window.location.origin + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=ttv" + timestamps;
+				}
+				if (matchArray[0][3] == "d2e2de1etea730.cloudfront.net") {
+					window.location.href = window.location.origin + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf1" + timestamps;
+				}
+				if (matchArray[0][3] == "d2nvs31859zcd8.cloudfront.net") {
+					window.location.href = window.location.origin + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf2" + timestamps;
+				}
 			}
 		}
 
@@ -253,6 +274,7 @@
 					<label id="end-timestamp-text" for="lineLimit">End chat at:</label>
 					<input type="text" id="end-timestamp" name="end-timestamp" placeholder="2020-01-02 12:34:56 UTC">
 					<input id="chatonly" value="Chat Only" onclick="onlyChat()" type="button">
+					<input id="customUrlButton3" value="m3u8" onclick="m3u8(document.getElementById('customUrlText').value)" type="button">
 					<input id="customUrlButton2" value="Submit" onclick="vodURL(document.getElementById('customUrlText').value)" type="button">
 				</div>
 			</div>
