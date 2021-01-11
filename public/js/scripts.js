@@ -373,6 +373,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider) {
         else if (replacedVideo.canPlayType('application/vnd.apple.mpegurl')) {
             replacedVideo.src = videoSrc;
         }
+        replacedVideo.currentTime = time;
 
         var chat = new Chat(id, replacedVideo, type, start, end, provider);
         replacedVideo.addEventListener("play", function () {
@@ -381,6 +382,13 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider) {
     
         replacedVideo.addEventListener("pause", function() {
             chat.pauseChatStream();
+        });
+
+        $("#copy-button").show();
+        $("#copy-button").click(function () {
+            let params = new URLSearchParams(window.location.href);
+            params.set("t", `${Math.round(replacedVideo.currentTime)}`);
+            navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
         });
     }
 
