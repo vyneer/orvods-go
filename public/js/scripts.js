@@ -331,7 +331,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider) {
             $("#copy-button").show();
             $("#copy-button").click(function () {
                 let params = new URLSearchParams(window.location.href);
-                params.set("t", `${Math.round(player.getCurrentTime())}s`);
+                params.set("t", `${Math.round(player.getCurrentTime())}`);
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
 
