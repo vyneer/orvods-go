@@ -256,18 +256,13 @@ var Chat = function(id, player, type, start, end, provider) {
 		});
 	}
 
-	/* can't make it work properly right now
-	$('#chat-stream').on('scroll', function() { 
-		console.log($(this).scrollTop())
-		console.log($(this).innerHeight())
-		console.log($(this)[0].scrollHeight)
-		if ($(this).scrollTop() + $(this).innerHeight() >=  $(this)[0].scrollHeight) { 
+	$('#chat-stream').on('scroll', function() {
+		if (self.chatStream.scrollTop() + self.chatStream.innerHeight() >= self.chatStream[0].scrollHeight - 40) { 
 			self.bottomDetector = true;
 		} else {
 			self.bottomDetector = false;
 		}
 	});
-	*/
 
 	$("#pause-controls").click(function() {
 		if (self.status === "running") {
@@ -333,9 +328,9 @@ var Chat = function(id, player, type, start, end, provider) {
 							}
 					
 							self.previousMessage = chatLine.message;
-							//if (self.bottomDetector) {
-								self.chatStream.scrollTop( function () { return this.scrollHeight } );
-							//}
+							if (self.bottomDetector) {
+								self.chatStream.scrollTop(self.chatStream[0].scrollHeight);
+							}
 						}, randomTimeouts[i] * 400);
 						i++;
 					});
