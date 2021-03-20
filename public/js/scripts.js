@@ -285,7 +285,7 @@ var loadDestinyStatus = function() {
 
     $.get(destinyStatusUrl, function(userdata) {
         data = userdata
-        if (data.data === null || data.data.length === 0) {
+        if (data.data === undefined || data.data.length === 0) {
             $("#destiny-status").text("Destiny is offline.");
             $("#destiny-status").css("color", "#a70000");
         } else {
