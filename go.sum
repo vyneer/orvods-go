@@ -1,3 +1,5 @@
+github.com/defrankland/hasherator v0.0.0-20171201141020-53a1d2e6df4a h1:H2H7Zrm/A3dadrd+oB+5XIKZWEEeZCP4iSBYXYgLctY=
+github.com/defrankland/hasherator v0.0.0-20171201141020-53a1d2e6df4a/go.mod h1:Rp3jHsH+ROyrYVUUpmedhKtTIxXPNpaOX94h0M53ccg=
 github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/vosmith/pancake v0.0.0-20170503023453-935e4f9b30d6 h1:3SzMzlTh7DuJDNn12Aj5jKmQRfXob6DOGjyqJcjKOI4=

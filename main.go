@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -10,12 +11,14 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/defrankland/hasherator"
 	"github.com/joho/godotenv"
 	"github.com/vyneer/orvods-go/parser"
 )
 
 var twitchToken string
 var twitchTokenURL string = "https://id.twitch.tv/oauth2/token"
+var assets hasherator.AssetsDir
 
 // Token holds the necessary elements of Twitch's
 // OAuth token JSON response.
@@ -59,8 +62,6 @@ func getToken(tokenURL string) {
 	twitchToken = fullTokenResponse.AccessToken
 
 	log.Println("Got the Twitch token.")
-
-	return
 }
 
 func validateToken(tokenHeader string) (int, error) {
@@ -303,6 +304,28 @@ func getChat(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+func createIndex() {
+	log.Printf("Creating the index.html and hashbusting everything else...")
+	_ = assets.Run("./assets/", "./public/", []string{"css", "lib", "octicons", "flairs"})
+
+	f, err := os.Create("./public/index.html")
+	if err != nil {
+		log.Println("Error in creating index.html: ", err)
+		return
+	}
+
+	tmpl, errTmpl := template.ParseFiles("templates/index.html")
+	if errTmpl != nil {
+		log.Fatal(errTmpl)
+	}
+	err = tmpl.ExecuteTemplate(f, "index", assets.Map)
+	if err != nil {
+		log.Println("Error executing template:", err)
+		return
+	}
+	f.Close()
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -314,6 +337,8 @@ func main() {
 	}
 
 	log.Printf("Got port %s with max concurrent clients %d.", port, maxclients)
+
+	createIndex()
 
 	mux := http.NewServeMux()
 
