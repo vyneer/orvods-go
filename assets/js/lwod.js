@@ -11,7 +11,11 @@ var LWOD = function(id, type, player) {
 			var uniqueGames = new Set();
 			$("#skipGameSelect").empty();
 			data.forEach(element => {
-				uniqueGames.add(element[2]);
+				if (type === "twitch") {
+					uniqueGames.add(element[2]);
+				} else {
+					uniqueGames.add(element[1]);
+				}
 			});
 			uniqueGames.forEach(element => {
 				$('#skipGameSelect').append(`<option value="${element}"> 
@@ -19,7 +23,9 @@ var LWOD = function(id, type, player) {
                                   </option>`);
 			});
 			$("#lwod-button").show();
-			$("#skip-button").show();
+			if (type == "twitch") {
+				$("#skip-button").show();
+			}
 			createLWODTimestamps(data, type);
 		}
 	});
