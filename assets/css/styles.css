@@ -250,7 +250,7 @@ body {
 }
 
 .vod-entry img, .vid-entry img {
-	max-height: 202.5px;
+	aspect-ratio: 16/9;
 	width: 100%;
 	object-fit: cover;
 	margin-top: -9.5%;
