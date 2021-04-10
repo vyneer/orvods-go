@@ -257,7 +257,7 @@ var Chat = function(id, player, type, start, end, provider) {
 	}
 
 	$('#chat-stream').on('scroll', function() {
-		if (self.chatStream.scrollTop() + self.chatStream.innerHeight() >= self.chatStream[0].scrollHeight - 40) { 
+		if (self.chatStream.scrollTop() + self.chatStream.innerHeight() >= self.chatStream[0].scrollHeight - 80) { 
 			self.bottomDetector = true;
 		} else {
 			self.bottomDetector = false;
