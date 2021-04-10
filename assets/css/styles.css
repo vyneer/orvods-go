@@ -689,6 +689,11 @@ body {
 	font-weight: 400;
 }
 
+.msg-chat[data-username="Broadcast"] .time-seconds, .msg-chat[data-username="Subscriber"] .time-seconds, .msg-chat[data-username="SubscriberMessage"] .time-seconds {
+	font-size: 1.1em !important;
+	font-weight: 400;
+}
+
 .msg-chat[data-username="Broadcast"] .user, .msg-chat[data-username="Subscriber"] .user, .msg-chat[data-username="SubscriberMessage"] .user, .msg-chat[data-username="Ban"] .user {
     display: none !important;
 }
