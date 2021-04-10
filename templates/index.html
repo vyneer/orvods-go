@@ -42,7 +42,7 @@
 					<div class="length"><span class="octicon octicon-watch"></span>&nbsp;${length}</div>
 				</div>
 				<div class="clipboard-container">
-					<div class="copy-link" copy="https://vyneer.me/?id=${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
+					<div class="copy-link" copy="?id=${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
 					<div class="copy-orig" copy="https://twitch.tv/videos/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
 				</div>
 			</div>
@@ -58,7 +58,7 @@
 			<div class="image-container">
 				<img src="${image}"/>
 				<div class="clipboard-container">
-					<div class="copy-link" copy="https://vyneer.me/?v=${id}&start=${starttime}&end=${endtime}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
+					<div class="copy-link" copy="?v=${id}&start=${starttime}&end=${endtime}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
 					<div class="copy-orig" copy="https://youtu.be/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
 				</div>
 			</div>
@@ -100,13 +100,13 @@
 			if (matchArray[0][3] === "www.twitch.tv" || matchArray[0][3] === "twitch.tv") {
 				regex = new RegExp('(?=[0-9])[^\/]+', 'gm');
 				replaced = url.match(regex);
-				window.location.href = window.location.origin + "?id=" + replaced[0].replace(/[?]/gm, '&') + timestamps;
+				window.location.href = window.location.origin + window.location.pathname + "?id=" + replaced[0].replace(/[?]/gm, '&') + timestamps;
 			}
 			if (matchArray[0][3] === "www.youtube.com" || matchArray[0][3] === "www.youtube.com") {
-				window.location.href = window.location.origin + matchArray[0][7] + timestamps;
+				window.location.href = window.location.origin + window.location.pathname + matchArray[0][7] + timestamps;
 			}
 			if (matchArray[0][3] === "youtu.be") {
-				window.location.href = window.location.origin + "?v=" + matchArray[0][6] + matchArray[0][7].replace(/[?]/gm, '&') + timestamps;
+				window.location.href = window.location.origin + window.location.pathname + "?v=" + matchArray[0][6] + matchArray[0][7].replace(/[?]/gm, '&') + timestamps;
 			}
 		};
 
@@ -115,7 +115,7 @@
 			var endTimestamp = ($("#end-timestamp").val() === "") ? "" : moment($("#end-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
 			var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
 			if (startTimestamp && endTimestamp) {
-				window.location.href = window.location.origin + '?chatonly=true' + timestamps;
+				window.location.href = window.location.origin + window.location.pathname + '?chatonly=true' + timestamps;
 			}
 		}
 
@@ -128,16 +128,16 @@
 			var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
 			if (startTimestamp && endTimestamp) {
 				if (matchArray[0][3] == "vod-secure.twitch.tv") {
-					window.location.href = window.location.origin + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=ttv" + timestamps;
+					window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=ttv" + timestamps;
 				}
 				if (matchArray[0][3] == "d2e2de1etea730.cloudfront.net") {
-					window.location.href = window.location.origin + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf1" + timestamps;
+					window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf1" + timestamps;
 				}
 				if (matchArray[0][3] == "d2nvs31859zcd8.cloudfront.net") {
-					window.location.href = window.location.origin + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf2" + timestamps;
+					window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf2" + timestamps;
 				}
 				if (matchArray[0][3] == "dqrpb9wgowsf5.cloudfront.net") {
-					window.location.href = window.location.origin + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf3" + timestamps;
+					window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf3" + timestamps;
 				}
 			}
 		}

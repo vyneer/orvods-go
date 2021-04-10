@@ -149,7 +149,7 @@ var Chat = function(id, player, type, start, end, provider) {
 		});
 	}
 
-	$.get("/emotes", function(data) {
+	$.get("emotes", function(data) {
 		self.emotes = data;
 		// stolen from ceneza Blesstiny
 		self.emoteList = {};

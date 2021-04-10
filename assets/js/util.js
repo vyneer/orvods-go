@@ -24,13 +24,13 @@ var cdnUrl = {
 }
 
 var chatUrl = {
-    "orl" : "/chat",
+    "orl" : "chat",
     "vyneer" : "https://vyneer.me/tools/logs"
 }
 
 var servicesUrl = {
-    "twitch" : "/vodinfo?id=",
-    "youtube" : "/vidinfo?id=",
+    "twitch" : "vodinfo?id=",
+    "youtube" : "vidinfo?id=",
     "chatonly" : "",
     "m3u8" : "",
 }

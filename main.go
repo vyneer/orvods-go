@@ -331,26 +331,36 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	path := os.Getenv("PREFIX")
 	maxclients, _ := strconv.Atoi(os.Getenv("MAX_CLIENTS"))
 	if maxclients == 0 {
 		maxclients = 15
 	}
 
 	log.Printf("Got port %s with max concurrent clients %d.", port, maxclients)
+	if path != "" {
+		log.Printf("Current prefix is set to \"%s\".", path)
+	} else {
+		log.Printf("Current prefix is set to nothing.")
+	}
 
 	createIndex()
 
 	mux := http.NewServeMux()
 
 	fs := http.FileServer(http.Dir("public"))
-	mux.Handle("/", fs)
-	mux.HandleFunc("/vidinfo", getVidInfo)
-	mux.HandleFunc("/vodinfo", getVODInfo)
-	mux.HandleFunc("/userinfo", getUserInfo)
-	mux.HandleFunc("/emotes", getEmotes)
+	if path == "" {
+		mux.Handle("/", fs)
+	} else {
+		mux.Handle(path+"/", http.StripPrefix(path+"/", fs))
+	}
+	mux.HandleFunc(path+"/vidinfo", getVidInfo)
+	mux.HandleFunc(path+"/vodinfo", getVODInfo)
+	mux.HandleFunc(path+"/userinfo", getUserInfo)
+	mux.HandleFunc(path+"/emotes", getEmotes)
 
 	getChatHandler := http.HandlerFunc(getChat)
-	mux.Handle("/chat", maxClients(getChatHandler, maxclients))
+	mux.Handle(path+"/chat", maxClients(getChatHandler, maxclients))
 
 	log.Println("Starting the server...")
 	http.ListenAndServe(":"+port, mux)

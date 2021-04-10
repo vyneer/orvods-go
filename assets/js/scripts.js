@@ -225,7 +225,7 @@ $(document).ready(function() {
     setInterval(loadDestinyStatus(), 300000);
 
     $("#header-title").click(function() {
-        window.location = "/";
+        window.location = window.location.origin + window.location.pathname;
     });
 
     $("body").on("click", ".vod-entry", function() {
@@ -237,7 +237,7 @@ $(document).ready(function() {
     });
 
     $("body").on("click", ".copy-link", function(ev) {
-        navigator.clipboard.writeText($(this).attr("copy"));
+        navigator.clipboard.writeText(window.location.origin + window.location.pathname + $(this).attr("copy"));
         ev.stopPropagation();
     });
 
@@ -253,14 +253,14 @@ var allVids = [];
 async function loadVODs(type) {
     let vodArray = [];
     if (type === "twitch") {
-        var destinyVODsURL = "/vodinfo?user_id=" + destinyUserID + "&first=100&type=archive";
+        var destinyVODsURL = "vodinfo?user_id=" + destinyUserID + "&first=100&type=archive";
         let response = await fetch(destinyVODsURL);
         let data = await response.json();
         pageCursor = data.pagination.cursor;
         vodArray.push(...data.data);
         // if there are more than 100 vods, check next page and add everything there to the array; repeat until done
         while (data.data.length === 100 && pageCursor != ("" || null)) {
-            destinyVODsURL = "/vodinfo?user_id=" + destinyUserID + "&first=100&type=archive&after=" + pageCursor;
+            destinyVODsURL = "vodinfo?user_id=" + destinyUserID + "&first=100&type=archive&after=" + pageCursor;
             response = await fetch(destinyVODsURL);
             data = await response.json();
             pageCursor = data.pagination.cursor;
@@ -281,7 +281,7 @@ var destinyUserID = 18074328;
 var pageCursor = 0;
 
 var loadDestinyStatus = function() {
-    var destinyStatusUrl = "/userinfo?user_login=destiny";
+    var destinyStatusUrl = "userinfo?user_login=destiny";
 
     $.get(destinyStatusUrl, function(userdata) {
         data = userdata
