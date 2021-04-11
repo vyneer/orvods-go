@@ -1,9 +1,11 @@
 package parser
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"html"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"regexp"
 	"strings"
@@ -14,6 +16,11 @@ import (
 
 // Dictionary simplifies parsing chatlogs later.
 type Dictionary map[string]interface{}
+
+type Result struct {
+	Order int
+	Text  string
+}
 
 func indexOf(word string, data []string) int {
 	for k, v := range data {
@@ -33,11 +40,66 @@ func indexOfReverse(word string, data []string) int {
 	return -1
 }
 
+//from here https://medium.com/@dhanushgopinath/concurrent-http-downloads-using-go-32fecfa1ed27
+func downloadFile(client *http.Client, URL string, order int) (int, string, error) {
+	req, _ := http.NewRequest("GET", string(URL), nil)
+	response, err := client.Do(req)
+	if err != nil {
+		return order, "", err
+	}
+	defer response.Body.Close()
+	if response.StatusCode != http.StatusOK {
+		return order, "", errors.New(response.Status)
+	}
+	var data bytes.Buffer
+	_, err = io.Copy(&data, response.Body)
+	if err != nil {
+		return order, "", err
+	}
+	return order, data.String(), nil
+}
+
+// from here https://medium.com/@dhanushgopinath/concurrent-http-downloads-using-go-32fecfa1ed27
+func downloadMultipleFiles(client *http.Client, urls []string) ([][]string, error) {
+	pages := make(map[int][]string)
+	var ret_pages [][]string
+	done := make(chan Result, len(urls))
+	errch := make(chan error, len(urls))
+	for i, URL := range urls {
+		go func(URL string, count int) {
+			c, b, err := downloadFile(client, URL, count)
+			if err != nil {
+				errch <- err
+				done <- Result{}
+				return
+			}
+			done <- Result{c, b}
+			errch <- nil
+		}(URL, i)
+	}
+	var errStr string
+	for i := 0; i < len(urls); i++ {
+		result := <-done
+		buf := strings.Split(result.Text, "\n")
+		pages[result.Order] = buf[:len(buf)-1]
+		if err := <-errch; err != nil {
+			errStr = errStr + " " + err.Error()
+		}
+	}
+	var err error
+	if errStr != "" {
+		err = errors.New(errStr)
+	}
+	for i := 0; i < len(urls); i++ {
+		ret_pages = append(ret_pages, pages[i])
+	}
+	return ret_pages, err
+}
+
 // GetTextFiles downloads logs from OverRustleLogs
 // starting and ending at specific timestamps
 // and returns an array of chatlines.
 func GetTextFiles(urls, from, to string) ([]string, error) {
-	var pages [][]string
 	var arr []string
 	var timestamps []string
 	fromStamp := from
@@ -55,22 +117,9 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 
 	client := &http.Client{Transport: transport}
 
-	for _, url := range arr {
-		req, _ := http.NewRequest("GET", string(url), nil)
-		textFile, err := client.Do(req)
-		if err != nil {
-			return []string{"error"}, err
-		}
-		defer textFile.Body.Close()
-		body, err := ioutil.ReadAll(textFile.Body)
-		if err != nil {
-			return []string{"error"}, err
-		}
-
-		page := strings.Split(string(body), "\n")
-		//page = append([]string(nil), page[:len(page)-1]...)
-		page = page[:len(page)-1]
-		pages = append(pages, page)
+	pages, err := downloadMultipleFiles(client, arr)
+	if err != nil {
+		return []string{"error"}, err
 	}
 
 	flat, err := pancake.Strings(pages)
@@ -93,7 +142,7 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 			// search for "from" and "to" timestamps with 1 second adjustments in case the exact timestamps dont exists
 			firstTimestamp, _ := time.Parse("2006-01-02 15:04:05 UTC", timestamps[0])
 			lastTimestamp, _ := time.Parse("2006-01-02 15:04:05 UTC", timestamps[len(timestamps)-1])
-			for startCheck == false {
+			for !startCheck {
 				index := indexOf(fromStamp, timestamps)
 				if index != -1 {
 					startPos = index
@@ -108,7 +157,7 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 					fromStamp = t.Format("2006-01-02 15:04:05 UTC")
 				}
 			}
-			for endCheck == false {
+			for !endCheck {
 				index := indexOfReverse(toStamp, timestamps)
 				if index != -1 {
 					endPos = index
