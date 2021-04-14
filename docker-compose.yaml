@@ -1,0 +1,14 @@
+version: "3.1"
+services: 
+  vods:
+    build: .
+    container_name: dggtools-vods
+    restart: unless-stopped
+    env_file:
+      - .env
+    expose:
+       - "4567"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
