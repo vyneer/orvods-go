@@ -13,19 +13,20 @@ var months = [
     "Dec"
 ];
 
+// vyneer.me stuff, make sure to edit if you have your own logging system/not gonna use my logs
 var featuresUrl = "https://vyneer.me/tools/features";
+var ytvodUrl = "https://vyneer.me/tools/ytvods";
 var lwodUrl = "https://vyneer.me/tools/lwod";
+var chatUrl = {
+    "orl" : "chat",
+    "vyneer" : "https://vyneer.me/tools/logs"
+}
 
 var cdnUrl = {
     "ttv" : "vod-secure.twitch.tv",
     "cf1" : "d2e2de1etea730.cloudfront.net",
     "cf2" : "d2nvs31859zcd8.cloudfront.net",
     "cf3" : "dqrpb9wgowsf5.cloudfront.net"
-}
-
-var chatUrl = {
-    "orl" : "chat",
-    "vyneer" : "https://vyneer.me/tools/logs"
 }
 
 var servicesUrl = {

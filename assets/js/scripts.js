@@ -268,7 +268,7 @@ async function loadVODs(type) {
         };
         return vodArray;
     } else if (type === "youtube") {
-        var destinyVidsURL = "https://vyneer.me/tools/ytvods";
+        var destinyVidsURL = ytvodUrl;
         let response = await fetch(destinyVidsURL);
         let data = await response.json();
         vodArray.push(...data);
