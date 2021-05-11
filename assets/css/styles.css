@@ -137,13 +137,18 @@ body {
 	position: relative;
 }
 
-#scoot-credit {
+#scoot-credit, .polecat-credit {
 	width: 90%;
 	opacity: 45%;
 	text-align: center;
 }
 
-#scoot-credit:hover {
+.polecat-credit {
+	color: white;
+	width: 100%;
+}
+
+#scoot-credit:hover, .polecat-credit:hover {
 	opacity: 100%;
 }
 
@@ -203,7 +208,7 @@ body {
 	align-items: center;
 	margin-right: auto;
 	margin-left: auto;
-	width: 400px;
+	width: 600px;
 }
 
 .site-selector-button {
@@ -230,18 +235,18 @@ body {
 
 /* VOD Browser */
 
-.vod-entry, .vid-entry {
+.vod-entry, .vid-entry, .arch-entry {
 	width: 30%;
 	float: left;
 	margin: 1.5%;
 	cursor: pointer;
 }
 
-.vod-entry:hover, .vid-entry:hover {
+.vod-entry:hover, .vid-entry:hover, .arch-entry:hover {
 	box-shadow: 0px 0px 10px white;
 }
 
-.vod-entry .image-container, .vid-entry .image-container {
+.vod-entry .image-container, .vid-entry .image-container, .arch-entry .image-container {
 	position: relative;
 	width: 100%;
 	overflow: hidden;
@@ -249,7 +254,7 @@ body {
 	border-top-right-radius: 3px;
 }
 
-.vod-entry img, .vid-entry img {
+.vod-entry img, .vid-entry img, .arch-entry img {
 	aspect-ratio: 16/9;
 	width: 100%;
 	object-fit: cover;
@@ -257,7 +262,7 @@ body {
 	margin-bottom: -9.5%;
 }
 
-.vod-entry .overlay-container, .vid-entry .overlay-container {
+.vod-entry .overlay-container, .vid-entry .overlay-container, .arch-entry .overlay-container {
 	position: absolute;
 	top: 5px;
 	left: 5px;
@@ -271,7 +276,7 @@ body {
 }
 
 @media only screen and (max-width: 800px) {
-	.vod-entry, .vid-entry {
+	.vod-entry, .vid-entry, .arch-entry {
 		width: 47%;
 	}
 }
@@ -288,8 +293,8 @@ body {
 	}
 }
 
-@media only screen and (max-width: 435px) {
-	.vod-entry, .vid-entry {
+@media only screen and (max-width: 635px) {
+	.vod-entry, .vid-entry, .arch-entry {
 		width: 97%;
 	}
 
@@ -322,7 +327,7 @@ body {
 	color: white;
 }
 
-.vod-entry .clipboard-container, .vid-entry .clipboard-container {
+.vod-entry .clipboard-container, .vid-entry .clipboard-container, .arch-entry .clipboard-container {
 	position: relative;
 	bottom: 5px;
 	display: flex;

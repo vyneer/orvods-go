@@ -34,7 +34,7 @@ var Chat = function(id, player, type, start, end, provider) {
 		+ "<div id='loading-message-3' class='msg-chat'><span class='message'>" + randomMessage + "</span></div></div>";
 
 	var self = this;
-	if (self.timestampStart && self.timestampEnd && (self.playerType === "youtube" || self.playerType === "m3u8")) {
+	if (self.timestampStart && self.timestampEnd && (self.playerType === "youtube" || self.playerType === "m3u8" || self.playerType === "vodstiny")) {
 			self.recordedTime = moment(self.timestampStart).utc();
 			self.endTime = moment(self.timestampEnd).utc();
 			
@@ -279,7 +279,7 @@ var Chat = function(id, player, type, start, end, provider) {
 	self.chatFunction = function() {
 		if (self.status == "running" && self.chat) {
 			self.chatonlyCounter += 0.5;
-			var currentTimeOffset = (self.playerType === "chatonly") ? Math.floor(self.chatonlyCounter) : (self.playerType === "m3u8") ? Math.floor(self.videoPlayer.currentTime) : Math.floor(self.videoPlayer.getCurrentTime());
+			var currentTimeOffset = (self.playerType === "chatonly") ? Math.floor(self.chatonlyCounter) : (self.playerType === "m3u8" || self.playerType === "vodstiny") ? Math.floor(self.videoPlayer.currentTime) : Math.floor(self.videoPlayer.getCurrentTime());
 			var utcFormat = [];
 			var timestamps = [];
 

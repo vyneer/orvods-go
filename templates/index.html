@@ -86,6 +86,22 @@
 		</div>
 	</script>
 
+	<script id="arch-tmpl" type="text/x-jquery-tmpl">
+		<div id="${id}" type="${type}" starttime="${starttime}" endtime="${endtime}" class="arch-entry shadow">
+			<div class="image-container">
+				<img src="${image}"/>
+				<div class="clipboard-container">
+					<div class="copy-link" copy="?${type}=${id}&start=${starttime}&end=${endtime}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
+					<div class="copy-orig" copy="https://polecat.me/vodstiny?id=${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+				</div>
+			</div>
+			<div class="info-container">
+				<div class="title">${title}</div>
+				<div class="date">${date}</div>
+			</div>
+		</div>
+	</script>
+
 	<script id="timestamp-tmpl" type="text/x-jquery-tmpl">
 		<tr starttime="${starttime}" class="timestamp-entry shadow">
 			<td class="table-padding">${starttime}</td>
@@ -330,12 +346,15 @@
 			<div id="site-selector">
 				<div id="youtube-button" class="site-selector-button active">Youtube</div>
 				<div id="twitch-button" class="site-selector-button">Twitch</div>
+				<div id="vodstiny-button" class="site-selector-button">Vodstiny</div>
 			</div>
 			<div id="page-selector">
 				<div id="previous-page-button" class="disabled"><span class="octicon octicon-arrow-left"></span></div>
 				<div id="page-number-container">Page <span id="page-number">1</span></div>
 				<div id="next-page-button"><span class="octicon octicon-arrow-right"></span></div>
 			</div>
+			<div class="polecat-credit">Source: <a class="white-link" href="https://polecat.me/vodstiny">vodstiny</a> (thank Polecat if you see them in chat! ♥)</div>
+			<div class="polecat-credit">Keep in mind that recordings and chat are slightly misaligned (you can align them in the settings menu manually)</div>
 			<div id="vod-list"></div>
 		</div>
 		<div id="player" class="view" style="flex-direction: row;">
