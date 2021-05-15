@@ -526,14 +526,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             replacedVideo.style.height = "100%";
             document.querySelector("#video-player").appendChild(replacedVideo);
             var videoSrc = `https://polecat.me/video/vods/${map[id].service}/${map[id].file}`;
-            if (Hls.isSupported()) {
-                var hls = new Hls();
-                hls.loadSource(videoSrc);
-                hls.attachMedia(replacedVideo);
-            }
-            else if (replacedVideo.canPlayType('application/vnd.apple.mpegurl')) {
-                replacedVideo.src = videoSrc;
-            }
+            replacedVideo.src = videoSrc;
             replacedVideo.currentTime = time;
     
             var chat = new Chat(id, replacedVideo, type, start, end, provider);
