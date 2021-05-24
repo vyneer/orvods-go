@@ -448,7 +448,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             replacedDiv.id = "yt-player";
             document.querySelector("#video-player").appendChild(replacedDiv);
             window.onYouTubeIframeAPIReady = function() {
-                player = new YT.Player("yt-player", { videoId: id , playerVars: {"start": time, "autoplay": 1, "playsinline": 1}});
+                player = new YT.Player("yt-player", { videoId: id , playerVars: {"start": (time.slice(-1) == "s") ? time.substring(0, time.length - 1) : time, "autoplay": 1, "playsinline": 1}});
     
                 $("#copy-button").show();
                 $("#copy-button").click(function () {
