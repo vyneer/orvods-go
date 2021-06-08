@@ -21,6 +21,7 @@ $(document).ready(function() {
     const twitchButton = document.getElementById("twitch-button");
     const youtubeButton = document.getElementById("youtube-button");
     const vodstinyButton = document.getElementById("vodstiny-button");
+    var splits;
     globals.sizes = localStorage.getItem('split-sizes');
 
     if (!chatSide) { 
@@ -36,8 +37,29 @@ $(document).ready(function() {
 
     if (globals.sizes) {
         globals.sizes = JSON.parse(globals.sizes);
+        switch (globals.sizes.length) {
+            case 2:
+                globals.dgg = false;
+                break;
+            case 3:
+                globals.dgg = true;
+                break;
+        }
     } else {
         globals.sizes = [80, 20];
+    }
+
+    if (globals.dgg) {
+        document.querySelector("#dgg-controls").innerText = "Hide live d.gg";
+        let dggframe = document.createElement("iframe");
+        dggframe.src = "https://destiny.gg/embed/chat";
+        dggframe.id = "live-chat-container";
+        dggframe.setAttribute("seamless", "seamless");
+        document.querySelector("#player").prepend(dggframe);
+        splits = ['#live-chat-container', '#video-player', '#chat-container'];
+    } else {
+        document.querySelector("#dgg-controls").innerText = "Show live d.gg";
+        splits = ['#video-player', '#chat-container'];
     }
 
     if (id || v || hash || vodstinyYoutube || vodstinyTwitch || chatonly) {
@@ -96,7 +118,7 @@ $(document).ready(function() {
         playerActive = 0;
     }
 
-    globals.splitInstance = Split(['#video-player', '#chat-container'], {
+    globals.splitInstance = Split(splits, {
         sizes: globals.sizes,
         gutterSize: 8,
         minSize: 200,
@@ -275,7 +297,7 @@ $(document).ready(function() {
             localStorage.setItem('chatSide', 'left');
             document.getElementById("player").style["flex-direction"] = "row-reverse";
             globals.splitInstance.destroy();
-            globals.splitInstance = Split(['#video-player', '#chat-container'], {
+            globals.splitInstance = Split(splits, {
                 sizes: globals.sizes,
                 gutterSize: 8,
                 minSize: 200,
@@ -291,7 +313,7 @@ $(document).ready(function() {
             localStorage.setItem('chatSide', 'right');
             document.getElementById("player").style["flex-direction"] = "row";
             globals.splitInstance.destroy();
-            globals.splitInstance = Split(['#video-player', '#chat-container'], {
+            globals.splitInstance = Split(splits, {
                 sizes: globals.sizes,
                 gutterSize: 8,
                 minSize: 200,
@@ -307,6 +329,60 @@ $(document).ready(function() {
 
     $("#log-fallback-button").click(function () {
         window.location.href += "&provider=vyneer";
+    });
+
+    $("#dgg-controls").click(function () {
+        if (globals.dgg) {
+            splits = ['#video-player', '#chat-container'];
+            let percent = globals.sizes[0];
+            globals.sizes.shift();
+            globals.sizes[0] = globals.sizes[0] + percent;
+            globals.splitInstance.destroy();
+            globals.splitInstance = Split(splits, {
+                sizes: globals.sizes,
+                gutterSize: 8,
+                minSize: 200,
+                cursor: 'col-resize',
+                onDragEnd: function(sizes) {
+                    globals.sizes = sizes;
+                    localStorage.setItem('split-sizes', JSON.stringify(sizes));
+                }
+            });
+            globals.dgg = false;
+            localStorage.setItem('split-sizes', `[${globals.sizes}]`);
+            document.querySelector("#live-chat-container").remove();
+            document.querySelector("#dgg-controls").innerText = "Show live d.gg";
+        } else {
+            let dggframe = document.createElement("iframe");
+            dggframe.src = "https://destiny.gg/embed/chat";
+            dggframe.id = "live-chat-container";
+            dggframe.setAttribute("seamless", "seamless");
+            document.querySelector("#player").prepend(dggframe);
+            splits = ['#live-chat-container', '#video-player', '#chat-container'];
+            let percent;
+            if (globals.sizes[0] > globals.sizes[1]) {
+                percent = globals.sizes[0]/5;
+                globals.sizes[0] = globals.sizes[0] - percent;
+            } else {
+                percent = globals.sizes[1]/5;
+                globals.sizes[1] = globals.sizes[1] - percent;
+            }
+            globals.sizes.unshift(percent);
+            globals.splitInstance.destroy();
+            globals.splitInstance = Split(splits, {
+                sizes: globals.sizes,
+                gutterSize: 8,
+                minSize: 200,
+                cursor: 'col-resize',
+                onDragEnd: function(sizes) {
+                    globals.sizes = sizes;
+                    localStorage.setItem('split-sizes', JSON.stringify(sizes));
+                }
+            });
+            globals.dgg = true;
+            localStorage.setItem('split-sizes', `[${globals.sizes}]`);
+            document.querySelector("#dgg-controls").innerText = "Hide live d.gg";
+        }
     });
 
     // Check if Destiny is online every 5 minutes

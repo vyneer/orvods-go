@@ -383,6 +383,11 @@ body {
 	width: calc(100% - 390px);
 }
 
+#live-chat-container {
+	min-width: 300px;
+	border-width: 0;
+}
+
 #video-player iframe {
 	height: 100%;
 	width: 100%;
@@ -413,7 +418,7 @@ body {
 	background: #080808;
 }
 
-#pause-controls, #log-fallback-button {
+#pause-controls, #log-fallback-button, #dgg-controls {
 	padding: 5px;
 	margin: 5px 0;
 	border: transparent;
@@ -426,7 +431,7 @@ body {
 	font-size: 16px;
 }
 
-#pause-controls:hover, #log-fallback-button:hover {
+#pause-controls:hover, #log-fallback-button:hover, #dgg-controls:hover {
 	border: white;
 	border-style: solid;
 	border-radius: 2px;
