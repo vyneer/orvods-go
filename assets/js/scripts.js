@@ -1,6 +1,8 @@
 var globals = {};
 
 $(document).ready(function() {
+    const timeregex = new RegExp('\d+s', 'gm');
+
     var id = getUrlParameter("id");
     var v = getUrlParameter("v");
     var hash = getUrlParameter("hash");
@@ -8,7 +10,7 @@ $(document).ready(function() {
     var vodstinyYoutube = getUrlParameter("ay");
     var chatonly = getUrlParameter("chatonly");
     var cdn = getUrlParameter("cdn");
-    var time = (getUrlParameter("t")) ? ((getUrlParameter("t").slice(-1) == "s") ? getUrlParameter("t").substring(0, getUrlParameter("t").length - 1) : getUrlParameter("t")) : 0;
+    var time = (getUrlParameter("t")) ? ((timeregex.test(getUrlParameter("t"))) ? getUrlParameter("t").substring(0, getUrlParameter("t").length - 1) : getUrlParameter("t")) : 0;
     var start = getUrlParameter("start");
     var end = getUrlParameter("end");
     var provider = (getUrlParameter("provider")) ? getUrlParameter("provider") : "orl";
