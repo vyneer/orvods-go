@@ -249,6 +249,7 @@ body {
 
 .vod-entry .image-container, .vid-entry .image-container, .arch-entry .image-container {
 	position: relative;
+	height: 165.13px;
 	width: 100%;
 	overflow: hidden;
 	border-top-left-radius: 3px;
@@ -329,7 +330,7 @@ body {
 }
 
 .vod-entry .clipboard-container, .vid-entry .clipboard-container, .arch-entry .clipboard-container {
-	position: relative;
+	position: sticky;
 	bottom: 5px;
 	display: flex;
 	justify-content: space-between;
