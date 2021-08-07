@@ -175,6 +175,15 @@
 			}
 		}
 
+		$(document).ready(function (){
+			headerTitle = document.createElement("a");
+			headerTitle.id = "header-title";
+			headerTitle.innerHTML = "orvods";
+			headerTitle.target = "_self";
+			headerTitle.href = window.location.origin + window.location.pathname;
+			document.querySelector("#main-links").prepend(headerTitle);
+		});
+
 		// click button on "Enter" press
 		// stolen from https://stackoverflow.com/questions/155188/trigger-a-button-click-with-javascript-on-the-enter-key-in-a-text-box
 		$(document).ready(function (){
@@ -297,7 +306,6 @@
 
 	<div id="header" class="shadow">
 		<div id="main-links">
-			<div id="header-title">orvods</div>
 			<div id="lwod-button"><a>LWOD</a></div>
 			<div id="copy-button"><a>Copy with time</a></div>
 		</div>

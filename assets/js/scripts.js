@@ -390,10 +390,6 @@ $(document).ready(function() {
     // Check if Destiny is online every 5 minutes
     setInterval(loadDestinyStatus(), 300000);
 
-    $("#header-title").click(function() {
-        window.location = window.location.origin + window.location.pathname;
-    });
-
     $("body").on("click", ".vod-entry", function() {
         window.location.href += "?id=" + $(this).attr("id"); 
     });

@@ -38,6 +38,7 @@ body {
 	font-size: 36px;
 	padding: 15px;
 	cursor: pointer;
+	text-decoration: none;
 }
 
 #header-title:hover {
