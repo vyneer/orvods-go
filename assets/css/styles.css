@@ -33,7 +33,7 @@ body {
 	align-items: center;
 }
 
-#header-title {
+#header-title, #homepage-button {
 	color: #DDD;
 	font-size: 36px;
 	padding: 15px;
@@ -41,7 +41,7 @@ body {
 	text-decoration: none;
 }
 
-#header-title:hover {
+#header-title:hover, #homepage-button:hover {
 	color: white;
 }
 

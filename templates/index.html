@@ -184,6 +184,17 @@
 			document.querySelector("#main-links").prepend(headerTitle);
 		});
 
+		$(document).ready(function (){
+			if (window.location.pathname != "/" && window.location.pathname == "") {
+				headerTitle = document.createElement("a");
+				headerTitle.id = "homepage-button";
+				headerTitle.innerHTML = `<span style="font-size: 36px;" class="octicon octicon-home"></span>`;
+				headerTitle.target = "_self";
+				headerTitle.href = window.location.origin;
+				document.querySelector("#main-links").prepend(headerTitle);
+			}
+		});
+
 		// click button on "Enter" press
 		// stolen from https://stackoverflow.com/questions/155188/trigger-a-button-click-with-javascript-on-the-enter-key-in-a-text-box
 		$(document).ready(function (){
