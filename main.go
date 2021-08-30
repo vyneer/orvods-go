@@ -242,6 +242,7 @@ func getUserInfo(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Got Twitch user info (user_login: %s), serving.", params[0])
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(body)
 }
