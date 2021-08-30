@@ -639,12 +639,12 @@ var createVodEntries = function(vodData, type) {
     } else if (type === "youtube") {
         vodData.forEach(function(vod) {
             createVidEntry({
-                id: vod[0], 
-                title: vod[1], 
-                image: vod[4], 
-                date: formatDate(vod[2]),
-                starttime: vod[2],
-                endtime: vod[3]
+                id: vod.id, 
+                title: vod.title, 
+                image: vod.thumbnail, 
+                date: formatDate(vod.starttime),
+                starttime: vod.starttime,
+                endtime: vod.endtime
             });
         })
     } else if (type === "vodstiny") {
@@ -679,11 +679,11 @@ var createLWODTimestamps = function(data, type) {
     if (type === "twitch") {
         data.forEach(function(timestamp) {
             createLWODEntry({
-                starttime: timestamp[0], 
-                endtime: timestamp[1], 
-                game: timestamp[2], 
-                subject: timestamp[3], 
-                topic: timestamp[4]
+                starttime: timestamp.starttime, 
+                endtime: timestamp.endtime, 
+                game: timestamp.game, 
+                subject: timestamp.subject, 
+                topic: timestamp.topic
             }, type);
         })
     } else {
@@ -697,9 +697,9 @@ var createLWODTimestamps = function(data, type) {
             var secInt = fullSec - (minutesInt*60 + hoursInt*60*60);
             createLWODEntry({
                 starttime: `${hoursInt.toString().padStart(2, "0")}:${minutesInt.toString().padStart(2, "0")}:${secInt.toString().padStart(2, "0")}`, 
-                game: timestamp[1], 
-                subject: timestamp[2], 
-                topic: timestamp[3]
+                game: timestamp.game, 
+                subject: timestamp.subject, 
+                topic: timestamp.topic
             }, type);
         })
     }
