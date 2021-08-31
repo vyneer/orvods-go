@@ -689,7 +689,7 @@ var createLWODTimestamps = function(data, type) {
     } else {
         data.forEach(function(timestamp) {
             $("th.end").remove();
-            var fullSec = timestamp[0];
+            var fullSec = timestamp.time;
             var hoursFloat = fullSec/(60*60);
             var hoursInt = Math.floor(hoursFloat);
             var minutesFloat = (hoursFloat - hoursInt)*60;
