@@ -126,6 +126,7 @@ func getVidInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(body)
 }
@@ -194,6 +195,7 @@ func getVODInfo(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Got Twitch VOD info, serving.")
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(body)
 }
@@ -268,6 +270,7 @@ func getEmotes(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("Got d.gg emotes, serving.")
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(body)
 }
@@ -301,6 +304,7 @@ func getChat(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Parsed chatlogs (URLS: %s, from: %s, to: %s), took %s, serving.", urlsParam[0], fromParam[0], toParam[0], elapsed)
 
 	jsonData, _ = json.Marshal(jsonResponse)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
 }
