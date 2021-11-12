@@ -179,21 +179,19 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 }
 
 // ParseChat parses chatlins from an array of strings
-// and return a map of chatlines sorted by timestamp.
-func ParseChat(chatlines []string) map[string][]Dictionary {
-	chatHash := make(map[string][]Dictionary)
+// and return a map of chatlines with unix timestamps as keys.
+func ParseChat(chatlines []string) map[int64][]Dictionary {
+	chatHash := make(map[int64][]Dictionary)
 
 	for _, chatLine := range chatlines {
 		index := strings.Index(chatLine, ": ")
 		length := len(chatLine)
 
 		timestamp, _ := time.Parse("2006-01-02 15:04:05 UTC", chatLine[1:24])
-		timestamp1 := timestamp.Format(time.RFC3339)
+		timestampFormatted := timestamp.Unix()
 		username := chatLine[26:index]
 		message := html.EscapeString(chatLine[index+2 : length])
-		buf := chatHash[timestamp1]
-		buf = append(buf, Dictionary{"message": message, "username": username})
-		chatHash[timestamp1] = buf
+		chatHash[timestampFormatted] = append(chatHash[timestampFormatted], Dictionary{"message": message, "username": username})
 	}
 
 	return chatHash

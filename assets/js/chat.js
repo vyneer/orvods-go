@@ -201,7 +201,7 @@ var Chat = function(id, player, type, start, end, provider) {
 		var timeFormatted = "";
 		var featuresList = "";
 		if (time) {
-			timeFormatted = "<span class='time'>" + moment(time).utc().format("HH:mm") + "</span><span class='time-seconds'>" + moment(time).utc().format(":ss") + " </span>";
+			timeFormatted = "<span class='time'>" + moment.unix(time).utc().format("HH:mm") + "</span><span class='time-seconds'>" + moment.unix(time).utc().format(":ss") + " </span>";
 		}
 		if (username in self.features) {
 			let flairArray = (self.features[username].slice(1,-1).length === 0) ? [] : self.features[username].slice(1,-1).split(",");
@@ -287,11 +287,11 @@ var Chat = function(id, player, type, start, end, provider) {
 
 				timeDifference = currentTimeOffset - self.actualPreviousTimeOffset;
 				
-				timestamps.push(self.recordedTime.clone().add(-(Number(self.delay.val())) + currentTimeOffset, 's').format().replace("+00:00", "Z"));
+				timestamps.push(self.recordedTime.clone().unix() - Number(self.delay.val()) + currentTimeOffset);
 
 				if (timeDifference > 1 && timeDifference < 30) {
 					for (let i = 1; i < timeDifference; i++) {
-						timestamps.push(timestamp = self.recordedTime.clone().add(-(Number(self.delay.val())) + currentTimeOffset - i, 's').format().replace("+00:00", "Z"));
+						timestamps.push(self.recordedTime.clone().unix() - Number(self.delay.val()) + currentTimeOffset - i);
 					};
 				}
 

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -11,10 +10,14 @@ import (
 	"strconv"
 	"time"
 
+	jsoniter "github.com/json-iterator/go"
+
 	"github.com/defrankland/hasherator"
 	"github.com/joho/godotenv"
 	"github.com/vyneer/orvods-go/parser"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 var twitchToken string
 var twitchTokenURL string = "https://id.twitch.tv/oauth2/token"
@@ -303,7 +306,7 @@ func getChat(w http.ResponseWriter, r *http.Request) {
 	elapsed := time.Since(start)
 	log.Printf("Parsed chatlogs (URLS: %s, from: %s, to: %s), took %s, serving.", urlsParam[0], fromParam[0], toParam[0], elapsed)
 
-	jsonData, _ = json.Marshal(jsonResponse)
+	jsonData, _ = jsoniter.Marshal(jsonResponse)
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
