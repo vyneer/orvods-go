@@ -160,17 +160,21 @@
 			var endTimestamp = ($("#end-timestamp").val() === "") ? "" : moment($("#end-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
 			var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
 			if (startTimestamp && endTimestamp) {
-				if (matchArray[0][3] == "vod-secure.twitch.tv") {
-					window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=ttv" + timestamps;
-				}
-				if (matchArray[0][3] == "d2e2de1etea730.cloudfront.net") {
-					window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf1" + timestamps;
-				}
-				if (matchArray[0][3] == "d2nvs31859zcd8.cloudfront.net") {
-					window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf2" + timestamps;
-				}
-				if (matchArray[0][3] == "dqrpb9wgowsf5.cloudfront.net") {
-					window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=cf3" + timestamps;
+				switch (matchArray[0][3]) {
+					case "vod-secure.twitch.tv":
+						window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=ttv1" + timestamps;
+						break;
+					case "vod-metro.twitch.tv":
+						window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=ttv2" + timestamps;
+						break;
+					case "vod-pop-secure.twitch.tv":
+						window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + "&cdn=ttv3" + timestamps;
+						break;
+					default:
+						if (matchArray[0][3].match(/.+\.cloudfront\.net/) != undefined) {
+							window.location.href = window.location.origin + window.location.pathname + "?hash=" + matchArray[0][4].slice(1,-9) + `&cdn=${matchArray[0][3].substring(0,4)}` + timestamps;
+						}
+						break;
 				}
 			}
 		}

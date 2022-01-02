@@ -26,10 +26,17 @@ var chatUrl = {
 }
 
 var cdnUrl = {
-    "ttv" : "vod-secure.twitch.tv",
-    "cf1" : "d2e2de1etea730.cloudfront.net",
-    "cf2" : "d2nvs31859zcd8.cloudfront.net",
-    "cf3" : "dqrpb9wgowsf5.cloudfront.net"
+    "ttv1" : "vod-secure.twitch.tv",
+    "ttv2" : "vod-metro.twitch.tv",
+    "ttv3" : "vod-pop-secure.twitch.tv",
+    "d2e2" : "d2e2de1etea730.cloudfront.net",
+    "d2nv" : "d2nvs31859zcd8.cloudfront.net",
+    "dqrp" : "dqrpb9wgowsf5.cloudfront.net",
+    "ds0h" : "ds0h3roq6wcgc.cloudfront.net",
+    "d2ab" : "d2aba1wr3818hz.cloudfront.net",
+    "d3c2" : "d3c27h4odz752x.cloudfront.net",
+    "dgef" : "dgeft87wbj63p.cloudfront.net",
+    "d1m7" : "d1m7jfoe9zdc1j.cloudfront.net"
 }
 
 var servicesUrl = {
