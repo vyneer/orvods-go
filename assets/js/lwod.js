@@ -11,11 +11,7 @@ var LWOD = function(id, type, player) {
 			var uniqueGames = new Set();
 			$("#skipGameSelect").empty();
 			data.forEach(element => {
-				if (type === "twitch") {
-					uniqueGames.add(element[2]);
-				} else {
-					uniqueGames.add(element[1]);
-				}
+				uniqueGames.add(element.game);
 			});
 			uniqueGames.forEach(element => {
 				$('#skipGameSelect').append(`<option value="${element}"> 
@@ -51,8 +47,8 @@ var LWOD = function(id, type, player) {
 		var other = [];
 		var skipperino = [];
 		timestamps.forEach(element => {
-			string = element[0] + "," + element[1]
-			if (element[2] === input && element[3] === "") {
+			string = element.starttime + "," + element.endtime
+			if (element.game === input && element.subject === "") {
 				gameSkipTimes.push(string);
 			} else {
 				other.push(string);
