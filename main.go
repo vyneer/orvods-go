@@ -314,7 +314,7 @@ func getChat(w http.ResponseWriter, r *http.Request) {
 
 func createIndex() {
 	log.Printf("Creating the index.html and hashbusting everything else...")
-	_ = assets.Run("./assets/", "./public/", []string{"css", "lib", "octicons", "flairs"})
+	_ = assets.Run("./assets/", "./public/", []string{"lib", "octicons", "flairs"})
 
 	f, err := os.Create("./public/index.html")
 	if err != nil {
