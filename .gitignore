@@ -1,4 +1,5 @@
 .env
+.env.old
 .vscode
 *.exe
 orvods-go
