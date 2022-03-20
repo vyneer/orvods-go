@@ -211,6 +211,13 @@ $(document).ready(function () {
     $("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/emotes/emotes.css?_=' + (parseInt((new Date()).getTime()/1000) - (parseInt((new Date()).getTime()/1000) % 1800)) + '" type="text/css"/>');
     $("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/flairs/flairs.css?_=' + (parseInt((new Date()).getTime()/1000) - (parseInt((new Date()).getTime()/1000) % 1800)) + '" type="text/css">');
 
+    document.querySelector(".ignore-label").addEventListener("click", () => {
+        document.querySelector(".ignore-list").classList.toggle(
+            "expanded",
+            document.querySelector(".ignore-label").classList.toggle("expanded")
+        )
+    })
+
     if (localStorage.getItem('lineLimit')) {
         $("#lineLimit").val(localStorage.getItem('lineLimit'));
     } else {
@@ -238,6 +245,34 @@ $(document).ready(function () {
         $(`#fontSize option[value=small]`).prop('selected', true);
     }
     updateFontSize();
+
+    if (localStorage.getItem('badWords')) {
+        document.getElementById("badWords").checked = (localStorage.getItem('badWords') === "true") ? true : false;
+    } else {
+        document.getElementById("badWords").checked = false;
+    }
+    updateBadWords();
+
+    if (localStorage.getItem('letterVis')) {
+        document.getElementById("letterVis").checked = (localStorage.getItem('letterVis') === "true") ? true : false;
+    } else {
+        document.getElementById("letterVis").checked = false;
+    }
+    updateLetterVis();
+
+    if (localStorage.getItem('asciiLimit')) {
+        document.querySelector("#asciiLimit").value = localStorage.getItem('asciiLimit');
+    } else {
+        document.querySelector("#asciiLimit").value = 0;
+        localStorage.setItem('asciiLimit', document.querySelector("#asciiLimit").value);
+    }
+
+    if (localStorage.getItem('ignoredPhrases')) {
+        document.getElementById("ignoredPhrases").value = localStorage.getItem('ignoredPhrases')
+    } else {
+        document.getElementById("ignoredPhrases").value = ""
+    }
+    updateIgnoredPhrases();
 });
 
 // stolen from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_js_dropdown
@@ -310,4 +345,20 @@ function updateFontSize() {
     } else {
         sheet.insertRule('#chat-stream {font-size: 13px !important;}');
     }
+}
+
+function updateLetterVis() {
+    localStorage.setItem('letterVis', document.getElementById("letterVis").checked);
+}
+
+function updateBadWords() {
+    localStorage.setItem('badWords', document.getElementById("badWords").checked);
+}
+
+function updateASCIILimit() {
+    localStorage.setItem('asciiLimit', document.querySelector("#asciiLimit").value);
+}
+
+function updateIgnoredPhrases() {
+    localStorage.setItem('ignoredPhrases', document.getElementById("ignoredPhrases").value);
 }

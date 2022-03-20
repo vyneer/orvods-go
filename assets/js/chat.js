@@ -17,6 +17,13 @@ var Chat = function(id, player, type, start, end, provider) {
 	this.chatStream = $("#chat-stream");
 	this.lineLimit = $("#lineLimit");
 	this.delay = $("#delay");
+	this.letterRegexp = RegExp(/[^\p{L}\p{ASCII}]/,'u')
+	this.letterVis = document.querySelector("#letterVis").checked
+	this.asciiLimit = document.querySelector("#asciiLimit").valueAsNumber
+	this.ignoredPhrases = document.querySelector("#ignoredPhrases").value !== "" ? document.querySelector("#ignoredPhrases").value.split(",") : []
+	this.ignoredPhrases.forEach((el, index) => this.ignoredPhrases[index] = el.trim())
+	this.badWords = document.querySelector("#badWords").checked
+	this.badWordsRegex = /(fuck|shit|cunt|whore|bitch|faggot|fag|nigger|nigga|gusano|cracker|rape)/gi
 
 	this.actualPreviousTimeOffset = -1;
 	this.previousMessage = '';
@@ -178,7 +185,8 @@ var Chat = function(id, player, type, start, end, provider) {
 		let nsfwClass = "";
 		if (/\b(?:NSFW|SPOILER)\b/i.test(message)) { nsfwClass = "nsfw-link"; }
 		if (/\b(?:NSFL)\b/i.test(message)) { nsfwClass = "nsfl-link"; }
-		var messageReplaced = this._htmlDecode(message).linkify({className: `externallink ${nsfwClass}`});
+		let messageReplaced = this._htmlDecode(message).linkify({ className: `externallink ${nsfwClass}`, rel: "nofollow noreferrer", target: "_blank" });
+		messageReplaced = this._censorBadWords(messageReplaced);
 
 		function replacer(p1) {
 			return self._generateDestinyEmoteImage(p1.replace(/ /g,''));
@@ -235,6 +243,24 @@ var Chat = function(id, player, type, start, end, provider) {
 			return `<span class='me-text'>${message.slice(3, message.length)}</span>`;
 		} else {
 			return message;
+		}
+	}
+
+	this._checkIgnore = function(chatLine) {
+		return (!this.letterVis || !this.letterRegexp.test(chatLine.message))
+			&&
+		(this.asciiLimit === 0 || [...chatLine.message].reduce((prev, cur) => cur.charCodeAt(0) > 127 ? prev + 1 : 0, 0) <= this.asciiLimit) 
+			&& 
+		!this.ignoredPhrases.some(v => {
+			return chatLine.message.toLowerCase().includes(v) || chatLine.username.toLowerCase().includes(v) 
+		})
+	}
+
+	this._censorBadWords = function(str) {
+		if (this.badWords) {
+			return str.replace(this.badWordsRegex, match => '*'.repeat(match.length));
+		} else {
+			return str
 		}
 	}
 
@@ -317,19 +343,21 @@ var Chat = function(id, player, type, start, end, provider) {
 						// Add a random delay between chat messages, makes it more readable
 						// https://i.imgur.com/OJG6xft.gif
 						setTimeout(function(){
-							if (self.previousMessage == chatLine.message && self.emoteList[self.previousMessage]) {
-								self.comboCount++;
-								$("#chat-stream .msg-chat").last().remove();
-								var comboMessage = self._renderComboMessage(self.previousMessage, self.comboCount);
-								self._renderChatMessage(element, null, comboMessage);
-							} else {
-								self.comboCount = 1;
-								self._renderChatMessage(element, chatLine.username, self._formatMessage(chatLine.message));
-							}
-					
-							self.previousMessage = chatLine.message;
-							if (self.bottomDetector) {
-								self.chatStream.scrollTop(self.chatStream[0].scrollHeight);
+							if (self._checkIgnore(chatLine)) {
+								if (self.previousMessage == chatLine.message && self.emoteList[self.previousMessage]) {
+									self.comboCount++;
+									$("#chat-stream .msg-chat").last().remove();
+									var comboMessage = self._renderComboMessage(self.previousMessage, self.comboCount);
+									self._renderChatMessage(element, null, comboMessage);
+								} else {
+									self.comboCount = 1;
+									self._renderChatMessage(element, chatLine.username, self._formatMessage(chatLine.message));
+								}
+
+								self.previousMessage = chatLine.message;
+								if (self.bottomDetector) {
+									self.chatStream.scrollTop(self.chatStream[0].scrollHeight);
+								}
 							}
 						}, randomTimeouts[i] * 400);
 						i++;

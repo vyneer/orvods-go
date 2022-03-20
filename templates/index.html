@@ -202,15 +202,27 @@
 									<option value="none">None</option>
 									<option value="hm">HH:mm</option>
 									<option value="hms">HH:mm:ss</option>
-								</select> <br>
+								</select>
 								<label class="label-text">Font size:</label>
 								<select class="settings-options" id="fontSize" oninput="updateFontSize()">
 									<option value="small">Size Small</option>
 									<option value="medium">Size Medium</option>
 									<option value="large">Size Large</option>
-								</select> <br>
+								</select>
 								<label class="label-text">Hide flairs:</label>
 								<input class="settings-options" type="checkbox" id="hideFlairs" onchange="updateFlairVisibility()">
+								<label class="label-text ignore-label">Ignore options</label>
+								<div class="ignore-list">
+									<div class="refresh-text">Refresh to apply changes</div>
+									<label class="label-text">Censor bad words:</label>
+									<input class="settings-options" type="checkbox" id="badWords" onchange="updateBadWords()">
+									<label class="label-text" title="Messages with the amount of non-ASCII characters specified below will get ignored">Non-ASCII character limit (0 to disable):</label>
+									<input type="number" id="asciiLimit" oninput="updateASCIILimit()">
+									<label class="label-text">Ignore messages with non-<a href="https://util.unicode.org/UnicodeJsps/list-unicodeset.jsp?a=%5B%3ALetter%3A%5D%5B%3AASCII%3A%5D&g=&i=">letter</a> characters:</label>
+									<input class="settings-options" type="checkbox" id="letterVis" onchange="updateLetterVis()">
+									<label class="label-text">Ignore phrases/usernames:</label>
+									<textarea class="settings-options" id="ignoredPhrases" placeholder="Comma separated ... (regex not supported)" onchange="updateIgnoredPhrases()"></textarea>
+								</div>
 							</div>
 						</div>
 						<div id="switch-sides-button"><span class="octicon octicon-mirror"></span></div>

@@ -420,7 +420,7 @@ body {
 	background: #080808;
 }
 
-#pause-controls, #log-fallback-button, #dgg-controls {
+#pause-controls, #log-fallback-button, #dgg-controls, .ignore-label {
 	padding: 5px;
 	margin: 5px 0;
 	border: transparent;
@@ -499,6 +499,7 @@ body {
 	background-color: #080808;
 	overflow: auto;
 	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	max-height: 75vh;
 }
 
 .settings-options {
@@ -517,8 +518,58 @@ body {
 	margin: 4px 0;
 }
 
+.ignore-label {
+	position: relative;
+	cursor: pointer;
+
+}
+
+.ignore-label:hover {
+	border: white;
+	border-style: solid;
+	border-radius: 2px;
+}
+
+.ignore-label::after {
+	content: '›';
+	margin-left: 5px;
+	font-size: 150%;
+	position: absolute;
+	top: -3px;
+	font-weight: bold;
+	transition: transform 100ms ease-in-out;
+}
+
+.ignore-label.expanded::after {
+	transform: translate(2px, 2px) rotate(90deg);
+}
+
+.ignore-list {
+	transition: transform 200ms ease-in-out;
+	transform-origin: top center;
+	overflow: hidden;
+}
+
+.ignore-list:not(.expanded) {
+	transform: scaleY(0);
+	height: 0;
+}
+
+.refresh-text {
+	text-align: center;
+	color: gray;
+	font-size: small;
+}
+
+#ignoredPhrases {
+	resize: vertical;
+	height: 75px;
+}
+
 .label-text, .skip-timestamps {
 	font-size: 16px;
+	display: block;
+	padding-top: 3px;
 }
 
 .show {display: block;}
