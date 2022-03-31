@@ -13,6 +13,7 @@ var months = [
     "Dec"
 ];
 
+const destinyUserID = 18074328;
 // vyneer.me stuff, make sure to edit if you have your own logging system/not gonna use my logs
 var featuresUrl = "https://vyneer.me/tools/features";
 var ytvodUrl = "https://vyneer.me/tools/ytvods";

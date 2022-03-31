@@ -388,9 +388,6 @@ $(document).ready(function() {
         }
     });
 
-    // Check if Destiny is online every 5 minutes
-    setInterval(loadDestinyStatus(), 300000);
-
     $("body").on("click", ".vod-entry", function() {
         window.location.href += "?id=" + $(this).attr("id"); 
     });
@@ -472,24 +469,7 @@ async function loadVODs(type) {
     }
 };
 
-var destinyUserID = 18074328;
-
 var pageCursor = 0;
-
-var loadDestinyStatus = function() {
-    var destinyStatusUrl = "userinfo?user_login=destiny";
-
-    $.get(destinyStatusUrl, function(userdata) {
-        data = userdata
-        if (data.data === undefined || data.data.length === 0) {
-            $("#destiny-status").text("Destiny is offline.");
-            $("#destiny-status").css("color", "#a70000");
-        } else {
-            $("#destiny-status").text("Destiny is LIVE!");
-            $("#destiny-status").css("color", "#01f335");            
-        }
-    })
-}
 
 var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
     $("#player").css("display", "flex");
