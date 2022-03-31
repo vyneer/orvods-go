@@ -224,6 +224,11 @@ body {
 	cursor: pointer;
 	margin-right: auto;
 	margin-left: auto;
+	display: none;
+}
+
+.site-selector-button.visible {
+	display: block;
 }
 
 .site-selector-button.active {

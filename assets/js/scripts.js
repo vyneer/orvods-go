@@ -26,6 +26,20 @@ $(document).ready(function() {
     var splits;
     globals.sizes = localStorage.getItem('split-sizes');
 
+    vodModules.forEach((el) => {
+        switch (el) {
+            case "twitch":
+                twitchButton.classList.toggle("visible")
+                break;
+            case "youtube":
+                youtubeButton.classList.toggle("visible")
+                break;
+            case "vodstiny":
+                vodstinyButton.classList.toggle("visible")
+                break;
+        }
+    })
+
     if (!chatSide) { 
         chatSide = 'right'
         localStorage.setItem('chatSide', chatSide); 
@@ -104,15 +118,19 @@ $(document).ready(function() {
         $("#lwod").hide();
         playerActive = 1;
     } else {
-        loadVODs("twitch").then(result => {
-            allVODs = result;
-        });
-        loadVODs("youtube").then(result => {
-            allVids = result;
-            return result.slice(0, 9);
-        }).then(nineEntries => {
-            createVodEntries(nineEntries, "youtube");
-        });
+        if (vodModules.includes("twitch")) {
+            loadVODs("twitch").then(result => {
+                allVODs = result;
+            });
+        }
+        if (vodModules.includes("youtube")) {
+            loadVODs("youtube").then(result => {
+                allVids = result;
+                return result.slice(0, 9);
+            }).then(nineEntries => {
+                createVodEntries(nineEntries, "youtube");
+            });
+        }
         $("#player").hide();
         $("#browse").show();
         $("#lwod").hide();
