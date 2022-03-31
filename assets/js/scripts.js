@@ -72,6 +72,7 @@ $(document).ready(function() {
                 break;
             case "youtube":
                 vidId = v;
+                document.querySelector("#delay").value = 4
                 break;
             case "m3u8":
                 vidId = hash;
