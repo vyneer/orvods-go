@@ -8,6 +8,7 @@ var Chat = function(id, player, type, start, end, provider) {
 	this.skipView = false;
 	this.videoPlayer = player;
 	this.previousTimeOffset = -1;
+	this.playbackSpeed = 1;
 	this.playerType = type;
 	this.logProvider = provider;
 	this.timestampStart = start;
@@ -264,22 +265,34 @@ var Chat = function(id, player, type, start, end, provider) {
 		}
 	}
 
-	if (self.playerType == "twitch") {
-		self.videoPlayer.addEventListener(Twitch.Player.PLAYING, function() {
-			self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.getCurrentTime());
-		});
-	} else if (self.playerType == "youtube") {
-		self.videoPlayer.addEventListener('onStateChange', function(event) {
-			if (event.data == YT.PlayerState.PLAYING) {
+	switch (self.playerType) {
+		case "twitch":
+			self.videoPlayer.addEventListener(Twitch.Player.PLAYING, function() {
 				self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.getCurrentTime());
-			}
-		});
-	} else if (self.playerType == "chatonly") {
-		self.actualPreviousTimeOffset = 0
-	} else if (self.playerType == "m3u8") {
-		self.videoPlayer.addEventListener('progress', function() {
-			self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.currentTime);
-		});
+			});
+			self.playbackSpeed = 2;
+			break;
+		case "youtube":
+			self.videoPlayer.addEventListener('onStateChange', function(event) {
+				if (event.data == YT.PlayerState.PLAYING) {
+					self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.getCurrentTime());
+				}
+			});
+			self.videoPlayer.addEventListener('onPlaybackRateChange', function(event) {
+				self.playbackSpeed = event.data;
+			});
+			break;
+		case "chatonly":
+			self.actualPreviousTimeOffset = 0;
+			break
+		default:
+			self.videoPlayer.addEventListener('progress', function() {
+				self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.currentTime);
+			});
+			self.videoPlayer.addEventListener('ratechange', function() {
+				self.playbackSpeed = self.videoPlayer.playbackRate;
+			});
+			break;
 	}
 
 	$('#chat-stream').on('scroll', function() {
@@ -294,11 +307,11 @@ var Chat = function(id, player, type, start, end, provider) {
 		if (self.status === "running") {
 			$("#pause-controls").text("Start chat")
 			self.status = "paused";
-			clearInterval(self.chatInterval)
+			clearTimeout(self.chatInterval)
 		} else if (self.status === "paused") {
 			$("#pause-controls").text("Stop chat")
 			self.status = "running";
-			self.chatInterval = window.setInterval(function() {self.chatFunction()}, 500);
+			self.chatIntervalFunc();
 		}
 	});
 
@@ -334,7 +347,7 @@ var Chat = function(id, player, type, start, end, provider) {
 				};
 
 				var randomTimeouts = Array.from({length: msgAmount}, () => Math.random());
-				randomTimeouts.sort();
+				randomTimeouts.sort((a, b) => (a - b));
 
 				i=0;
 
@@ -359,7 +372,7 @@ var Chat = function(id, player, type, start, end, provider) {
 									self.chatStream.scrollTop(self.chatStream[0].scrollHeight);
 								}
 							}
-						}, randomTimeouts[i] * 400);
+						}, randomTimeouts[i] * ((1000 / self.playbackSpeed) - 25));
 						i++;
 					});
 				});
@@ -375,9 +388,13 @@ var Chat = function(id, player, type, start, end, provider) {
 			}
 
 			self.previousTimeOffset = currentTimeOffset;
-
 		}
 	}
 
-	self.chatInterval = window.setInterval(function() {self.chatFunction()}, 500);
+	self.chatIntervalFunc = function() {
+		self.chatFunction();
+		self.chatInterval = window.setTimeout(self.chatIntervalFunc, 1000 / self.playbackSpeed);
+	};
+
+	self.chatIntervalFunc();
 };
