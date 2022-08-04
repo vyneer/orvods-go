@@ -1,8 +1,9 @@
 package main
 
 import (
+	"context"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -12,10 +13,18 @@ import (
 
 	jsoniter "github.com/json-iterator/go"
 
+	"github.com/cespare/xxhash/v2"
 	"github.com/defrankland/hasherator"
+	"github.com/dgraph-io/ristretto"
+	"github.com/eko/gocache/v3/cache"
+	"github.com/eko/gocache/v3/store"
 	"github.com/joho/godotenv"
 	"github.com/vyneer/orvods-go/parser"
 )
+
+var cacheContext context.Context
+var cacheStore *store.RistrettoStore
+var cacheManager *cache.Cache[[]byte]
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
@@ -38,10 +47,41 @@ type Validation struct {
 	ExpiresIn int `json:"expires_in"`
 }
 
+func IsPowerOfTwo(x int) bool {
+	return (x != 0) && ((x & (x - 1)) == 0)
+}
+
 func init() {
+	var err error
+
 	if err := godotenv.Load(); err != nil {
 		log.Print("No .env file found")
 	}
+
+	cacheSizeStr := os.Getenv("CACHE_SIZE")
+	cacheSize := 128
+	if cacheSizeStr != "" {
+		cacheSizeBuf, err := strconv.Atoi(cacheSizeStr)
+		if err != nil {
+			log.Fatal("strconv error")
+		}
+		if IsPowerOfTwo(cacheSizeBuf) {
+			cacheSize = cacheSizeBuf
+		} else {
+			log.Println("CACHE_SIZE needs to be the power of 2, setting it to 128 MB")
+		}
+	}
+	cacheContext = context.Background()
+	cacheClient, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: int64(float64(cacheSize) * 3.90625),
+		MaxCost:     int64(cacheSize) * 1000000,
+		BufferItems: 64,
+	})
+	if err != nil {
+		panic(err)
+	}
+	cacheStore = store.NewRistretto(cacheClient, store.WithExpiration(6*time.Hour))
+	cacheManager = cache.New[[]byte](cacheStore)
 }
 
 func getToken(tokenURL string) {
@@ -56,7 +96,7 @@ func getToken(tokenURL string) {
 		return
 	}
 	defer appTokenResponse.Body.Close()
-	body, err := ioutil.ReadAll(appTokenResponse.Body)
+	body, err := io.ReadAll(appTokenResponse.Body)
 	if err != nil {
 		log.Println("An error occured in getToken.")
 		return
@@ -82,7 +122,7 @@ func validateToken(tokenHeader string) (int, error) {
 	}
 
 	defer validationTokenResponse.Body.Close()
-	body, err := ioutil.ReadAll(validationTokenResponse.Body)
+	body, err := io.ReadAll(validationTokenResponse.Body)
 	if err != nil {
 		log.Println("An error occured in validateToken.")
 		return 0, err
@@ -122,7 +162,7 @@ func getVidInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer youtubeAPIResponse.Body.Close()
-	body, err := ioutil.ReadAll(youtubeAPIResponse.Body)
+	body, err := io.ReadAll(youtubeAPIResponse.Body)
 	if err != nil {
 		log.Println("An error occured in getVidInfo.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -189,7 +229,7 @@ func getVODInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer twitchAPIResponse.Body.Close()
-	body, err := ioutil.ReadAll(twitchAPIResponse.Body)
+	body, err := io.ReadAll(twitchAPIResponse.Body)
 	if err != nil {
 		log.Println("An error occured in getVODInfo.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -238,7 +278,7 @@ func getUserInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer twitchAPIResponse.Body.Close()
-	body, err := ioutil.ReadAll(twitchAPIResponse.Body)
+	body, err := io.ReadAll(twitchAPIResponse.Body)
 	if err != nil {
 		log.Println("An error occured in getUserInfo.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -264,7 +304,7 @@ func getEmotes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer emotesResponse.Body.Close()
-	body, err := ioutil.ReadAll(emotesResponse.Body)
+	body, err := io.ReadAll(emotesResponse.Body)
 	if err != nil {
 		log.Println("An error occured in getEmotes.")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -292,7 +332,8 @@ func maxClients(h http.Handler, n int) http.Handler {
 }
 
 func getChat(w http.ResponseWriter, r *http.Request) {
-	var jsonData []byte
+	var jsonResponse map[int64][]parser.Dictionary
+	dontCache := r.Header.Get("DontCache")
 	urlsParam := r.URL.Query()["urls"]
 	fromParam := r.URL.Query()["from"]
 	toParam := r.URL.Query()["to"]
@@ -300,16 +341,46 @@ func getChat(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Getting chatlogs (URLS: %s, from: %s, to: %s).", urlsParam[0], fromParam[0], toParam[0])
 	start := time.Now()
 
-	chatlines, _ := parser.GetTextFiles(urlsParam[0], fromParam[0], toParam[0])
-	jsonResponse := parser.ParseChat(chatlines)
+	if dontCache == "true" {
+		chatlines, _ := parser.GetTextFiles(urlsParam[0], fromParam[0], toParam[0])
+		jsonResponse = parser.ParseChat(chatlines)
 
-	elapsed := time.Since(start)
-	log.Printf("Parsed chatlogs (URLS: %s, from: %s, to: %s), took %s, serving.", urlsParam[0], fromParam[0], toParam[0], elapsed)
+		elapsed := time.Since(start)
+		log.Printf("Forced no cache, parsed chatlogs (URLS: %s, from: %s, to: %s), took %s, serving.", urlsParam[0], fromParam[0], toParam[0], elapsed)
+		jsonData, _ := jsoniter.Marshal(jsonResponse)
 
-	jsonData, _ = jsoniter.Marshal(jsonResponse)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonData)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(jsonData)
+	} else {
+		hashString := urlsParam[0] + fromParam[0] + toParam[0]
+		hash := xxhash.Sum64String(hashString)
+		cacheResponse, err := cacheManager.Get(cacheContext, hash)
+		if err != nil {
+			chatlines, _ := parser.GetTextFiles(urlsParam[0], fromParam[0], toParam[0])
+			jsonResponse = parser.ParseChat(chatlines)
+			jsonData, _ := jsoniter.Marshal(jsonResponse)
+			err := cacheManager.Set(cacheContext, hash, jsonData, store.WithCost(int64(len(jsonData))))
+			if err != nil {
+				log.Printf("Cache error: %v", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("500 - cache error"))
+			} else {
+				elapsed := time.Since(start)
+				log.Printf("Wasn't able to get parsed chat from cache, adding it (URLS: %s, from: %s, to: %s), took %s, serving.", urlsParam[0], fromParam[0], toParam[0], elapsed)
+				w.Header().Set("Access-Control-Allow-Origin", "*")
+				w.Header().Set("Content-Type", "application/json")
+				w.Write(jsonData)
+			}
+		} else {
+			elapsed := time.Since(start)
+			log.Printf("Was able to get parsed chat from cache (URLS: %s, from: %s, to: %s), took %s, serving.", urlsParam[0], fromParam[0], toParam[0], elapsed)
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(cacheResponse)
+		}
+	}
+
 }
 
 func createIndex() {

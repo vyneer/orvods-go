@@ -144,15 +144,23 @@ var Chat = function(id, player, type, start, end, provider) {
 			$.get(featuresUrl, {}, function (data) {
 				self.features = data;
 			});
-	
-			$.get(chatUrl[self.logProvider], {
-				urls: JSON.stringify(overrustleLogsDates),
-				from: self.recordedTime.clone().format("YYYY-MM-DD HH:mm:ss UTC"),
-				to: self.endTime.clone().format("YYYY-MM-DD HH:mm:ss UTC")
-			}, function(data) {
-				self.chat = data;
-				self.startChatStream();
-				$("#loading-message").remove();
+
+			$.ajax({
+				url: chatUrl[self.logProvider],
+				type: "get",
+				headers: {
+					"DontCache": (self.playerType === "youtube" && data["items"][0]["liveStreamingDetails"]["actualEndTime"] == undefined) ? "true" : "false"
+				},
+				data: {
+					urls: JSON.stringify(overrustleLogsDates),
+					from: self.recordedTime.clone().format("YYYY-MM-DD HH:mm:ss UTC"),
+					to: self.endTime.clone().format("YYYY-MM-DD HH:mm:ss UTC")
+				},
+				success: function(data) {
+					self.chat = data;
+					self.startChatStream();
+					$("#loading-message").remove();
+				}
 			});
 		});
 	}
