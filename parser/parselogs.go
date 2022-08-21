@@ -2,7 +2,6 @@ package parser
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"html"
 	"io"
@@ -12,7 +11,10 @@ import (
 	"time"
 
 	"github.com/vosmith/pancake"
+	log "github.com/vyneer/orvods-go/logger"
 )
+
+var timestampRegex = regexp.MustCompile(`^([01]?[0-9]|2[0-3])\:[0-5][0-9]\:[0-5][0-9]$`)
 
 // Dictionary simplifies parsing chatlogs later.
 type Dictionary map[string]interface{}
@@ -40,7 +42,7 @@ func indexOfReverse(word string, data []string) int {
 	return -1
 }
 
-//from here https://medium.com/@dhanushgopinath/concurrent-http-downloads-using-go-32fecfa1ed27
+// from here https://medium.com/@dhanushgopinath/concurrent-http-downloads-using-go-32fecfa1ed27
 func downloadFile(client *http.Client, URL string, order int) (int, string, error) {
 	req, _ := http.NewRequest("GET", string(URL), nil)
 	response, err := client.Do(req)
@@ -96,20 +98,47 @@ func downloadMultipleFiles(client *http.Client, urls []string) ([][]string, erro
 	return ret_pages, err
 }
 
+func getOverRustleURLs(from, to time.Time) []string {
+	var urlSlice []string
+
+	fromRound := time.Date(from.Year(), from.Month(), from.Day(), 0, 0, 0, 0, from.Location())
+	toRound := time.Date(to.Year(), to.Month(), to.Day(), 0, 0, 0, 0, to.Location())
+	diff := toRound.Sub(fromRound)
+
+	for i := 0; i <= int(diff.Hours()); i += 24 {
+		bufferTime := from.Add(time.Duration(i) * time.Hour)
+		url := "https://dgg.overrustlelogs.net/Destinygg%20chatlog/" +
+			bufferTime.Format("January") + "%20" +
+			bufferTime.Format("2006") + "/" +
+			bufferTime.Format("2006") + "-" +
+			bufferTime.Format("01") + "-" + bufferTime.Format("02") + ".txt"
+		urlSlice = append(urlSlice, url)
+	}
+
+	return urlSlice
+}
+
 // GetTextFiles downloads logs from OverRustleLogs
 // starting and ending at specific timestamps
 // and returns an array of chatlines.
-func GetTextFiles(urls, from, to string) ([]string, error) {
-	var arr []string
+func GetTextFiles(from, to string) ([]string, error) {
 	var timestamps []string
-	fromStamp := from
-	toStamp := to
+
+	fromStamp, err := time.Parse("2006-01-02 15:04:05 UTC", from)
+	if err != nil {
+		return []string{"error"}, err
+	}
+	toStamp, err := time.Parse("2006-01-02 15:04:05 UTC", to)
+	if err != nil {
+		return []string{"error"}, err
+	}
 	startCheck := false
 	endCheck := false
 	startPos := 0
 	endPos := 0
-	pattern := `^([01]?[0-9]|2[0-3])\:[0-5][0-9]\:[0-5][0-9]$`
-	_ = json.Unmarshal([]byte(urls), &arr)
+
+	arr := getOverRustleURLs(fromStamp, toStamp)
+	log.Debugf("got the URLs: %+v", arr)
 
 	var transport http.RoundTripper = &http.Transport{
 		DisableKeepAlives: true,
@@ -134,7 +163,7 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 		}
 
 		// check if it's actually timestamps in the timestamp slice
-		matched, err := regexp.Match(pattern, []byte(timestamps[0][11:19]))
+		matched := timestampRegex.Match([]byte(timestamps[0][11:19]))
 		if err != nil {
 			return []string{}, err
 		}
@@ -143,33 +172,33 @@ func GetTextFiles(urls, from, to string) ([]string, error) {
 			firstTimestamp, _ := time.Parse("2006-01-02 15:04:05 UTC", timestamps[0])
 			lastTimestamp, _ := time.Parse("2006-01-02 15:04:05 UTC", timestamps[len(timestamps)-1])
 			for !startCheck {
-				index := indexOf(fromStamp, timestamps)
+				index := indexOf(from, timestamps)
 				if index != -1 {
 					startPos = index
 					startCheck = true
 				} else {
-					t, _ := time.Parse("2006-01-02 15:04:05 UTC", fromStamp)
+					t, _ := time.Parse("2006-01-02 15:04:05 UTC", from)
 					if int(t.Sub(firstTimestamp).Seconds()) < 0 {
 						startPos = 0
 						startCheck = true
 					}
 					t = t.Add(-1 * time.Second)
-					fromStamp = t.Format("2006-01-02 15:04:05 UTC")
+					from = t.Format("2006-01-02 15:04:05 UTC")
 				}
 			}
 			for !endCheck {
-				index := indexOfReverse(toStamp, timestamps)
+				index := indexOfReverse(to, timestamps)
 				if index != -1 {
 					endPos = index
 					endCheck = true
 				} else {
-					t, _ := time.Parse("2006-01-02 15:04:05 UTC", toStamp)
+					t, _ := time.Parse("2006-01-02 15:04:05 UTC", to)
 					if int(t.Sub(lastTimestamp).Seconds()) > 0 {
 						endPos = len(timestamps) - 1
 						endCheck = true
 					}
 					t = t.Add(1 * time.Second)
-					toStamp = t.Format("2006-01-02 15:04:05 UTC")
+					to = t.Format("2006-01-02 15:04:05 UTC")
 				}
 			}
 		}
