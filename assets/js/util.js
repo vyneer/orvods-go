@@ -135,7 +135,7 @@ function vodURL(url) {
             window.location.href = window.location.origin + window.location.pathname + urlCheck.search + timestamps;
         }
         if (urlCheck.hostname === "youtu.be") {
-            window.location.href = window.location.origin + window.location.pathname + "?v=" + urlCheck.pathname.slice(1) + urlCheck.search + timestamps;
+            window.location.href = window.location.origin + window.location.pathname + "?v=" + urlCheck.pathname.slice(1) + urlCheck.search.replace(/[?]/gm, '&') + timestamps;
         }
         if (urlCheck.hostname === "www.odysee.com" || urlCheck.hostname === "odysee.com") {
             if (urlCheck.pathname.match(/\/\$\/download\/.+/)) {
