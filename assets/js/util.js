@@ -120,24 +120,33 @@ var formatDate = function(dateString) {
 
 // detecting if url is yt or twitch
 function vodURL(url) {
-    var urlCheck = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/gm;
-    var matches = url.matchAll(urlCheck);
-    var matchArray = [...matches];
-    var startTimestamp = ($("#start-timestamp").val() === "") ? "" : moment($("#start-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
-    var endTimestamp = ($("#end-timestamp").val() === "") ? "" : moment($("#end-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
-    var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
-    if (matchArray[0][3] === "www.twitch.tv" || matchArray[0][3] === "twitch.tv") {
-        regex = new RegExp('(?=[0-9])[^\/]+', 'gm');
-        replaced = url.match(regex);
-        window.location.href = window.location.origin + window.location.pathname + "?id=" + replaced[0].replace(/[?]/gm, '&') + timestamps;
+    // var urlCheck = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/gm;
+    try {
+        const urlCheck = new URL(url);
+        var startTimestamp = ($("#start-timestamp").val() === "") ? "" : moment($("#start-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
+        var endTimestamp = ($("#end-timestamp").val() === "") ? "" : moment($("#end-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
+        var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
+        if (urlCheck.hostname === "www.twitch.tv" || urlCheck.hostname === "twitch.tv") {
+            regex = new RegExp('(?=[0-9])[^\/]+', 'gm');
+            replaced = url.match(regex);
+            window.location.href = window.location.origin + window.location.pathname + "?id=" + replaced[0].replace(/[?]/gm, '&') + timestamps;
+        }
+        if (urlCheck.hostname === "www.youtube.com" || urlCheck.hostname === "youtube.com") {
+            window.location.href = window.location.origin + window.location.pathname + urlCheck.search + timestamps;
+        }
+        if (urlCheck.hostname === "youtu.be") {
+            window.location.href = window.location.origin + window.location.pathname + "?v=" + urlCheck.pathname.slice(1) + urlCheck.search + timestamps;
+        }
+        if (urlCheck.hostname === "www.odysee.com" || urlCheck.hostname === "odysee.com") {
+            if (urlCheck.pathname.match(/\/\$\/download\/.+/)) {
+                window.location.href = window.location.origin + window.location.pathname + "?od=" + encodeURI(urlCheck.pathname.slice(12)) + timestamps;
+            }
+        }
+    } catch (e) {
+        console.error(e)
     }
-    if (matchArray[0][3] === "www.youtube.com" || matchArray[0][3] === "www.youtube.com") {
-        window.location.href = window.location.origin + window.location.pathname + matchArray[0][7] + timestamps;
-    }
-    if (matchArray[0][3] === "youtu.be") {
-        let ogtime = (matchArray[0][7] != null || undefined) ? matchArray[0][7].replace(/[?]/gm, '&') : "";
-        window.location.href = window.location.origin + window.location.pathname + "?v=" + matchArray[0][6] + ogtime + timestamps;
-    }
+    // var matches = url.matchAll(urlCheck);
+    // var matchArray = [...matches];
 };
 
 function onlyChat() {
