@@ -8,6 +8,7 @@ $(document).ready(function() {
     var hash = getUrlParameter("hash");
     var vodstinyTwitch = getUrlParameter("at");
     var vodstinyYoutube = getUrlParameter("ay");
+    var odysee = getUrlParameter("od");
     var chatonly = getUrlParameter("chatonly");
     var cdn = getUrlParameter("cdn");
     var time = (getUrlParameter("t")) ? ((timeregex.test(getUrlParameter("t"))) ? getUrlParameter("t").substring(0, getUrlParameter("t").length - 1) : getUrlParameter("t")) : 0;
@@ -18,7 +19,7 @@ $(document).ready(function() {
     var playerActive = 0;
     var lwodActive = 0;
     var chatSide = localStorage.getItem('chatSide');
-    var playerType = (id) ? "twitch" : (v) ? "youtube" : (hash) ? "m3u8" : (chatonly) ? "chatonly" : (vodstinyTwitch || vodstinyYoutube) ? "vodstiny" : null;
+    var playerType = (id) ? "twitch" : (v) ? "youtube" : (hash) ? "m3u8" : (chatonly) ? "chatonly" : (vodstinyTwitch || vodstinyYoutube) ? "vodstiny" : (odysee) ? "odysee" : null;
     var tabType = "youtube";
     const twitchButton = document.getElementById("twitch-button");
     const youtubeButton = document.getElementById("youtube-button");
@@ -78,7 +79,7 @@ $(document).ready(function() {
         splits = ['#video-player', '#chat-container'];
     }
 
-    if (id || v || hash || vodstinyYoutube || vodstinyTwitch || chatonly) {
+    if (id || v || hash || vodstinyYoutube || vodstinyTwitch || odysee || chatonly) {
         var vidId;
         switch (playerType) {
             case "twitch":
@@ -97,6 +98,9 @@ $(document).ready(function() {
                 } else {
                     vidId = vodstinyTwitch;
                 }
+                break;
+            case "odysee":
+                vidId = odysee;
                 break;
             case "chatonly":
                 vidId = "nothing";
@@ -617,6 +621,38 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 params.set("t", `${Math.round(replacedVideo.currentTime)}`);
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
+            break;
+        case "odysee":
+            var replacedVideo = document.createElement('video');
+            replacedVideo.controls = true;
+            replacedVideo.autoplay = true;
+            replacedVideo.muted = true;
+            replacedVideo.id = "m3u8-player";
+            replacedVideo.style.width = "100%";
+            replacedVideo.style.objectFit = "contain";
+            replacedVideo.style.height = "100%";
+            document.querySelector("#video-player").appendChild(replacedVideo);
+            $.get(`/odinfo?od=${decodeURI(id)}`, {}, function (data) {
+                var videoSrc = data;
+                replacedVideo.src = videoSrc;
+                replacedVideo.currentTime = time;
+        
+                var chat = new Chat(id, replacedVideo, type, start, end, provider);
+                replacedVideo.addEventListener("play", function () {
+                    chat.startChatStream();
+                })
+            
+                replacedVideo.addEventListener("pause", function() {
+                    chat.pauseChatStream();
+                });
+        
+                $("#copy-button").show();
+                $("#copy-button").click(function () {
+                    let params = new URLSearchParams(window.location.href);
+                    params.set("t", `${Math.round(replacedVideo.currentTime)}`);
+                    navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
+                });
+            })
             break;
     }
 

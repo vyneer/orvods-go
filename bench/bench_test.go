@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bytedance/sonic/encoder"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/vyneer/orvods-go/parser"
 )
@@ -15,7 +16,7 @@ import (
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 var fastestJson = jsoniter.ConfigFastest
 
-var urls string = "[\"https://dgg.overrustlelogs.net/Destinygg%20chatlog/April%202021/2021-04-09.txt\",\"https://dgg.overrustlelogs.net/Destinygg%20chatlog/April%202021/2021-04-10.txt\"]"
+// var urls string = "[\"https://dgg.overrustlelogs.net/Destinygg%20chatlog/April%202021/2021-04-09.txt\",\"https://dgg.overrustlelogs.net/Destinygg%20chatlog/April%202021/2021-04-10.txt\"]"
 var from string = "2021-04-09 19:08:46 UTC"
 var to string = "2021-04-10 04:50:52 UTC"
 
@@ -90,7 +91,7 @@ func ParseChatIntPrealloc(chatlines []string) map[int64][]parser.Dictionary {
 }
 
 func BenchmarkNewParse(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		parser.ParseChat(chatlines)
@@ -98,7 +99,7 @@ func BenchmarkNewParse(b *testing.B) {
 }
 
 func BenchmarkPreallocParse(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ParseChatPrealloc(chatlines)
@@ -106,7 +107,7 @@ func BenchmarkPreallocParse(b *testing.B) {
 }
 
 func BenchmarkIntParse(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ParseChatInt(chatlines)
@@ -114,7 +115,7 @@ func BenchmarkIntParse(b *testing.B) {
 }
 
 func BenchmarkIntPreallocParse(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ParseChatIntPrealloc(chatlines)
@@ -122,7 +123,7 @@ func BenchmarkIntPreallocParse(b *testing.B) {
 }
 
 func BenchmarkOldParse(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ParseChatOld(chatlines)
@@ -130,7 +131,7 @@ func BenchmarkOldParse(b *testing.B) {
 }
 
 func BenchmarkJsonRegular(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		res := ParseChatInt(chatlines)
@@ -139,7 +140,7 @@ func BenchmarkJsonRegular(b *testing.B) {
 }
 
 func BenchmarkJsonFast(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		res := ParseChatInt(chatlines)
@@ -148,7 +149,7 @@ func BenchmarkJsonFast(b *testing.B) {
 }
 
 func BenchmarkJsonFastest(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		res := ParseChatInt(chatlines)
@@ -156,8 +157,17 @@ func BenchmarkJsonFastest(b *testing.B) {
 	}
 }
 
+func BenchmarkJsonSonic(b *testing.B) {
+	chatlines, _ := parser.GetTextFiles(from, to)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		res := ParseChatInt(chatlines)
+		encoder.Encode(res, encoder.EscapeHTML)
+	}
+}
+
 func BenchmarkJsonRegularString(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		res := ParseChatOld(chatlines)
@@ -166,7 +176,7 @@ func BenchmarkJsonRegularString(b *testing.B) {
 }
 
 func BenchmarkJsonFastString(b *testing.B) {
-	chatlines, _ := parser.GetTextFiles(urls, from, to)
+	chatlines, _ := parser.GetTextFiles(from, to)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		res := ParseChatOld(chatlines)
@@ -176,6 +186,6 @@ func BenchmarkJsonFastString(b *testing.B) {
 
 func BenchmarkGetTextFiles(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		_, _ = parser.GetTextFiles(urls, from, to)
+		_, _ = parser.GetTextFiles(from, to)
 	}
 }
