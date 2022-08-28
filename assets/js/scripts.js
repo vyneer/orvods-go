@@ -632,7 +632,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             replacedVideo.style.objectFit = "contain";
             replacedVideo.style.height = "100%";
             document.querySelector("#video-player").appendChild(replacedVideo);
-            $.get(`/odinfo?od=${decodeURI(id)}`, {}, function (data) {
+            $.get(`odinfo?od=${decodeURI(id)}`, {}, function (data) {
                 var videoSrc = data;
                 replacedVideo.src = videoSrc;
                 replacedVideo.currentTime = time;
