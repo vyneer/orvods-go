@@ -66,7 +66,6 @@ func main() {
 		})
 	}
 	orvods.Static(cfg.Prefix+"/", "./public")
-	orvods.Get(cfg.Prefix+"/odinfo", getOdysee)
 	orvods.Get(cfg.Prefix+"/vidinfo", getVidInfo)
 	orvods.Get(cfg.Prefix+"/vodinfo", getVODInfo)
 	orvods.Get(cfg.Prefix+"/userinfo", getUserInfo)

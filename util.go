@@ -93,21 +93,3 @@ func getChat(c *fiber.Ctx) error {
 		}
 	}
 }
-
-func getOdysee(c *fiber.Ctx) error {
-	id := c.Query("od")
-
-	if id != "" {
-		log.FiberInfof("resolving Odysee video info (id: %s)", c, id)
-		resp, err := http.Head("https://odysee.com/$/download/" + id)
-		if err != nil {
-			log.FiberErrorf("couldn't resolve odysee url %v", c, err.Error())
-			return c.Status(http.StatusBadRequest).SendString("Couldn't resolve odysee url")
-		}
-		finalURL := resp.Request.URL.String()
-
-		return c.SendString(finalURL)
-	} else {
-		return c.Status(http.StatusBadRequest).SendString(`Please provide the "od" query parameter`)
-	}
-}

@@ -140,6 +140,34 @@ function vodURL(url) {
         if (urlCheck.hostname === "www.odysee.com" || urlCheck.hostname === "odysee.com") {
             if (urlCheck.pathname.match(/\/\$\/download\/.+/)) {
                 window.location.href = window.location.origin + window.location.pathname + "?od=" + encodeURI(urlCheck.pathname.slice(12)) + timestamps;
+            } else {
+                const odysseySplit = urlCheck.pathname.slice(1).split("/")
+                const videoName = odysseySplit[1].split(":")[0]
+                if (odysseySplit.length === 2) {
+                    fetch("https://api.lbry.tv/api/v1/proxy", {
+                        method: "post",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            "method": "claim_search",
+                            "params": {
+                                "channel": odysseySplit[0],
+                                "name": videoName
+                            }
+                        })
+                    }).then(resp => {
+                        if (resp.status === 200) {
+                            return resp.json()
+                        } else {
+                            console.error(`LBRY status: ${resp.status}`)
+                            return Promise.reject("server")
+                        }
+                    }).then(data => {
+                        if ("result" in data && data["result"]["items"].length !== 0) {
+                            claim = data["result"]["items"][0]["claim_id"]
+                            window.location.href = window.location.origin + window.location.pathname + "?od=" + encodeURI(`${videoName}/${claim}`) + timestamps;
+                        }
+                    })
+                }
             }
         }
     } catch (e) {
