@@ -44,6 +44,7 @@ func main() {
 		TrustedProxies:          []string{cfg.TrustedProxy},
 		Immutable:               true,
 		JSONEncoder:             Marshal,
+		StrictRouting:           true,
 	})
 
 	orvods.Use(cors.New())
@@ -58,6 +59,12 @@ func main() {
 		log.Infof("Current prefix is set to nothing.")
 	}
 
+	if cfg.Prefix != "" {
+		orvods.Get(cfg.Prefix, func(c *fiber.Ctx) error {
+			c.Redirect(c.OriginalURL() + "/")
+			return nil
+		})
+	}
 	orvods.Static(cfg.Prefix+"/", "./public")
 	orvods.Get(cfg.Prefix+"/odinfo", getOdysee)
 	orvods.Get(cfg.Prefix+"/vidinfo", getVidInfo)
