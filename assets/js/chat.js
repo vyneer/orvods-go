@@ -433,7 +433,7 @@ var Chat = function(id, player, type, start, end, provider) {
 
 				self.actualPreviousTimeOffset = currentTimeOffset;
 
-				if (self.lineLimit.val() != "0" || self.lineLimit.val() != "") {
+				if (self.lineLimit.val() !== 0 && self.lineLimit.val() !== "0" && self.lineLimit.val() !== "") {
 					if (self.chatStream.children().length > self.lineLimit.val()) {
 						removeLine = "#chat-stream div:lt(" + (self.chatStream.children().length - self.lineLimit.val()) + ")";
 						$(removeLine).remove();
