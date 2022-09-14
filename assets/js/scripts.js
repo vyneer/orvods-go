@@ -410,26 +410,9 @@ $(document).ready(function() {
         }
     });
 
-    $("body").on("click", ".vod-entry", function() {
-        window.location.href += "?id=" + $(this).attr("id"); 
-    });
-
-    $("body").on("click", ".vid-entry", function() {
-        window.location.href += "?v=" + $(this).attr("id") + "&start=" + $(this).attr("starttime") + "&end=" + $(this).attr("endtime"); 
-    });
-
-    $("body").on("click", ".arch-entry", function() {
-        window.location.href += `?${$(this).attr("type")}=` + $(this).attr("id") + "&start=" + $(this).attr("starttime") + "&end=" + $(this).attr("endtime"); 
-    });
-
-    $("body").on("click", ".copy-link", function(ev) {
-        navigator.clipboard.writeText(window.location.origin + window.location.pathname + $(this).attr("copy"));
-        ev.stopPropagation();
-    });
-
     $("body").on("click", ".copy-orig", function(ev) {
         navigator.clipboard.writeText($(this).attr("copy"));
-        ev.stopPropagation();
+        ev.preventDefault();
     });
 });
 

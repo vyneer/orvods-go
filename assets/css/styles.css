@@ -338,7 +338,7 @@ body {
 	position: sticky;
 	bottom: 5px;
 	display: flex;
-	justify-content: space-between;
+	flex-direction: row-reverse;
 }
 
 .clipboard-container div {
@@ -350,8 +350,16 @@ body {
 	color: white;
 }
 
-.copy-link:hover, .copy-orig:hover {
+.copy-orig:hover {
 	box-shadow: 0px 0px 10px white;
+}
+
+a .info-container {
+	color: black;
+}
+
+a:visited .info-container {
+	color: black;
 }
 
 .info-container {

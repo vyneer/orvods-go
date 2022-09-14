@@ -34,55 +34,58 @@
 </head>
 <body>
 	<script id="vod-tmpl" type="text/x-jquery-tmpl">
-		<div id="${id}" class="vod-entry shadow">
-			<div class="image-container">
-				<img src="${image}"/>
-				<div class="overlay-container">
-					<div class="views"><span class="octicon octicon-eye"></span>&nbsp;${views}</div>
-					<div class="length"><span class="octicon octicon-watch"></span>&nbsp;${length}</div>
+		<a target="_self" href="?id=${id}">
+			<div id="${id}" class="vod-entry shadow">
+				<div class="image-container">
+					<img src="${image}"/>
+					<div class="overlay-container">
+						<div class="views"><span class="octicon octicon-eye"></span>&nbsp;${views}</div>
+						<div class="length"><span class="octicon octicon-watch"></span>&nbsp;${length}</div>
+					</div>
+					<div class="clipboard-container">
+						<div class="copy-orig" copy="https://twitch.tv/videos/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+					</div>
 				</div>
-				<div class="clipboard-container">
-					<div class="copy-link" copy="?id=${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
-					<div class="copy-orig" copy="https://twitch.tv/videos/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+				<div class="info-container">
+					<div class="title">${title}</div>
+					<div class="date">${date}</div>
 				</div>
 			</div>
-			<div class="info-container">
-				<div class="title">${title}</div>
-				<div class="date">${date}</div>
-			</div>
-		</div>
+		</a>
 	</script>
 
 	<script id="vid-tmpl" type="text/x-jquery-tmpl">
-		<div id="${id}" starttime="${starttime}" endtime="${endtime}" class="vid-entry shadow">
-			<div class="image-container">
-				<img src="${image}"/>
-				<div class="clipboard-container">
-					<div class="copy-link" copy="?v=${id}&start=${starttime}&end=${endtime}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
-					<div class="copy-orig" copy="https://youtu.be/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+		<a target="_self" href="?v=${id}&start=${starttime}&end=${endtime}">
+			<div id="${id}" starttime="${starttime}" endtime="${endtime}" class="vid-entry shadow">
+				<div class="image-container">
+					<img src="${image}"/>
+					<div class="clipboard-container">
+						<div class="copy-orig" copy="https://youtu.be/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+					</div>
+				</div>
+				<div class="info-container">
+					<div class="title">${title}</div>
+					<div class="date">${date}</div>
 				</div>
 			</div>
-			<div class="info-container">
-				<div class="title">${title}</div>
-				<div class="date">${date}</div>
-			</div>
-		</div>
+		</a>
 	</script>
 
 	<script id="arch-tmpl" type="text/x-jquery-tmpl">
-		<div id="${id}" type="${type}" starttime="${starttime}" endtime="${endtime}" class="arch-entry shadow">
-			<div class="image-container">
-				<img src="${image}"/>
-				<div class="clipboard-container">
-					<div class="copy-link" copy="?${type}=${id}&start=${starttime}&end=${endtime}"><span class="octicon octicon-clippy"></span>&nbsp;Copy link</div>
-					<div class="copy-orig" copy="https://polecat.me/vodstiny?id=${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+		<a target="_self" href="?${type}=${id}&start=${starttime}&end=${endtime}">
+			<div id="${id}" type="${type}" starttime="${starttime}" endtime="${endtime}" class="arch-entry shadow">
+				<div class="image-container">
+					<img src="${image}"/>
+					<div class="clipboard-container">
+						<div class="copy-orig" copy="https://polecat.me/vodstiny?id=${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+					</div>
+				</div>
+				<div class="info-container">
+					<div class="title">${title}</div>
+					<div class="date">${date}</div>
 				</div>
 			</div>
-			<div class="info-container">
-				<div class="title">${title}</div>
-				<div class="date">${date}</div>
-			</div>
-		</div>
+		</a>
 	</script>
 
 	<script id="timestamp-tmpl" type="text/x-jquery-tmpl">
