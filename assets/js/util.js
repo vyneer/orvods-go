@@ -21,7 +21,7 @@ var featuresUrl = "https://vyneer.me/tools/features";
 var ytvodUrl = "https://vyneer.me/tools/ytvods";
 var lwodUrl = "https://vyneer.me/tools/lwod";
 
-var vodstinyUrl = "https://polecat.me/api/dgg_vods";
+var vodstinyUrl = "https://polecat.anax.feralhosting.com/vods.json";
 
 var chatUrl = {
     "orl" : "chat",

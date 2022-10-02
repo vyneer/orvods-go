@@ -454,6 +454,7 @@ async function loadVODs(type) {
                 if (!element.recording) {
                     element.service = 'youtube';
                     element.date = new Date(element.date);
+                    element.originalID = element.id;
                     element.id = element.file.split('-')[0] + element.date.getTime();
                     vodArray.push(element);
                     vodMap[element.id] = element;
@@ -463,6 +464,7 @@ async function loadVODs(type) {
                 if (!element.recording) {
                     element.service = 'twitch';
                     element.date = new Date(element.date);
+                    element.originalID = element.id;
                     element.id = element.title.split('-')[0] + element.date.getTime();
                     vodArray.push(element);
                     vodMap[element.id] = element;
@@ -585,7 +587,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             replacedVideo.style.objectFit = "contain";
             replacedVideo.style.height = "100%";
             document.querySelector("#video-player").appendChild(replacedVideo);
-            var videoSrc = `https://polecat.me/video/vods/${map[id].service}/${map[id].file}`;
+            var videoSrc = `https://polecat.anax.feralhosting.com/${map[id].file}`;
             replacedVideo.src = videoSrc;
             replacedVideo.currentTime = time;
     
@@ -664,11 +666,34 @@ var createVodEntries = function(vodData, type) {
         })
     } else if (type === "vodstiny") {
         vodData.forEach(function(vod) {
+            let thumbnail;
+            let og_vod;
+            switch (vod.service) {
+                case "youtube":
+                    og_vod = allVids.find(o => o.id === vod.originalID);
+                    if (og_vod !== undefined || null) {
+                        thumbnail = og_vod.thumbnail
+                    } else {
+                        thumbnail = "css/vodstiny/yt-logo.png"
+                    }
+                    break;
+                case "twitch":
+                    og_vod = allVODs.find(o => o.id === vod.originalID);
+                    if (og_vod !== undefined || null) {
+                        thumbnail = og_vod.thumbnail_url.replace(/%([\s\S]*)(?=\.)/, "320x180")
+                    } else {
+                        thumbnail = "css/vodstiny/twitch-logo.png"
+                    }
+                    break;
+                default:
+                    thumbnail = "";
+                    break;
+            }
             createArchEntry({
                 id: vod.id,
                 type: (vod.service == "youtube") ? "ay" : "at",
                 title: vod.title,
-                image: (vod.service == "youtube") ? "https://polecat.me/img/yt-logo.png" : "https://polecat.me/img/twitch-logo.png",
+                image: thumbnail,
                 date: formatDate(vod.date),
                 starttime: moment.utc(vod.date).toISOString(),
                 endtime: moment.utc(vod.date).add(12, 'hours').toISOString()

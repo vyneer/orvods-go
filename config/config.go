@@ -141,7 +141,7 @@ func SetupCache(cfg *Config) (context.Context, *cache.Cache[[]byte]) {
 
 func CreateIndex(assets hasherator.AssetsDir) {
 	log.Infof("Creating the index.html and hashbusting everything else...")
-	_ = assets.Run("./assets/", "./public/", []string{"lib", "octicons", "flairs"})
+	_ = assets.Run("./assets/", "./public/", []string{"lib", "octicons", "flairs", "vodstiny"})
 
 	f, err := os.Create("./public/index.html")
 	if err != nil {
