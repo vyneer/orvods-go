@@ -3,6 +3,7 @@ package parser
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"html"
 	"io"
 	"net/http"
@@ -13,6 +14,23 @@ import (
 	"github.com/vosmith/pancake"
 	log "github.com/vyneer/orvods-go/logger"
 )
+
+var ErrBadRequest = errors.New("400 Bad Request")
+var ErrNotFound = errors.New("404 Not Found")
+var ErrForbidden = errors.New("403 Forbidden")
+var ErrTooManyRequests = errors.New("429 Too Many Requests")
+var ErrInternalServerError = errors.New("500 Internal Server Error")
+var ErrBadGateway = errors.New("502 Bad Gateway")
+var ErrServiceUnavailable = errors.New("503 Service Unavailable")
+
+var transport http.RoundTripper = &http.Transport{
+	DisableKeepAlives: true,
+}
+
+var client *http.Client = &http.Client{
+	Transport: transport,
+	Timeout:   10 * time.Second,
+}
 
 var timestampRegex = regexp.MustCompile(`^([01]?[0-9]|2[0-3])\:[0-5][0-9]\:[0-5][0-9]$`)
 
@@ -51,7 +69,24 @@ func downloadFile(client *http.Client, URL string, order int) (int, string, erro
 	}
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
-		return order, "", errors.New(response.Status)
+		switch response.StatusCode {
+		case http.StatusBadRequest:
+			return order, "", ErrBadRequest
+		case http.StatusNotFound:
+			return order, "", ErrNotFound
+		case http.StatusForbidden:
+			return order, "", ErrForbidden
+		case http.StatusTooManyRequests:
+			return order, "", ErrTooManyRequests
+		case http.StatusInternalServerError:
+			return order, "", ErrInternalServerError
+		case http.StatusBadGateway:
+			return order, "", ErrBadGateway
+		case http.StatusServiceUnavailable:
+			return order, "", ErrServiceUnavailable
+		default:
+			return order, "", errors.New(response.Status)
+		}
 	}
 	var data bytes.Buffer
 	_, err = io.Copy(&data, response.Body)
@@ -79,23 +114,18 @@ func downloadMultipleFiles(client *http.Client, urls []string) ([][]string, erro
 			errch <- nil
 		}(URL, i)
 	}
-	var errStr string
 	for i := 0; i < len(urls); i++ {
 		result := <-done
 		buf := strings.Split(result.Text, "\n")
 		pages[result.Order] = buf[:len(buf)-1]
 		if err := <-errch; err != nil {
-			errStr = errStr + " " + err.Error()
+			return ret_pages, err
 		}
-	}
-	var err error
-	if errStr != "" {
-		err = errors.New(errStr)
 	}
 	for i := 0; i < len(urls); i++ {
 		ret_pages = append(ret_pages, pages[i])
 	}
-	return ret_pages, err
+	return ret_pages, nil
 }
 
 func getOverRustleURLs(from, to time.Time) []string {
@@ -116,6 +146,54 @@ func getOverRustleURLs(from, to time.Time) []string {
 	}
 
 	return urlSlice
+}
+
+func GetDBLines(from, to string) ([]byte, error) {
+	fromStamp, err := time.Parse("2006-01-02 15:04:05 UTC", from)
+	if err != nil {
+		return nil, err
+	}
+	toStamp, err := time.Parse("2006-01-02 15:04:05 UTC", to)
+	if err != nil {
+		return nil, err
+	}
+
+	fromFormatted := fromStamp.Format("2006-01-02T15:04:05Z")
+	toFormatted := toStamp.Format("2006-01-02T15:04:05Z")
+
+	url := fmt.Sprintf("https://vyneer.me/tools/logs?from=%s&to=%s", fromFormatted, toFormatted)
+
+	req, _ := http.NewRequest("GET", url, nil)
+	response, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	if response.StatusCode != http.StatusOK {
+		switch response.StatusCode {
+		case http.StatusBadRequest:
+			return nil, ErrBadRequest
+		case http.StatusNotFound:
+			return nil, ErrNotFound
+		case http.StatusForbidden:
+			return nil, ErrForbidden
+		case http.StatusTooManyRequests:
+			return nil, ErrTooManyRequests
+		case http.StatusInternalServerError:
+			return nil, ErrInternalServerError
+		case http.StatusBadGateway:
+			return nil, ErrBadGateway
+		case http.StatusServiceUnavailable:
+			return nil, ErrServiceUnavailable
+		default:
+			return nil, errors.New(response.Status)
+		}
+	}
+	b, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
 }
 
 // GetTextFiles downloads logs from OverRustleLogs
@@ -139,12 +217,6 @@ func GetTextFiles(from, to string) ([]string, error) {
 
 	arr := getOverRustleURLs(fromStamp, toStamp)
 	log.Debugf("got the URLs: %+v", arr)
-
-	var transport http.RoundTripper = &http.Transport{
-		DisableKeepAlives: true,
-	}
-
-	client := &http.Client{Transport: transport}
 
 	pages, err := downloadMultipleFiles(client, arr)
 	if err != nil {
