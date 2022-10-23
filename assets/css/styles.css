@@ -138,18 +138,18 @@ body {
 	position: relative;
 }
 
-#scoot-credit, .polecat-credit {
+#scoot-credit, .polecat-credit, .cantclosevim-credit {
 	width: 90%;
 	opacity: 45%;
 	text-align: center;
 }
 
-.polecat-credit {
+.polecat-credit, .cantclosevim-credit {
 	color: white;
 	width: 100%;
 }
 
-#scoot-credit:hover, .polecat-credit:hover {
+#scoot-credit:hover, .polecat-credit:hover, .cantclosevim-credit:hover {
 	opacity: 100%;
 }
 
@@ -209,14 +209,14 @@ body {
 	align-items: center;
 	margin-right: auto;
 	margin-left: auto;
-	width: 600px;
+	width: 800px;
 }
 
 .site-selector-button {
 	font-size: larger;
 	color: black;
 	text-align: center;
-	width: 80px;
+	width: 120px;
 	padding: 10px 30px;
 	background-color: #CCC;
 	border-radius: 3px;
@@ -300,7 +300,7 @@ body {
 	}
 }
 
-@media only screen and (max-width: 635px) {
+@media only screen and (max-width: 790px) {
 	.vod-entry, .vid-entry, .arch-entry {
 		width: 97%;
 	}

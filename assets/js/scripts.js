@@ -24,6 +24,7 @@ $(document).ready(function() {
     const twitchButton = document.getElementById("twitch-button");
     const youtubeButton = document.getElementById("youtube-button");
     const vodstinyButton = document.getElementById("vodstiny-button");
+    const gnomevodsButton = document.getElementById("gnomevods-button");
     var splits;
     globals.sizes = localStorage.getItem('split-sizes');
 
@@ -37,6 +38,9 @@ $(document).ready(function() {
                 break;
             case "vodstiny":
                 vodstinyButton.classList.toggle("visible")
+                break;
+            case "gnomevods":
+                gnomevodsButton.classList.toggle("visible")
                 break;
         }
     })
@@ -139,6 +143,7 @@ $(document).ready(function() {
         $("#browse").show();
         $("#lwod").hide();
         $(".polecat-credit").hide();
+        $(".cantclosevim-credit").hide();
         $("#copy-button").hide();
         playerActive = 0;
     }
@@ -186,10 +191,12 @@ $(document).ready(function() {
     $("#twitch-button").click(function() {
         if (!twitchButton.classList.contains("active")) {
             $(".polecat-credit").hide();
+            $(".cantclosevim-credit").hide();
             twitchButton.classList.add("active");
             tabType = "twitch";
             youtubeButton.classList.remove("active");
             vodstinyButton.classList.remove("active");
+            gnomevodsButton.classList.remove("active");
             page = 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
@@ -201,10 +208,12 @@ $(document).ready(function() {
     $("#youtube-button").click(function() {
         if (!youtubeButton.classList.contains("active")) {
             $(".polecat-credit").hide();
+            $(".cantclosevim-credit").hide();
             youtubeButton.classList.add("active");
             tabType = "youtube";
             twitchButton.classList.remove("active");
             vodstinyButton.classList.remove("active");
+            gnomevodsButton.classList.remove("active");
             page = 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
@@ -216,10 +225,12 @@ $(document).ready(function() {
     $("#vodstiny-button").click(function() {
         if (!vodstinyButton.classList.contains("active")) {
             $(".polecat-credit").show();
+            $(".cantclosevim-credit").hide();
             vodstinyButton.classList.add("active");
             tabType = "vodstiny";
             twitchButton.classList.remove("active");
             youtubeButton.classList.remove("active");
+            gnomevodsButton.classList.remove("active");
             page = 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
@@ -239,6 +250,34 @@ $(document).ready(function() {
         }
     })
 
+    $("#gnomevods-button").click(function() {
+        if (!gnomevodsButton.classList.contains("active")) {
+            $(".cantclosevim-credit").show();
+            $(".polecat-credit").hide();
+            gnomevodsButton.classList.add("active");
+            tabType = "gnomevods";
+            twitchButton.classList.remove("active");
+            youtubeButton.classList.remove("active");
+            vodstinyButton.classList.remove("active");
+            page = 1;
+            $("#page-number").text(page);
+            $("#vod-list").empty();
+            if (allGnomevods.length == 0) {
+                loadVODs("gnomevods").then(result => {
+                    allGnomevods = result[0];
+                    return result[0];
+                }).then((arr) => {
+                    return arr.slice((page-1)*9,page*9);
+                }).then((slice) => {
+                    createVodEntries(slice, tabType);
+                });
+            } else {
+                nineEntries = allGnomevods.slice((page-1)*9,page*9);
+                createVodEntries(nineEntries, tabType);
+            }
+        }
+    })
+
     $("#next-page-button").click(function() {
         let vodinfo;
         switch (tabType) {
@@ -249,6 +288,9 @@ $(document).ready(function() {
                 vodinfo = allVids;
                 break;
             case "vodstiny":
+                vodinfo = allArch;
+                break;
+            case "gnomevods":
                 vodinfo = allArch;
                 break;
         }
@@ -283,6 +325,9 @@ $(document).ready(function() {
                 vodinfo = allVids;
                 break;
             case "vodstiny":
+                vodinfo = allArch;
+                break;
+            case "gnomevods":
                 vodinfo = allArch;
                 break;
         }
@@ -419,6 +464,7 @@ $(document).ready(function() {
 var allVODs = [];
 var allVids = [];
 var allArch = [];
+let allGnomevods = [];
 
 async function loadVODs(type) {
     let vodArray = [];
@@ -471,6 +517,38 @@ async function loadVODs(type) {
                 }
             });
             vodArray = vodArray.sort((a, b) => b.date - a.date);
+            return [vodArray, vodMap];
+        }
+        case "gnomevods": {
+            let response = await fetch('https://api.lbry.tv/api/v1/proxy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        "method": "claim_search",
+                        "params": {
+                            "channel": "@gnomevods:3",
+                            "order_by": "release_time",
+                            "page": 1,
+                            "page_size": 45,
+                        }
+                    }
+                )
+            });
+            let data = await response.json();
+            data.result.items.forEach((element) => {
+                let vod = {};
+                vod.title = element.value.title;
+                vod.originalID = element.name;
+                vod.id = element.short_url.substring(7).replace("#", ":");
+                vod.claim = element.claim_id;
+                vod.thumbnail = element.value.thumbnail.url;
+                vod.duration = element.value.video.duration;
+                vodArray.push(vod);
+                vodMap[vod.id] = vod;
+            });
             return [vodArray, vodMap];
         }
     }
@@ -699,6 +777,23 @@ var createVodEntries = function(vodData, type) {
                 endtime: moment.utc(vod.date).add(12, 'hours').toISOString()
             });
         })
+    } else if (type === "gnomevods") {
+        vodData.forEach(function(vod) {
+            let og_vod;
+            og_vod = allVids.find(o => o.id === vod.originalID);
+            if (og_vod === undefined || null) {
+                return
+            } 
+            createGVEntry({
+                id: `${vod.originalID}/${vod.claim}`,
+                odyseeID: vod.id,
+                title: og_vod.title,
+                image: vod.thumbnail,
+                date: formatDate(og_vod.starttime),
+                starttime: og_vod.starttime,
+                endtime: og_vod.endtime
+            });
+        })
     }
 
 };
@@ -713,6 +808,10 @@ var createVidEntry = function(vod) {
 
 var createArchEntry = function(vod) {
     $("#arch-tmpl").tmpl(vod).appendTo("#vod-list");
+};
+
+var createGVEntry = function(vod) {
+    $("#gv-tmpl").tmpl(vod).appendTo("#vod-list");
 };
 
 var createLWODTimestamps = function(data, type) {
