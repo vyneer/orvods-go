@@ -587,7 +587,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             replacedVideo.style.objectFit = "contain";
             replacedVideo.style.height = "100%";
             document.querySelector("#video-player").appendChild(replacedVideo);
-            var videoSrc = `https://polecat.anax.feralhosting.com/${map[id].file}`;
+            var videoSrc = `https://dgg.sfo3.digitaloceanspaces.com/vods/${map[id].file}`;
             replacedVideo.src = videoSrc;
             replacedVideo.currentTime = time;
     
