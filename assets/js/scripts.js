@@ -773,8 +773,9 @@ var createVodEntries = function(vodData, type) {
                 title: vod.title,
                 image: thumbnail,
                 date: formatDate(vod.date),
-                starttime: moment.utc(vod.date).toISOString(),
-                endtime: moment.utc(vod.date).add(12, 'hours').toISOString()
+                // vodstiny timestamps are 5h off bc of timezone memes, adjusting for it
+                starttime: moment.utc(vod.date).add(5, 'hours').toISOString(),
+                endtime: moment.utc(vod.date).add(17, 'hours').toISOString()
             });
         })
     } else if (type === "gnomevods") {
