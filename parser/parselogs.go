@@ -22,6 +22,7 @@ var ErrTooManyRequests = errors.New("429 Too Many Requests")
 var ErrInternalServerError = errors.New("500 Internal Server Error")
 var ErrBadGateway = errors.New("502 Bad Gateway")
 var ErrServiceUnavailable = errors.New("503 Service Unavailable")
+var ErrMovedTemporarily = errors.New("302 Moved Temporarily")
 
 var transport http.RoundTripper = &http.Transport{
 	DisableKeepAlives: true,
@@ -30,6 +31,9 @@ var transport http.RoundTripper = &http.Transport{
 var client *http.Client = &http.Client{
 	Transport: transport,
 	Timeout:   10 * time.Second,
+	CheckRedirect: func(req *http.Request, via []*http.Request) error {
+		return ErrMovedTemporarily
+	},
 }
 
 var timestampRegex = regexp.MustCompile(`^([01]?[0-9]|2[0-3])\:[0-5][0-9]\:[0-5][0-9]$`)
