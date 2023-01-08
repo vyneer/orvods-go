@@ -42,7 +42,7 @@ var Chat = function(id, player, type, start, end, provider) {
 		+ "<div id='loading-message-3' class='msg-chat'><span class='message'>" + randomMessage + "</span></div></div>";
 
 	var self = this;
-	if (self.timestampStart && self.timestampEnd && (self.playerType === "youtube" || self.playerType === "m3u8" || self.playerType === "vodstiny" || self.playerType === "odysee")) {
+	if (self.timestampStart && self.timestampEnd && (self.playerType === "youtube" || self.playerType === "m3u8" || self.playerType === "vodstiny" || self.playerType === "odysee" || self.playerType === "rumble")) {
 			self.recordedTime = moment(self.timestampStart).utc();
 			self.endTime = moment(self.timestampEnd).utc();
 			
@@ -83,7 +83,7 @@ var Chat = function(id, player, type, start, end, provider) {
 				$("#loading-message").remove();
 			});
 	} else {
-		if (!(self.playerType === "chatonly" || self.playerType === "m3u8" || self.playerType == "odysee")) {
+		if (!(self.playerType === "chatonly" || self.playerType === "m3u8" || self.playerType === "odysee" || self.playerType === "rumble")) {
 			$.get(servicesUrl[self.playerType] + this.videoId, function(vodData) {
 				self.hReplace = new RegExp('([h])', 'gm');
 				self.mReplace = new RegExp('([m])', 'gm');
@@ -338,7 +338,16 @@ var Chat = function(id, player, type, start, end, provider) {
 			break;
 		case "chatonly":
 			self.actualPreviousTimeOffset = 0;
-			break
+			break;
+		case "rumble":
+			const rumbleVideo = document.querySelector('#video-player video')
+			rumbleVideo.addEventListener('progress', function() {
+				self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.getCurrentTime());
+			});
+			rumbleVideo.addEventListener('ratechange', function() {
+				self.playbackSpeed = rumbleVideo.playbackRate;
+			});
+			break;
 		default:
 			self.videoPlayer.addEventListener('progress', function() {
 				self.actualPreviousTimeOffset = Math.floor(self.videoPlayer.currentTime);

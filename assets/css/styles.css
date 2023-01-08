@@ -398,6 +398,11 @@ a:visited .info-container {
 	width: calc(100% - 390px);
 }
 
+/* fixing the Rumble player height */
+.video-player-Rumble-cls {
+	height: 100% !important;
+}
+
 #live-chat-container {
 	min-width: 300px;
 	border-width: 0;

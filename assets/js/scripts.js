@@ -9,6 +9,7 @@ $(document).ready(function() {
     var vodstinyTwitch = getUrlParameter("at");
     var vodstinyYoutube = getUrlParameter("ay");
     var odysee = getUrlParameter("od");
+    var rumble = getUrlParameter("r");
     var chatonly = getUrlParameter("chatonly");
     var cdn = getUrlParameter("cdn");
     var time = (getUrlParameter("t")) ? ((timeregex.test(getUrlParameter("t"))) ? getUrlParameter("t").substring(0, getUrlParameter("t").length - 1) : getUrlParameter("t")) : 0;
@@ -19,7 +20,7 @@ $(document).ready(function() {
     var playerActive = 0;
     var lwodActive = 0;
     var chatSide = localStorage.getItem('chatSide');
-    var playerType = (id) ? "twitch" : (v) ? "youtube" : (hash) ? "m3u8" : (chatonly) ? "chatonly" : (vodstinyTwitch || vodstinyYoutube) ? "vodstiny" : (odysee) ? "odysee" : null;
+    var playerType = (id) ? "twitch" : (v) ? "youtube" : (hash) ? "m3u8" : (chatonly) ? "chatonly" : (vodstinyTwitch || vodstinyYoutube) ? "vodstiny" : (odysee) ? "odysee" : (rumble) ? "rumble" : null;
     var tabType = "youtube";
     const twitchButton = document.getElementById("twitch-button");
     const youtubeButton = document.getElementById("youtube-button");
@@ -83,7 +84,7 @@ $(document).ready(function() {
         splits = ['#video-player', '#chat-container'];
     }
 
-    if (id || v || hash || vodstinyYoutube || vodstinyTwitch || odysee || chatonly) {
+    if (id || v || hash || vodstinyYoutube || vodstinyTwitch || odysee || rumble || chatonly) {
         var vidId;
         switch (playerType) {
             case "twitch":
@@ -105,6 +106,9 @@ $(document).ready(function() {
                 break;
             case "odysee":
                 vidId = odysee;
+                break;
+            case "rumble":
+                vidId = rumble;
                 break;
             case "chatonly":
                 vidId = "nothing";
@@ -713,6 +717,31 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 params.set("t", `${Math.round(replacedVideo.currentTime)}`);
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
+            break;
+        case "rumble":
+            Rumble("play", { video: id , div: "video-player", api: function(api) {
+                console.log(api)
+                var chat = new Chat(id, api, type, start, end, provider);
+                api.on("play", function() {
+                    chat.startChatStream();
+                });
+            
+                api.on("pause", function() {
+                    chat.pauseChatStream();
+                });
+
+                $("#copy-button").show();
+                $("#copy-button").click(function () {
+                    let params = new URLSearchParams(window.location.href);
+                    params.set("t", `${Math.round(api.getCurrentTime())}s`);
+                    navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
+                });
+
+                if (time !== 0) {
+                    console.log(time.split('s')[0])
+                    api.setCurrentTime(time.split('s')[0])
+                }
+            }});
             break;
     }
 

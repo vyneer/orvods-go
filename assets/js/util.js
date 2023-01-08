@@ -170,6 +170,12 @@ function vodURL(url) {
                 }
             }
         }
+        if (urlCheck.hostname === "www.rumble.com" || urlCheck.hostname === "rumble.com") {
+            const embedCheck = urlCheck.pathname.split('/').filter(e => e.length);
+            if (embedCheck.length > 0 && embedCheck[0] === "embed") {
+                window.location.href = window.location.origin + window.location.pathname + "?r=" + embedCheck[1] + timestamps;
+            }
+        }
     } catch (e) {
         console.error(e)
     }
