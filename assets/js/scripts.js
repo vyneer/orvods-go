@@ -312,7 +312,7 @@ $(document).ready(function() {
             $("#vod-list").empty();
             if (allRumblevods.length == 0) {
                 loadVODs("omnimirror").then(result => {
-                    allGnomevods = result;
+                    allRumblevods = result;
                     return result;
                 }).then((arr) => {
                     return arr.slice((page-1)*9,page*9);
