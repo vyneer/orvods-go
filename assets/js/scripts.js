@@ -381,7 +381,7 @@ $(document).ready(function() {
             case "gnomevods":
                 vodinfo = allGnomevods;
                 break;
-            case "gnomevods":
+            case "omnimirror":
                 vodinfo = allRumblevods;
                 break;
         }
