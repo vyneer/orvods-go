@@ -14,11 +14,12 @@ var months = [
 ];
 
 const destinyUserID = 18074328;
-const vodModules = ["youtube", "vodstiny", "gnomevods"]
+const vodModules = ["youtube", "vodstiny", "gnomevods", "omnimirror"]
 
 // vyneer.me stuff, make sure to edit if you have your own logging system/not gonna use my logs
 var featuresUrl = "https://vyneer.me/tools/features";
 var ytvodUrl = "https://vyneer.me/tools/ytvods";
+var rumbleUrl = "https://vyneer.me/tools/rumblevods";
 var lwodUrl = "https://vyneer.me/tools/lwod";
 
 var vodstinyUrl = "https://dgg.sfo3.digitaloceanspaces.com/vods.json";

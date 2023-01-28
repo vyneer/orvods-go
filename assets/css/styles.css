@@ -138,18 +138,18 @@ body {
 	position: relative;
 }
 
-#scoot-credit, .polecat-credit, .cantclosevim-credit {
+#scoot-credit, .polecat-credit, .cantclosevim-credit, .omnimirror-credit {
 	width: 90%;
 	opacity: 45%;
 	text-align: center;
 }
 
-.polecat-credit, .cantclosevim-credit {
+.polecat-credit, .cantclosevim-credit, .omnimirror-credit {
 	color: white;
 	width: 100%;
 }
 
-#scoot-credit:hover, .polecat-credit:hover, .cantclosevim-credit:hover {
+#scoot-credit:hover, .polecat-credit:hover, .cantclosevim-credit:hover, .omnimirror-credit:hover {
 	opacity: 100%;
 }
 

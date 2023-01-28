@@ -106,6 +106,23 @@
 		</a>
 	</script>
 
+	<script id="rumble-tmpl" type="text/x-jquery-tmpl">
+		<a target="_self" href="?r=${id}&start=${starttime}&end=${endtime}">
+			<div id="${embed_id}" starttime="${starttime}" endtime="${endtime}" class="arch-entry shadow">
+				<div class="image-container">
+					<img src="${image}"/>
+					<div class="clipboard-container">
+						<div class="copy-orig" copy="https://rumble.com${link}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+					</div>
+				</div>
+				<div class="info-container">
+					<div class="title">${title}</div>
+					<div class="date">${date}</div>
+				</div>
+			</div>
+		</a>
+	</script>
+
 	<script id="timestamp-tmpl" type="text/x-jquery-tmpl">
 		<tr starttime="${starttime}" class="timestamp-entry shadow">
 			<td class="table-padding">${starttime}</td>
@@ -176,6 +193,7 @@
 				<div id="twitch-button" class="site-selector-button">Twitch</div>
 				<div id="vodstiny-button" class="site-selector-button">Vodstiny</div>
 				<div id="gnomevods-button" class="site-selector-button">@gnomevods</div>
+				<div id="omnimirror-button" class="site-selector-button">OmniMirror</div>
 			</div>
 			<div id="page-selector">
 				<div id="previous-page-button" class="disabled"><span class="octicon octicon-arrow-left"></span></div>
@@ -186,6 +204,8 @@
 			<div class="polecat-credit">Keep in mind that recordings and chat are slightly misaligned (you can align them in the settings menu manually)</div>
 			<div class="cantclosevim-credit">Source: <a class="white-link" href="https://odysee.com/@gnomevods:3">@gnomevods</a> (thank cantclosevim if you see them in chat! ♥)</div>
 			<div class="cantclosevim-credit">Keep in mind that recordings and chat could be slightly misaligned (you can align them in the settings menu manually)</div>
+			<div class="omnimirror-credit">Source: <a class="white-link" href="https://rumble.com/c/OmniMirror">OmniMirror</a> (not sure who you are, but thank you! ♥)</div>
+			<div class="omnimirror-credit">Keep in mind that recordings and chat could be slightly misaligned (you can align them in the settings menu manually)</div>
 			<div id="vod-list"></div>
 		</div>
 		<div id="player" class="view" style="flex-direction: row;">
