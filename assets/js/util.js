@@ -14,7 +14,7 @@ var months = [
 ];
 
 const destinyUserID = 18074328;
-const vodModules = ["youtube", "vodstiny", "gnomevods", "omnimirror"]
+const vodModules = ["youtube", "gnomevods", "omnimirror"]
 
 // vyneer.me stuff, make sure to edit if you have your own logging system/not gonna use my logs
 var featuresUrl = "https://vyneer.me/tools/features";
