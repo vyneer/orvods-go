@@ -757,23 +757,40 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             replacedVideo.style.objectFit = "contain";
             replacedVideo.style.height = "100%";
             document.querySelector("#video-player").appendChild(replacedVideo);
-            replacedVideo.src = `https://player.odycdn.com/api/v4/streams/free/${decodeURI(id)}/1`;
-            replacedVideo.currentTime = time;
+            fetch('https://api.lbry.tv/api/v1/proxy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        "method": "get",
+                        "params": {
+                            "uri": `${decodeURI(id).replace("/", "#")}`,
+                        }
+                    }
+                )
+            }).then(resp => {
+                return resp.json();
+            }).then(data => {
+                replacedVideo.src = data.result.streaming_url;
+                replacedVideo.currentTime = time;
     
-            var chat = new Chat(id, replacedVideo, type, start, end, provider);
-            replacedVideo.addEventListener("play", function () {
-                chat.startChatStream();
-            })
+                var chat = new Chat(id, replacedVideo, type, start, end, provider);
+                replacedVideo.addEventListener("play", function () {
+                    chat.startChatStream();
+                })
+            
+                replacedVideo.addEventListener("pause", function() {
+                    chat.pauseChatStream();
+                });
         
-            replacedVideo.addEventListener("pause", function() {
-                chat.pauseChatStream();
-            });
-    
-            $("#copy-button").show();
-            $("#copy-button").click(function () {
-                let params = new URLSearchParams(window.location.href);
-                params.set("t", `${Math.round(replacedVideo.currentTime)}`);
-                navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
+                $("#copy-button").show();
+                $("#copy-button").click(function () {
+                    let params = new URLSearchParams(window.location.href);
+                    params.set("t", `${Math.round(replacedVideo.currentTime)}`);
+                    navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
+                });
             });
             break;
         case "rumble":
