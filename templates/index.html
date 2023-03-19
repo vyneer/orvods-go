@@ -123,6 +123,23 @@
 		</a>
 	</script>
 
+	<script id="kick-tmpl" type="text/x-jquery-tmpl">
+		<a target="_self" href="?k=${id}">
+			<div id="${id}" class="arch-entry shadow">
+				<div class="image-container">
+					<img src="${image}"/>
+					<div class="clipboard-container">
+						<div class="copy-orig" copy="https://kick.com/video/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+					</div>
+				</div>
+				<div class="info-container">
+					<div class="title">${title}</div>
+					<div class="date">${date}</div>
+				</div>
+			</div>
+		</a>
+	</script>
+
 	<script id="timestamp-tmpl" type="text/x-jquery-tmpl">
 		<tr starttime="${starttime}" class="timestamp-entry shadow">
 			<td class="table-padding">${starttime}</td>
@@ -189,8 +206,10 @@
 		</div>
 		<div id="browse" class="view container">
 			<div id="site-selector">
-				<div id="youtube-button" class="site-selector-button active">Youtube</div>
+				<div id="youtube-button" class="site-selector-button active">YouTube</div>
 				<div id="twitch-button" class="site-selector-button">Twitch</div>
+				<div id="rumble-button" class="site-selector-button">Rumble</div>
+				<div id="kick-button" class="site-selector-button">Kick</div>
 				<div id="vodstiny-button" class="site-selector-button">Vodstiny</div>
 				<div id="gnomevods-button" class="site-selector-button">@gnomevods</div>
 				<div id="omnimirror-button" class="site-selector-button">OmniMirror</div>
@@ -200,6 +219,7 @@
 				<div id="page-number-container">Page <span id="page-number">1</span></div>
 				<div id="next-page-button"><span class="octicon octicon-arrow-right"></span></div>
 			</div>
+			<div class="rumble-credit">Keep in mind that recordings and chat could be slightly misaligned (you can align them in the settings menu manually)</div>
 			<div class="polecat-credit">Source: <a class="white-link" href="https://polecat.me/vodstiny">vodstiny</a> (thank Polecat if you see them in chat! ♥)</div>
 			<div class="polecat-credit">Keep in mind that recordings and chat are slightly misaligned (you can align them in the settings menu manually)</div>
 			<div class="cantclosevim-credit">Source: <a class="white-link" href="https://odysee.com/@gnomevods:3">@gnomevods</a> (thank cantclosevim if you see them in chat! ♥)</div>

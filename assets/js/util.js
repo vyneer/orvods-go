@@ -14,13 +14,15 @@ var months = [
 ];
 
 const destinyUserID = 18074328;
-const vodModules = ["youtube", "gnomevods", "omnimirror"]
+const vodModules = ["youtube", "rumble", "kick", "gnomevods", "omnimirror"]
 
 // vyneer.me stuff, make sure to edit if you have your own logging system/not gonna use my logs
 var featuresUrl = "https://vyneer.me/tools/features";
 var ytvodUrl = "https://vyneer.me/tools/ytvods";
 var rumbleUrl = "https://vyneer.me/tools/rumblevods";
+var omnimirrorUrl = "https://vyneer.me/tools/omnimirror";
 var lwodUrl = "https://vyneer.me/tools/lwod";
+var corsProxyUrl = "https://vyneer.me/cors";
 
 var vodstinyUrl = "https://dgg.sfo3.digitaloceanspaces.com/vods.json";
 
@@ -175,6 +177,12 @@ function vodURL(url) {
             const embedCheck = urlCheck.pathname.split('/').filter(e => e.length);
             if (embedCheck.length > 0 && embedCheck[0] === "embed") {
                 window.location.href = window.location.origin + window.location.pathname + "?r=" + embedCheck[1] + timestamps;
+            }
+        }
+        if (urlCheck.hostname === "www.kick.com" || urlCheck.hostname === "kick.com") {
+            const videoCheck = urlCheck.pathname.split('/').filter(e => e.length);
+            if (videoCheck.length > 0 && videoCheck[0] === "video") {
+                window.location.href = window.location.origin + window.location.pathname + "?k=" + videoCheck[1] + timestamps;
             }
         }
     } catch (e) {
