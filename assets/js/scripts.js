@@ -729,7 +729,7 @@ async function loadVODs(type) {
             return vodArray;
         }
         case "kick": {
-            let response = await fetch('https://kick.com/api/v1/channels/sponge', {
+            let response = await fetch('https://kick.com/api/v1/channels/destiny', {
                 method: 'GET',
             });
             let data = await response.json();
