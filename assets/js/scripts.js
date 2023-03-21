@@ -920,6 +920,11 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             Rumble("play", { video: id , div: "video-player", api: function(api) {
                 var chat = new Chat(id, api, type, start, end, provider);
                 api.on("play", function() {
+                    // very scuffed, we only call setCurrentTime once on play bc otherwise its unreliable
+                    if (time !== true && time !== 0) {
+                        api.setCurrentTime(time.split('s')[0])
+                        time = true
+                    }
                     chat.startChatStream();
                 });
             
@@ -933,10 +938,6 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                     params.set("t", `${Math.round(api.getCurrentTime())}s`);
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
-
-                if (time !== 0) {
-                    api.setCurrentTime(time.split('s')[0])
-                }
             }});
             break;
         case "kick":
