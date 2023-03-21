@@ -75,6 +75,23 @@ body {
 	margin-right: auto;
 }
 
+.supported-platforms {
+	font-size: 12pt;
+	margin-top: 2px;
+}
+
+.supported-platforms .icon .text-disabled {
+	display: none;
+}
+
+.supported-platforms .perma-disabled {
+	display: none;
+}
+
+.supported-platforms .disabled {
+	opacity: 0.2;
+}
+
 #header-links div a {
 	color: #CCC;
 	cursor: pointer;

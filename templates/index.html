@@ -7,6 +7,10 @@
 
 	<link rel="icon" type="image/png" href="{{index . "favicon.png"}}" />
 
+	<link href="fontawesome/fa-css/fontawesome.css" rel="stylesheet">
+	<link href="fontawesome/fa-css/brands.css" rel="stylesheet">
+	<link href="fontawesome/fa-css/solid.css" rel="stylesheet">
+
 	<link rel="stylesheet" href="octicons/octicons.css">
 	<link rel="stylesheet" href="css/{{index . "styles.css"}}"/>
 
@@ -165,7 +169,31 @@
 			<div id="copy-button"><a>Copy with time</a></div>
 		</div>
 		<div id="header-links">
-			<div class="header-links"><input type="text" id="customUrlText" name="vodurl" placeholder="Twitch/Youtube/Odysee/Rumble link"></div>
+			<div class="header-links">
+				<input type="text" id="customUrlText" name="vodurl" placeholder="Supported URL">
+				<div class="supported-platforms">
+					<span class="icon youtube-icon">
+						<i class="fa-brands fa-youtube" title="YouTube"></i>
+						<span class="text-disabled">YouTube</span>
+					</span>
+					<span class="icon twitch-icon">
+						<i class="fa-brands fa-twitch" title="Twitch"></i>
+						<span class="text-disabled">Twitch</span>
+					</span>
+					<span class="icon odysee-icon">
+						<i class="fa-brands fa-odysee" title="Odysee"></i>
+						<span class="text-disabled">Odysee</span>
+					</span>
+					<span class="icon rumble-icon">
+						<i class="fa-solid fa-play" title="Rumble"></i>
+						<span class="text-disabled">Rumble</span>
+					</span>
+					<span class="icon kick-icon">
+						<i class="fa-brands fa-kickstarter-k" title="Kick"></i>
+						<span class="text-disabled">Kick</span>
+					</span>
+				</div>
+			</div>
 			<div class="manual-dropdown header-links">
 				<div id="manual-button" class="manual-button" onclick="showManualTimestamps()"><span class="octicon octicon-chevron-down"></span></div>
 				<div id="manual-content" class="class-manual-content">

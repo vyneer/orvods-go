@@ -3,16 +3,16 @@ var globals = {};
 $(document).ready(function() {
     const timeregex = new RegExp('\d+s', 'gm');
 
-    var id = getUrlParameter("id");
-    var v = getUrlParameter("v");
-    var hash = getUrlParameter("hash");
-    var vodstinyTwitch = getUrlParameter("at");
-    var vodstinyYoutube = getUrlParameter("ay");
-    var odysee = getUrlParameter("od");
-    var rumble = getUrlParameter("r");
-    var kick = getUrlParameter("k");
-    var chatonly = getUrlParameter("chatonly");
-    var cdn = getUrlParameter("cdn");
+    var id = (platforms.includes("twitch")) ? getUrlParameter("id") : "";
+    var v = (platforms.includes("youtube")) ? getUrlParameter("v") : "";
+    var hash = (platforms.includes("m3u8")) ? getUrlParameter("hash") : "";
+    var vodstinyTwitch = (platforms.includes("vodstiny")) ? getUrlParameter("at") : "";
+    var vodstinyYoutube = (platforms.includes("vodstiny")) ? getUrlParameter("ay") : "";
+    var odysee = (platforms.includes("odysee")) ? getUrlParameter("od") : "";
+    var rumble = (platforms.includes("rumble")) ? getUrlParameter("r") : "";
+    var kick = (platforms.includes("kick")) ? getUrlParameter("k") : "";
+    var chatonly = (platforms.includes("chatonly")) ? getUrlParameter("chatonly") : "";
+    var cdn = (platforms.includes("m3u8")) ? getUrlParameter("cdn") : "";
     var time = (getUrlParameter("t")) ? ((timeregex.test(getUrlParameter("t"))) ? getUrlParameter("t").substring(0, getUrlParameter("t").length - 1) : getUrlParameter("t")) : 0;
     var start = getUrlParameter("start");
     var end = getUrlParameter("end");
