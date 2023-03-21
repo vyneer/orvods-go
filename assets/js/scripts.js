@@ -917,14 +917,18 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             });
             break;
         case "rumble":
+            const playerObservser = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    if (mutation.attributeName === 'src') {
+                        if (time) mutation.target.currentTime = Number(time.split("s")[0]);
+                        playerObservser.disconnect();
+                    }
+                })
+            })
+            playerObservser.observe(document.querySelector('#video-player'), { attributes: true, subtree: true })
             Rumble("play", { video: id , div: "video-player", api: function(api) {
                 var chat = new Chat(id, api, type, start, end, provider);
                 api.on("play", function() {
-                    // very scuffed, we only call setCurrentTime once on play bc otherwise its unreliable
-                    if (time !== true && time !== 0) {
-                        api.setCurrentTime(time.split('s')[0])
-                        time = true
-                    }
                     chat.startChatStream();
                 });
             
