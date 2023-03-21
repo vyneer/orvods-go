@@ -14,13 +14,18 @@ var months = [
 ];
 
 const destinyUserID = 18074328;
-const vodModules = ["youtube", "gnomevods", "omnimirror"]
+// const platforms = ["twitch", "youtube", "odysee", "rumble", "kick", "m3u8", "vodstiny", "chatonly"]
+const platforms = ["twitch", "youtube", "odysee", "rumble", "m3u8", "vodstiny", "chatonly"]
+// const vodModules = ["twitch", "youtube", "rumble", "kick", "vodstiny", "gnomevods", "omnimirror"]
+const vodModules = ["youtube", "rumble", "gnomevods", "omnimirror"]
 
 // vyneer.me stuff, make sure to edit if you have your own logging system/not gonna use my logs
 var featuresUrl = "https://vyneer.me/tools/features";
 var ytvodUrl = "https://vyneer.me/tools/ytvods";
 var rumbleUrl = "https://vyneer.me/tools/rumblevods";
+var omnimirrorUrl = "https://vyneer.me/tools/omnimirror";
 var lwodUrl = "https://vyneer.me/tools/lwod";
+var corsProxyUrl = "https://vyneer.me/cors";
 
 var vodstinyUrl = "https://dgg.sfo3.digitaloceanspaces.com/vods.json";
 
@@ -119,26 +124,28 @@ var formatDate = function(dateString) {
     return months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
 }
 
-// detecting if url is yt or twitch
 function vodURL(url) {
-    // var urlCheck = /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/gm;
     try {
         const urlCheck = new URL(url);
         var startTimestamp = ($("#start-timestamp").val() === "") ? "" : moment($("#start-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
         var endTimestamp = ($("#end-timestamp").val() === "") ? "" : moment($("#end-timestamp").val(), "YYYY-MM-DD HH:mm:ss UTC").format("YYYY-MM-DDTHH:mm:ss[Z]");
         var timestamps = (startTimestamp != "" && endTimestamp != "") ? "&start=" + startTimestamp + "&end=" + endTimestamp : "";
         if (urlCheck.hostname === "www.twitch.tv" || urlCheck.hostname === "twitch.tv") {
+            if (!platforms.includes("twitch")) return;
             regex = new RegExp('(?=[0-9])[^\/]+', 'gm');
             replaced = url.match(regex);
             window.location.href = window.location.origin + window.location.pathname + "?id=" + replaced[0].replace(/[?]/gm, '&') + timestamps;
         }
         if (urlCheck.hostname === "www.youtube.com" || urlCheck.hostname === "youtube.com") {
+            if (!platforms.includes("youtube")) return;
             window.location.href = window.location.origin + window.location.pathname + urlCheck.search + timestamps;
         }
         if (urlCheck.hostname === "youtu.be") {
+            if (!platforms.includes("youtube")) return;
             window.location.href = window.location.origin + window.location.pathname + "?v=" + urlCheck.pathname.slice(1) + urlCheck.search.replace(/[?]/gm, '&') + timestamps;
         }
         if (urlCheck.hostname === "www.odysee.com" || urlCheck.hostname === "odysee.com") {
+            if (!platforms.includes("odysee")) return;
             if (urlCheck.pathname.match(/\/\$\/download\/.+/)) {
                 window.location.href = window.location.origin + window.location.pathname + "?od=" + encodeURI(urlCheck.pathname.slice(12)) + timestamps;
             } else {
@@ -172,16 +179,22 @@ function vodURL(url) {
             }
         }
         if (urlCheck.hostname === "www.rumble.com" || urlCheck.hostname === "rumble.com") {
+            if (!platforms.includes("rumble")) return;
             const embedCheck = urlCheck.pathname.split('/').filter(e => e.length);
             if (embedCheck.length > 0 && embedCheck[0] === "embed") {
                 window.location.href = window.location.origin + window.location.pathname + "?r=" + embedCheck[1] + timestamps;
             }
         }
+        if (urlCheck.hostname === "www.kick.com" || urlCheck.hostname === "kick.com") {
+            if (!platforms.includes("kick")) return;
+            const videoCheck = urlCheck.pathname.split('/').filter(e => e.length);
+            if (videoCheck.length > 0 && videoCheck[0] === "video") {
+                window.location.href = window.location.origin + window.location.pathname + "?k=" + videoCheck[1] + timestamps;
+            }
+        }
     } catch (e) {
         console.error(e)
     }
-    // var matches = url.matchAll(urlCheck);
-    // var matchArray = [...matches];
 };
 
 function onlyChat() {
@@ -219,6 +232,98 @@ function m3u8(url) {
         }
     }
 }
+
+$(document).ready(() => {
+    if (!platforms.includes("twitch")) {
+        document.querySelector('.twitch-icon')?.classList.toggle('perma-disabled', true);
+    } else if (!platforms.includes("youtube")) {
+        document.querySelector('.youtube-icon')?.classList.toggle('perma-disabled', true);
+    } else if (!platforms.includes("odysee")) {
+        document.querySelector('.odysee-icon')?.classList.toggle('perma-disabled', true);
+    } else if (!platforms.includes("rumble")) {
+        document.querySelector('.rumble-icon')?.classList.toggle('perma-disabled', true);
+    } else if (!platforms.includes("kick")) {
+        document.querySelector('.kick-icon')?.classList.toggle('perma-disabled', true);
+    }
+})
+
+$(document).ready(() => {
+    document.querySelector("#customUrlText")?.addEventListener('input', (e) => {
+        try {
+            const urlCheck = new URL(e.target.value);
+            console.log(urlCheck)
+            switch (urlCheck.hostname) {
+                case "www.twitch.tv":
+                case "twitch.tv":
+                    if (!platforms.includes("twitch")) break;
+                    Array.from(document.querySelector(".supported-platforms")?.children).forEach((icon) => {
+                        if (!icon.classList.contains('twitch-icon')) {
+                            icon.classList.toggle('disabled', true)
+                        } else {
+                            icon.querySelector('span')?.classList.toggle('text-disabled', false)
+                        }
+                    });
+                    break;
+                case "www.youtube.com":
+                case "youtube.com":
+                case "youtu.be":
+                    if (!platforms.includes("youtube")) break;
+                    Array.from(document.querySelector(".supported-platforms")?.children).forEach((icon) => {
+                        if (!icon.classList.contains('youtube-icon')) {
+                            icon.classList.toggle('disabled', true)
+                        } else {
+                            icon.querySelector('span')?.classList.toggle('text-disabled', false)
+                        }
+                    });
+                    break;
+                case "www.odysee.com":
+                case "odysee.com":
+                    if (!platforms.includes("odysee")) break;
+                    Array.from(document.querySelector(".supported-platforms")?.children).forEach((icon) => {
+                        if (!icon.classList.contains('odysee-icon')) {
+                            icon.classList.toggle('disabled', true)
+                        } else {
+                            icon.querySelector('span')?.classList.toggle('text-disabled', false)
+                        }
+                    });
+                    break;
+                case "www.rumble.com":
+                case "rumble.com":
+                    if (!platforms.includes("rumble")) break;
+                    Array.from(document.querySelector(".supported-platforms")?.children).forEach((icon) => {
+                        if (!icon.classList.contains('rumble-icon')) {
+                            icon.classList.toggle('disabled', true)
+                        } else {
+                            icon.querySelector('span')?.classList.toggle('text-disabled', false)
+                        }
+                    });
+                    break;
+                case "www.kick.com":
+                case "kick.com":
+                    if (!platforms.includes("kick")) break;
+                    Array.from(document.querySelector(".supported-platforms")?.children).forEach((icon) => {
+                        if (!icon.classList.contains('kick-icon')) {
+                            icon.classList.toggle('disabled', true)
+                        } else {
+                            icon.querySelector('span')?.classList.toggle('text-disabled', false)
+                        }
+                    });
+                    break;
+                default:
+                    Array.from(document.querySelector(".supported-platforms")?.children).forEach((icon) => {
+                        icon.classList.toggle('disabled', false)
+                        icon.querySelector('span')?.classList.toggle('text-disabled', true)
+                    });
+                    break;
+            }
+        } catch {
+            Array.from(document.querySelector(".supported-platforms")?.children).forEach((icon) => {
+                icon.classList.toggle('disabled', false)
+                icon.querySelector('span')?.classList.toggle('text-disabled', true)
+            });
+        }
+    })
+})
 
 $(document).ready(function (){
     headerTitle = document.createElement("a");
