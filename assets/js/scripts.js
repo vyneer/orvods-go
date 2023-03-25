@@ -817,6 +817,9 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             if (Hls.isSupported()) {
                 var hls = new Hls({
                     enableWorker: true,
+                    xhrSetup: function (xhr) {
+                        xhr.setRequestHeader('X-Requested-With', 'vyneer.me');
+                    },
                 });
                 hls.loadSource(videoSrc);
                 hls.attachMedia(replacedVideo);
@@ -962,6 +965,9 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 if (Hls.isSupported()) {
                     var hls = new Hls({
                         enableWorker: true,
+                        xhrSetup: function (xhr) {
+                            xhr.setRequestHeader('X-Requested-With', 'vyneer.me');
+                        },
                     });
                     hls.loadSource(videoSrc);
                     hls.attachMedia(replacedVideo);
