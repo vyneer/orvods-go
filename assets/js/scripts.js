@@ -822,6 +822,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             else if (replacedVideo.canPlayType('application/vnd.apple.mpegurl')) {
                 replacedVideo.src = videoSrc;
             }
+            replacedVideo.crossOrigin = 'anonymous';
             replacedVideo.currentTime = time;
     
             var chat = new Chat(id, replacedVideo, type, start, end, provider);
@@ -964,6 +965,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 else if (replacedVideo.canPlayType('application/vnd.apple.mpegurl')) {
                     replacedVideo.src = videoSrc;
                 }
+                replacedVideo.crossOrigin = 'anonymous';
                 replacedVideo.currentTime = time;
 
                 const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
