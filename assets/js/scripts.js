@@ -815,7 +815,9 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             document.querySelector("#video-player").appendChild(replacedVideo);
             var videoSrc = `${corsProxyUrl}/https://${cdnUrl[cdn]}/${id}/chunked/index-dvr.m3u8`;
             if (Hls.isSupported()) {
-                var hls = new Hls();
+                var hls = new Hls({
+                    enableWorker: true,
+                });
                 hls.loadSource(videoSrc);
                 hls.attachMedia(replacedVideo);
             }
@@ -958,7 +960,9 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             fetch(`https://kick.com/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                 var videoSrc = `${corsProxyUrl}/${data.source}`;
                 if (Hls.isSupported()) {
-                    var hls = new Hls();
+                    var hls = new Hls({
+                        enableWorker: true,
+                    });
                     hls.loadSource(videoSrc);
                     hls.attachMedia(replacedVideo);
                 }
