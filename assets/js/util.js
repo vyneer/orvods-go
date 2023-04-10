@@ -17,7 +17,7 @@ const destinyUserID = 18074328;
 // const platforms = ["twitch", "youtube", "odysee", "rumble", "kick", "m3u8", "vodstiny", "chatonly"]
 const platforms = ["twitch", "youtube", "odysee", "rumble", "vodstiny", "chatonly"]
 // const vodModules = ["twitch", "youtube", "rumble", "kick", "vodstiny", "gnomevods", "omnimirror"]
-const vodModules = ["youtube", "rumble", "gnomevods", "omnimirror"]
+const vodModules = ["youtube", "rumble", "kick", "gnomevods", "omnimirror"]
 
 // vyneer.me stuff, make sure to edit if you have your own logging system/not gonna use my logs
 var featuresUrl = "https://vyneer.me/tools/features";
