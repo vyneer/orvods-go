@@ -28,7 +28,7 @@ $(document).ready(function() {
     const kickButton = document.getElementById("kick-button");
     const youtubeButton = document.getElementById("youtube-button");
     const vodstinyButton = document.getElementById("vodstiny-button");
-    const gnomevodsButton = document.getElementById("gnomevods-button");
+    const odysteveButton = document.getElementById("odysteve-button");
     const omnimirrorButton = document.getElementById("omnimirror-button");
     var splits;
     globals.sizes = localStorage.getItem('split-sizes');
@@ -50,8 +50,8 @@ $(document).ready(function() {
             case "vodstiny":
                 vodstinyButton.classList.toggle("visible")
                 break;
-            case "gnomevods":
-                gnomevodsButton.classList.toggle("visible")
+            case "odysteve":
+                odysteveButton.classList.toggle("visible")
                 break;
             case "omnimirror":
                 omnimirrorButton.classList.toggle("visible")
@@ -165,7 +165,7 @@ $(document).ready(function() {
         $("#lwod").hide();
         $(".rumble-credit").hide();
         $(".polecat-credit").hide();
-        $(".cantclosevim-credit").hide();
+        $(".odysteve-credit").hide();
         $(".omnimirror-credit").hide();
         $("#copy-button").hide();
         playerActive = 0;
@@ -215,13 +215,13 @@ $(document).ready(function() {
         if (!twitchButton.classList.contains("active")) {
             $(".rumble-credit").hide();
             $(".polecat-credit").hide();
-            $(".cantclosevim-credit").hide();
+            $(".odysteve-credit").hide();
             $(".omnimirror-credit").hide();
             twitchButton.classList.add("active");
             tabType = "twitch";
             youtubeButton.classList.remove("active");
             vodstinyButton.classList.remove("active");
-            gnomevodsButton.classList.remove("active");
+            odysteveButton.classList.remove("active");
             omnimirrorButton.classList.remove("active");
             kickButton.classList.remove("active");
             rumbleButton.classList.remove("active");
@@ -237,13 +237,13 @@ $(document).ready(function() {
         if (!youtubeButton.classList.contains("active")) {
             $(".rumble-credit").hide();
             $(".polecat-credit").hide();
-            $(".cantclosevim-credit").hide();
+            $(".odysteve-credit").hide();
             $(".omnimirror-credit").hide();
             youtubeButton.classList.add("active");
             tabType = "youtube";
             twitchButton.classList.remove("active");
             vodstinyButton.classList.remove("active");
-            gnomevodsButton.classList.remove("active");
+            odysteveButton.classList.remove("active");
             omnimirrorButton.classList.remove("active");
             kickButton.classList.remove("active");
             rumbleButton.classList.remove("active");
@@ -259,13 +259,13 @@ $(document).ready(function() {
         if (!vodstinyButton.classList.contains("active")) {
             $(".rumble-credit").hide();
             $(".polecat-credit").show();
-            $(".cantclosevim-credit").hide();
+            $(".odysteve-credit").hide();
             $(".omnimirror-credit").hide();
             vodstinyButton.classList.add("active");
             tabType = "vodstiny";
             twitchButton.classList.remove("active");
             youtubeButton.classList.remove("active");
-            gnomevodsButton.classList.remove("active");
+            odysteveButton.classList.remove("active");
             omnimirrorButton.classList.remove("active");
             kickButton.classList.remove("active");
             rumbleButton.classList.remove("active");
@@ -288,14 +288,14 @@ $(document).ready(function() {
         }
     })
 
-    $("#gnomevods-button").click(function() {
-        if (!gnomevodsButton.classList.contains("active")) {
+    $("#odysteve-button").click(function() {
+        if (!odysteveButton.classList.contains("active")) {
             $(".rumble-credit").hide();
-            $(".cantclosevim-credit").show();
+            $(".odysteve-credit").show();
             $(".polecat-credit").hide();
             $(".omnimirror-credit").hide();
-            gnomevodsButton.classList.add("active");
-            tabType = "gnomevods";
+            odysteveButton.classList.add("active");
+            tabType = "odysteve";
             twitchButton.classList.remove("active");
             youtubeButton.classList.remove("active");
             vodstinyButton.classList.remove("active");
@@ -305,9 +305,9 @@ $(document).ready(function() {
             page = 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            if (allGnomevods.length == 0) {
-                loadVODs("gnomevods").then(result => {
-                    allGnomevods = result[0];
+            if (allOdysteve.length == 0) {
+                loadVODs("odysteve").then(result => {
+                    allOdysteve = result[0];
                     return result[0];
                 }).then((arr) => {
                     return arr.slice((page-1)*9,page*9);
@@ -315,7 +315,7 @@ $(document).ready(function() {
                     createVodEntries(slice, tabType);
                 });
             } else {
-                nineEntries = allGnomevods.slice((page-1)*9,page*9);
+                nineEntries = allOdysteve.slice((page-1)*9,page*9);
                 createVodEntries(nineEntries, tabType);
             }
         }
@@ -325,14 +325,14 @@ $(document).ready(function() {
         if (!omnimirrorButton.classList.contains("active")) {
             $(".rumble-credit").hide();
             $(".omnimirror-credit").show();
-            $(".cantclosevim-credit").hide();
+            $(".odysteve-credit").hide();
             $(".polecat-credit").hide();
             omnimirrorButton.classList.add("active");
             tabType = "omnimirror";
             twitchButton.classList.remove("active");
             youtubeButton.classList.remove("active");
             vodstinyButton.classList.remove("active");
-            gnomevodsButton.classList.remove("active");
+            odysteveButton.classList.remove("active");
             kickButton.classList.remove("active");
             rumbleButton.classList.remove("active");
             page = 1;
@@ -358,14 +358,14 @@ $(document).ready(function() {
         if (!rumbleButton.classList.contains("active")) {
             $(".rumble-credit").show();
             $(".omnimirror-credit").hide();
-            $(".cantclosevim-credit").hide();
+            $(".odysteve-credit").hide();
             $(".polecat-credit").hide();
             rumbleButton.classList.add("active");
             tabType = "rumble";
             twitchButton.classList.remove("active");
             youtubeButton.classList.remove("active");
             vodstinyButton.classList.remove("active");
-            gnomevodsButton.classList.remove("active");
+            odysteveButton.classList.remove("active");
             kickButton.classList.remove("active");
             omnimirrorButton.classList.remove("active");
             page = 1;
@@ -391,14 +391,14 @@ $(document).ready(function() {
         if (!kickButton.classList.contains("active")) {
             $(".rumble-credit").hide();
             $(".omnimirror-credit").hide();
-            $(".cantclosevim-credit").hide();
+            $(".odysteve-credit").hide();
             $(".polecat-credit").hide();
             kickButton.classList.add("active");
             tabType = "kick";
             twitchButton.classList.remove("active");
             youtubeButton.classList.remove("active");
             vodstinyButton.classList.remove("active");
-            gnomevodsButton.classList.remove("active");
+            odysteveButton.classList.remove("active");
             rumbleButton.classList.remove("active");
             omnimirrorButton.classList.remove("active");
             page = 1;
@@ -432,8 +432,8 @@ $(document).ready(function() {
             case "vodstiny":
                 vodinfo = allArch;
                 break;
-            case "gnomevods":
-                vodinfo = allGnomevods;
+            case "odysteve":
+                vodinfo = allOdysteve;
                 break;
             case "omnimirror":
                 vodinfo = allOmnimirror;
@@ -478,8 +478,8 @@ $(document).ready(function() {
             case "vodstiny":
                 vodinfo = allArch;
                 break;
-            case "gnomevods":
-                vodinfo = allGnomevods;
+            case "odysteve":
+                vodinfo = allOdysteve;
                 break;
             case "omnimirror":
                 vodinfo = allOmnimirror;
@@ -624,7 +624,7 @@ $(document).ready(function() {
 var allVODs = [];
 var allVids = [];
 var allArch = [];
-let allGnomevods = [];
+let allOdysteve = [];
 let allKickvods = [];
 let allRumblevods = [];
 let allOmnimirror = [];
@@ -682,7 +682,7 @@ async function loadVODs(type) {
             vodArray = vodArray.sort((a, b) => b.date - a.date);
             return [vodArray, vodMap];
         }
-        case "gnomevods": {
+        case "odysteve": {
             let response = await fetch('https://api.lbry.tv/api/v1/proxy', {
                 method: 'POST',
                 headers: {
@@ -692,7 +692,7 @@ async function loadVODs(type) {
                     {
                         "method": "claim_search",
                         "params": {
-                            "channel": "@gnomevods:3",
+                            "channel": "@odysteve:7",
                             "order_by": "release_time",
                             "page": 1,
                             "page_size": 45,
@@ -704,11 +704,12 @@ async function loadVODs(type) {
             data.result.items.forEach((element) => {
                 let vod = {};
                 vod.title = element.value.title;
-                vod.originalID = element.name;
                 vod.id = element.short_url.substring(7).replace("#", ":");
-                vod.claim = element.claim_id;
                 vod.thumbnail = element.value.thumbnail.url;
                 vod.duration = element.value.video.duration;
+                const descriptionSplit = element.value.description.replace(/\r/g, "").split(/\n/);
+                vod.starttime = descriptionSplit[0];
+                vod.endtime = descriptionSplit[1];
                 vodArray.push(vod);
                 vodMap[vod.id] = vod;
             });
@@ -893,16 +894,16 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 },
                 body: JSON.stringify(
                     {
-                        "method": "get",
+                        "method": "resolve",
                         "params": {
-                            "uri": `${decodeURI(id).replace("/", "#")}`,
+                            "urls": `${decodeURI(id).replace(":", "#")}`,
                         }
                     }
                 )
             }).then(resp => {
                 return resp.json();
             }).then(data => {
-                replacedVideo.src = data.result.streaming_url;
+                replacedVideo.src = `https://odysee.com/$/download/${data['result'][decodeURI(id).replace(":", "#")]['permanent_url'].substring(7).replace('#', '/')}`;
                 replacedVideo.currentTime = time;
     
                 var chat = new Chat(id, replacedVideo, type, start, end, provider);
@@ -1062,21 +1063,16 @@ var createVodEntries = function(vodData, type) {
                 endtime: moment.utc(vod.date).add(17, 'hours').toISOString()
             });
         })
-    } else if (type === "gnomevods") {
+    } else if (type === "odysteve") {
         vodData.forEach(function(vod) {
-            let og_vod;
-            og_vod = allVids.find(o => o.id === vod.originalID);
-            if (og_vod === undefined || null) {
-                return
-            } 
-            createGVEntry({
-                id: `${vod.originalID}/${vod.claim}`,
-                odyseeID: vod.id,
-                title: og_vod.title,
+            createOdysteveEntry({
+                id: vod.id.replace('#', ':'),
+                title: vod.title,
                 image: vod.thumbnail,
-                date: formatDate(og_vod.starttime),
-                starttime: og_vod.starttime,
-                endtime: og_vod.endtime
+                date: formatDate(vod.starttime),
+                starttime: vod.starttime,
+                endtime: vod.endtime,
+                length: formatLength(vod.duration)
             });
         })
     } else if (type === "omnimirror") {
@@ -1128,8 +1124,8 @@ var createArchEntry = function(vod) {
     $("#arch-tmpl").tmpl(vod).appendTo("#vod-list");
 };
 
-var createGVEntry = function(vod) {
-    $("#gv-tmpl").tmpl(vod).appendTo("#vod-list");
+var createOdysteveEntry = function(vod) {
+    $("#os-tmpl").tmpl(vod).appendTo("#vod-list");
 };
 
 var createRumbleEntry = function(vod) {

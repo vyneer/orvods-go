@@ -16,8 +16,8 @@ var months = [
 const destinyUserID = 18074328;
 // const platforms = ["twitch", "youtube", "odysee", "rumble", "kick", "m3u8", "vodstiny", "chatonly"]
 const platforms = ["twitch", "youtube", "odysee", "rumble", "vodstiny", "chatonly"]
-// const vodModules = ["twitch", "youtube", "rumble", "kick", "vodstiny", "gnomevods", "omnimirror"]
-const vodModules = ["youtube", "rumble", "kick", "gnomevods", "omnimirror"]
+// const vodModules = ["twitch", "youtube", "rumble", "kick", "vodstiny", "omnimirror", "odysteve"]
+const vodModules = ["youtube", "rumble", "kick", "omnimirror", "odysteve"]
 
 // vyneer.me stuff, make sure to edit if you have your own logging system/not gonna use my logs
 var featuresUrl = "https://vyneer.me/tools/features";
@@ -171,8 +171,8 @@ function vodURL(url) {
                         }
                     }).then(data => {
                         if ("result" in data && data["result"]["items"].length !== 0) {
-                            claim = data["result"]["items"][0]["claim_id"]
-                            window.location.href = window.location.origin + window.location.pathname + "?od=" + encodeURI(`${videoName}/${claim}`) + timestamps;
+                            short_url = data["result"]["items"][0]["short_url"].substring(7).replace("#", ":");
+                            window.location.href = window.location.origin + window.location.pathname + "?od=" + short_url + timestamps;
                         }
                     })
                 }

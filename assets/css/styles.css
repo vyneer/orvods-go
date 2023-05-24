@@ -155,18 +155,18 @@ body {
 	position: relative;
 }
 
-#scoot-credit, .polecat-credit, .cantclosevim-credit, .omnimirror-credit, .rumble-credit {
+#scoot-credit, .polecat-credit, .odysteve-credit, .omnimirror-credit, .rumble-credit {
 	width: 90%;
 	opacity: 45%;
 	text-align: center;
 }
 
-.polecat-credit, .cantclosevim-credit, .omnimirror-credit, .rumble-credit {
+.polecat-credit, .odysteve-credit, .omnimirror-credit, .rumble-credit {
 	color: white;
 	width: 100%;
 }
 
-#scoot-credit:hover, .polecat-credit:hover, .cantclosevim-credit:hover, .omnimirror-credit:hover, .rumble-credit:hover {
+#scoot-credit:hover, .polecat-credit:hover, .odysteve-credit:hover, .omnimirror-credit:hover, .rumble-credit:hover {
 	opacity: 100%;
 }
 
