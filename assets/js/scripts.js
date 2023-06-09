@@ -122,7 +122,7 @@ $(document).ready(function() {
                 break;
             case "rumble":
                 vidId = rumble;
-                document.querySelector("#delay").value = 10
+                document.querySelector("#delay").value = -2
                 break;
             case "kick":
                 vidId = kick;
