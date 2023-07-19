@@ -79,23 +79,21 @@ var memeMessages = ["<div class='emote YEE' title=YEE></div> neva lie, <div clas
                     "Fuckin every time this kid steps in the battleground someone dies.",
                     "HELP MEEEE <div class='emote OOOO' title=OOOO></div>", "You're a fucking statitician!", 
                     "YOU'RE A DUMBFUCK! <div class='emote REE' title=REE></div> A DUMBFUCK <div class='emote REE' title=REE></div>",
-                    "Gen <div class='emote YEE' title=YEE></div>"];
+                    "Gen <div class='emote YEE' title=YEE></div>", "<div class='emote PepoTurkey' title=PepoTurkey></div> goblgoblgobl"];
 
-// From http://stackoverflow.com/a/21903119
-var getUrlParameter = function(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
-    }
-};
+var convertTimeToSeconds = function(time) {
+    if (time == null) return null;
+    // Just digits
+    if (/^\d+$/.test(time)) return Number(time);
+    // Regex to capture the numbers in a string like "3h52m02s"
+    var matches = time.match(/^(?=.)(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/i);
+    if (matches == null) return null;
+    var seconds = 0;
+    seconds += Number(matches[1] ?? 0) * 60 * 60;// Hours
+    seconds += Number(matches[2] ?? 0) * 60;     // Minutes
+    seconds += Number(matches[3] ?? 0);          // Seconds
+    return seconds;
+}
 
 var formatLength = function(seconds) {
     var time = Math.floor(Number(seconds));

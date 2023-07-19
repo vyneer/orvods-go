@@ -1,22 +1,21 @@
 var globals = {};
 
 $(document).ready(function() {
-    const timeregex = new RegExp('\d+s', 'gm');
-
-    var id = (platforms.includes("twitch")) ? getUrlParameter("id") : "";
-    var v = (platforms.includes("youtube")) ? getUrlParameter("v") : "";
-    var hash = (platforms.includes("m3u8")) ? getUrlParameter("hash") : "";
-    var vodstinyTwitch = (platforms.includes("vodstiny")) ? getUrlParameter("at") : "";
-    var vodstinyYoutube = (platforms.includes("vodstiny")) ? getUrlParameter("ay") : "";
-    var odysee = (platforms.includes("odysee")) ? getUrlParameter("od") : "";
-    var rumble = (platforms.includes("rumble")) ? getUrlParameter("r") : "";
-    var kick = (platforms.includes("kick")) ? getUrlParameter("k") : "";
-    var chatonly = (platforms.includes("chatonly")) ? getUrlParameter("chatonly") : "";
-    var cdn = (platforms.includes("m3u8")) ? getUrlParameter("cdn") : "";
-    var time = (getUrlParameter("t")) ? ((timeregex.test(getUrlParameter("t"))) ? getUrlParameter("t").substring(0, getUrlParameter("t").length - 1) : getUrlParameter("t")) : 0;
-    var start = getUrlParameter("start");
-    var end = getUrlParameter("end");
-    var provider = (getUrlParameter("provider")) ? getUrlParameter("provider") : "orl";
+    var urlParams = new URLSearchParams(window.location.search);
+    var id = (platforms.includes("twitch")) ? urlParams.get("id") : "";
+    var v = (platforms.includes("youtube")) ? urlParams.get("v") : "";
+    var hash = (platforms.includes("m3u8")) ? urlParams.get("hash") : "";
+    var vodstinyTwitch = (platforms.includes("vodstiny")) ? urlParams.get("at") : "";
+    var vodstinyYoutube = (platforms.includes("vodstiny")) ? urlParams.get("ay") : "";
+    var odysee = (platforms.includes("odysee")) ? urlParams.get("od") : "";
+    var rumble = (platforms.includes("rumble")) ? urlParams.get("r") : "";
+    var kick = (platforms.includes("kick")) ? urlParams.get("k") : "";
+    var chatonly = (platforms.includes("chatonly")) ? urlParams.get("chatonly") : "";
+    var cdn = (platforms.includes("m3u8")) ? urlParams.get("cdn") : "";
+    var time = (urlParams.get("t")) ? (convertTimeToSeconds(urlParams.get("t")) ?? urlParams.get("t")) : 0;
+    var start = urlParams.get("start");
+    var end = urlParams.get("end");
+    var provider = (urlParams.get("provider")) ? urlParams.get("provider") : "orl";
     var page = 1;
     var playerActive = 0;
     var lwodActive = 0;
