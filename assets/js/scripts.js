@@ -1,8 +1,6 @@
 var globals = {};
 
 $(document).ready(function() {
-    const timeregex = new RegExp('\d+s', 'gm');
-
     var urlParams = new URLSearchParams(window.location.search);
     var id = (platforms.includes("twitch")) ? urlParams.get("id") : "";
     var v = (platforms.includes("youtube")) ? urlParams.get("v") : "";
@@ -14,7 +12,7 @@ $(document).ready(function() {
     var kick = (platforms.includes("kick")) ? urlParams.get("k") : "";
     var chatonly = (platforms.includes("chatonly")) ? urlParams.get("chatonly") : "";
     var cdn = (platforms.includes("m3u8")) ? urlParams.get("cdn") : "";
-    var time = (urlParams.get("t")) ? ((timeregex.test(urlParams.get("t"))) ? urlParams.get("t").substring(0, urlParams.get("t").length - 1) : urlParams.get("t")) : 0;
+    var time = (urlParams.get("t")) ? (convertTimeToSeconds(urlParams.get("t")) ?? urlParams.get("t")) : 0;
     var start = urlParams.get("start");
     var end = urlParams.get("end");
     var provider = (urlParams.get("provider")) ? urlParams.get("provider") : "orl";

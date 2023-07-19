@@ -81,6 +81,20 @@ var memeMessages = ["<div class='emote YEE' title=YEE></div> neva lie, <div clas
                     "YOU'RE A DUMBFUCK! <div class='emote REE' title=REE></div> A DUMBFUCK <div class='emote REE' title=REE></div>",
                     "Gen <div class='emote YEE' title=YEE></div>"];
 
+var convertTimeToSeconds = function(time) {
+    if (time == null) return null;
+    // Just digits
+    if (/^\d+$/.test(time)) return Number(time);
+    // Regex to capture the numbers in a string like "3h52m02s"
+    var matches = time.match(/^(?=.)(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/i);
+    if (matches == null) return null;
+    var seconds = 0;
+    seconds += Number(matches[1] ?? 0) * 60 * 60;// Hours
+    seconds += Number(matches[2] ?? 0) * 60;     // Minutes
+    seconds += Number(matches[3] ?? 0);          // Seconds
+    return seconds;
+}
+
 var formatLength = function(seconds) {
     var time = Math.floor(Number(seconds));
     var minutesTotal = Math.floor(time / 60);
