@@ -79,7 +79,7 @@ var memeMessages = ["<div class='emote YEE' title=YEE></div> neva lie, <div clas
                     "Fuckin every time this kid steps in the battleground someone dies.",
                     "HELP MEEEE <div class='emote OOOO' title=OOOO></div>", "You're a fucking statitician!", 
                     "YOU'RE A DUMBFUCK! <div class='emote REE' title=REE></div> A DUMBFUCK <div class='emote REE' title=REE></div>",
-                    "Gen <div class='emote YEE' title=YEE></div>"];
+                    "Gen <div class='emote YEE' title=YEE></div>", "<div class='emote PepoTurkey' title=PepoTurkey></div> goblgoblgobl"];
 
 var convertTimeToSeconds = function(time) {
     if (time == null) return null;
