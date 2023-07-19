@@ -81,22 +81,6 @@ var memeMessages = ["<div class='emote YEE' title=YEE></div> neva lie, <div clas
                     "YOU'RE A DUMBFUCK! <div class='emote REE' title=REE></div> A DUMBFUCK <div class='emote REE' title=REE></div>",
                     "Gen <div class='emote YEE' title=YEE></div>"];
 
-// From http://stackoverflow.com/a/21903119
-var getUrlParameter = function(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
-    }
-};
-
 var formatLength = function(seconds) {
     var time = Math.floor(Number(seconds));
     var minutesTotal = Math.floor(time / 60);
