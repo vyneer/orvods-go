@@ -182,7 +182,7 @@ function vodURL(url) {
         }
         if (urlCheck.hostname === "www.rumble.com" || urlCheck.hostname === "rumble.com") {
             if (!platforms.includes("rumble")) return;
-            fetch("/rumbleinfo?url="+url, {
+            fetch("rumbleinfo?url="+url, {
             }).then(resp => {
                 if (resp.status === 200) {
                     return resp.json()
