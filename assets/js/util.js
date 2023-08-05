@@ -136,7 +136,11 @@ function vodURL(url) {
         }
         if (urlCheck.hostname === "www.youtube.com" || urlCheck.hostname === "youtube.com") {
             if (!platforms.includes("youtube")) return;
-            window.location.href = window.location.origin + window.location.pathname + urlCheck.search + timestamps;
+            if (urlCheck.pathname.includes("/live/")) {
+                window.location.href = window.location.origin + window.location.pathname + "?v=" + urlCheck.pathname.slice(6) + urlCheck.search.replace(/[?]/gm, '&') + timestamps;
+            } else {
+                window.location.href = window.location.origin + window.location.pathname + urlCheck.search + timestamps;
+            }
         }
         if (urlCheck.hostname === "youtu.be") {
             if (!platforms.includes("youtube")) return;
