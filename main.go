@@ -68,6 +68,7 @@ func main() {
 	orvods.Static(cfg.Prefix+"/", "./public")
 	orvods.Get(cfg.Prefix+"/vidinfo", getVidInfo)
 	orvods.Get(cfg.Prefix+"/vodinfo", getVODInfo)
+	orvods.Get(cfg.Prefix+"/rumbleinfo", getRumbleInfo)
 	orvods.Get(cfg.Prefix+"/userinfo", getUserInfo)
 	orvods.Get(cfg.Prefix+"/emotes", getEmotes)
 

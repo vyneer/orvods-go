@@ -3,6 +3,7 @@ module github.com/vyneer/orvods-go
 go 1.19
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/apex/log v1.9.0
 	github.com/bytedance/sonic v1.8.3
 	github.com/cespare/xxhash/v2 v2.2.0
@@ -13,6 +14,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/json-iterator/go v1.1.12
 	github.com/nicklaw5/helix/v2 v2.21.0
+	github.com/senseyeio/duration v0.0.0-20180430131211-7c2a214ada46
 	github.com/vosmith/pancake v0.0.0-20170503023453-935e4f9b30d6
 	google.golang.org/api v0.111.0
 )
@@ -22,6 +24,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	github.com/XiaoMi/pegasus-go-client v0.0.0-20220519103347-ba0e68465cd5 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230124162541-5f7a7d875746 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.0 // indirect

@@ -182,10 +182,18 @@ function vodURL(url) {
         }
         if (urlCheck.hostname === "www.rumble.com" || urlCheck.hostname === "rumble.com") {
             if (!platforms.includes("rumble")) return;
-            const embedCheck = urlCheck.pathname.split('/').filter(e => e.length);
-            if (embedCheck.length > 0 && embedCheck[0] === "embed") {
-                window.location.href = window.location.origin + window.location.pathname + "?r=" + embedCheck[1] + timestamps;
-            }
+            fetch("/rumbleinfo?url="+url, {
+            }).then(resp => {
+                if (resp.status === 200) {
+                    return resp.json()
+                } else {
+                    console.error(`Rumble info status: ${resp.status}`)
+                    return Promise.reject("server")
+                }
+            }).then(data => {
+                const ts = timestamps ? timestamps : "&start=" + data.starttime + "&end=" + data.endtime
+                window.location.href = window.location.origin + window.location.pathname + "?r=" + data.id + ts;
+            })
         }
         if (urlCheck.hostname === "www.kick.com" || urlCheck.hostname === "kick.com") {
             if (!platforms.includes("kick")) return;
