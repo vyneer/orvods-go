@@ -104,10 +104,10 @@ var convertSecondsToTime = function(seconds) {
     var hrs = Math.floor(seconds / SECONDS_IN_HOUR);
     var min = Math.floor(seconds / SECONDS_IN_MINUTE) % 60;
     var sec = seconds % SECONDS_IN_MINUTE;
-    var time = '';
-    if (seconds >= SECONDS_IN_HOUR)   time += hrs + 'h';
-    if (seconds >= SECONDS_IN_MINUTE) time += min + 'm';
-    time += sec + 's';
+    var time = "";
+    if (seconds >= SECONDS_IN_HOUR)   time += hrs + "h";
+    if (seconds >= SECONDS_IN_MINUTE) time += min + "m";
+    time += sec + "s";
     return time;
 }
 
