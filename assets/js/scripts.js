@@ -926,7 +926,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             const playerObservser = new MutationObserver(mutations => {
                 mutations.forEach(mutation => {
                     if (mutation.attributeName === 'src') {
-                        if (time) mutation.target.currentTime = Number(time.split("s")[0]);
+                        if (time) mutation.target.currentTime = time;
                         playerObservser.disconnect();
                     }
                 })
