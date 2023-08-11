@@ -83,6 +83,8 @@ var memeMessages = ["<div class='emote YEE' title=YEE></div> neva lie, <div clas
 
 const SECONDS_IN_HOUR = 60*60;
 const SECONDS_IN_MINUTE = 60;
+const SECONDS_IN_DAY = 24*60*60;
+const MINUTES_IN_HOUR = 60;
 var convertTimeToSeconds = function(time) {
     if (time == null) return null;
     // Just digits
@@ -99,10 +101,10 @@ var convertTimeToSeconds = function(time) {
 var convertSecondsToTime = function(seconds) {
     if (seconds == null) return null;
     // If not a number or negative or more than 24 hours
-    if (isNaN(seconds) || 0 > seconds || seconds > 24*60*60 ) return seconds;
+    if (isNaN(seconds) || 0 > seconds || seconds > SECONDS_IN_DAY) return seconds;
     seconds = Math.round(Number(seconds)); // cast as a number and round to be safe
     var hrs = Math.floor(seconds / SECONDS_IN_HOUR);
-    var min = Math.floor(seconds / SECONDS_IN_MINUTE) % 60;
+    var min = Math.floor(seconds / SECONDS_IN_MINUTE) % MINUTES_IN_HOUR;
     var sec = seconds % SECONDS_IN_MINUTE;
     var time = "";
     if (seconds >= SECONDS_IN_HOUR)   time += hrs + "h";
