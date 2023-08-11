@@ -751,7 +751,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             $("#copy-button").show();
             $("#copy-button").click(function () {
                 let params = new URLSearchParams(window.location.href);
-                params.set("t", `${Math.round(player.getCurrentTime())}s`);
+                params.set("t", convertSecondsToTime(player.getCurrentTime()));
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
 
@@ -778,7 +778,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 $("#copy-button").show();
                 $("#copy-button").click(function () {
                     let params = new URLSearchParams(window.location.href);
-                    params.set("t", `${Math.round(player.getCurrentTime())}`);
+                    params.set("t", convertSecondsToTime(player.getCurrentTime()));
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
     
@@ -842,7 +842,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             $("#copy-button").show();
             $("#copy-button").click(function () {
                 let params = new URLSearchParams(window.location.href);
-                params.set("t", `${Math.round(replacedVideo.currentTime)}`);
+                params.set("t", convertSecondsToTime(replacedVideo.currentTime));
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
             break;
@@ -872,7 +872,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             $("#copy-button").show();
             $("#copy-button").click(function () {
                 let params = new URLSearchParams(window.location.href);
-                params.set("t", `${Math.round(replacedVideo.currentTime)}`);
+                params.set("t", convertSecondsToTime(replacedVideo.currentTime));
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
             break;
@@ -917,7 +917,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 $("#copy-button").show();
                 $("#copy-button").click(function () {
                     let params = new URLSearchParams(window.location.href);
-                    params.set("t", `${Math.round(replacedVideo.currentTime)}`);
+                    params.set("t", convertSecondsToTime(replacedVideo.currentTime));
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
             });
@@ -945,7 +945,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 $("#copy-button").show();
                 $("#copy-button").click(function () {
                     let params = new URLSearchParams(window.location.href);
-                    params.set("t", `${Math.round(api.getCurrentTime())}s`);
+                    params.set("t", convertSecondsToTime(api.getCurrentTime()));
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
             }});
@@ -993,7 +993,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 $("#copy-button").show();
                 $("#copy-button").click(function () {
                     let params = new URLSearchParams(window.location.href);
-                    params.set("t", `${Math.round(replacedVideo.currentTime)}`);
+                    params.set("t", convertSecondsToTime(replacedVideo.currentTime));
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
             })
