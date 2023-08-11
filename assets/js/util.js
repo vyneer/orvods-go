@@ -100,7 +100,7 @@ var convertSecondsToTime = function(seconds) {
     if (seconds == null) return null;
     // If not a number or negative or more than 24 hours
     if (isNaN(seconds) || 0 > seconds || seconds > 24*60*60 ) return seconds;
-    seconds = Number(seconds); // cast as a number to be safe
+    seconds = Math.round(Number(seconds)); // cast as a number and round to be safe
     var hrs = Math.floor(seconds / SECONDS_IN_HOUR);
     var min = Math.floor(seconds / SECONDS_IN_MINUTE) % 60;
     var sec = seconds % SECONDS_IN_MINUTE;
