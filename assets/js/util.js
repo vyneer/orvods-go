@@ -81,6 +81,10 @@ var memeMessages = ["<div class='emote YEE' title=YEE></div> neva lie, <div clas
                     "YOU'RE A DUMBFUCK! <div class='emote REE' title=REE></div> A DUMBFUCK <div class='emote REE' title=REE></div>",
                     "Gen <div class='emote YEE' title=YEE></div>", "<div class='emote PepoTurkey' title=PepoTurkey></div> goblgoblgobl"];
 
+const SECONDS_IN_HOUR = 60*60;
+const SECONDS_IN_MINUTE = 60;
+const SECONDS_IN_DAY = 24*60*60;
+const MINUTES_IN_HOUR = 60;
 var convertTimeToSeconds = function(time) {
     if (time == null) return null;
     // Just digits
@@ -89,10 +93,24 @@ var convertTimeToSeconds = function(time) {
     var matches = time.match(/^(?=.)(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/i);
     if (matches == null) return null;
     var seconds = 0;
-    seconds += Number(matches[1] ?? 0) * 60 * 60;// Hours
-    seconds += Number(matches[2] ?? 0) * 60;     // Minutes
-    seconds += Number(matches[3] ?? 0);          // Seconds
+    seconds += Number(matches[1] ?? 0) * SECONDS_IN_HOUR;   // Hours
+    seconds += Number(matches[2] ?? 0) * SECONDS_IN_MINUTE; // Minutes
+    seconds += Number(matches[3] ?? 0);                     // Seconds
     return seconds;
+}
+var convertSecondsToTime = function(seconds) {
+    if (seconds == null) return null;
+    // If not a number or negative or more than 24 hours
+    if (isNaN(seconds) || 0 > seconds || seconds > SECONDS_IN_DAY) return seconds;
+    seconds = Math.round(Number(seconds)); // cast as a number and round to be safe
+    var hrs = Math.floor(seconds / SECONDS_IN_HOUR);
+    var min = Math.floor(seconds / SECONDS_IN_MINUTE) % MINUTES_IN_HOUR;
+    var sec = seconds % SECONDS_IN_MINUTE;
+    var time = "";
+    if (seconds >= SECONDS_IN_HOUR)   time += hrs + "h";
+    if (seconds >= SECONDS_IN_MINUTE) time += min + "m";
+    time += sec + "s";
+    return time;
 }
 
 var formatLength = function(seconds) {
