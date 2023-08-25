@@ -1132,7 +1132,11 @@ var createRumbleEntry = function(vod) {
 };
 
 var createKickEntry = function(vod) {
-    $("#kick-tmpl").tmpl(vod).appendTo("#vod-list");
+    if (platforms.includes("kick")) {
+        $("#kick-tmpl").tmpl(vod).appendTo("#vod-list");
+        return
+    }
+    $("#kick-redirect-tmpl").tmpl(vod).appendTo("#vod-list");
 };
 
 var createLWODTimestamps = function(data, type) {

@@ -15,7 +15,7 @@ var months = [
 
 const destinyUserID = 18074328;
 // const platforms = ["twitch", "youtube", "odysee", "rumble", "kick", "m3u8", "vodstiny", "chatonly"]
-const platforms = ["twitch", "youtube", "odysee", "rumble", "vodstiny", "chatonly"]
+const platforms = ["twitch", "youtube", "odysee", "rumble", "kick", "vodstiny", "chatonly"]
 // const vodModules = ["twitch", "youtube", "rumble", "kick", "vodstiny", "omnimirror", "odysteve"]
 const vodModules = ["youtube", "rumble", "kick", "omnimirror", "odysteve"]
 
@@ -25,7 +25,7 @@ var ytvodUrl = "https://vyneer.me/tools/ytvods";
 var rumbleUrl = "https://vyneer.me/tools/rumblevods";
 var omnimirrorUrl = "https://vyneer.me/tools/omnimirror";
 var lwodUrl = "https://vyneer.me/tools/lwod";
-var corsProxyUrl = "https://vyneer.me/cors";
+var corsProxyUrl = "https://vyneer-cors.duckdns.org";
 
 var vodstinyUrl = "https://dgg.sfo3.digitaloceanspaces.com/vods.json";
 

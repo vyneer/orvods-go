@@ -131,6 +131,23 @@
 	</script>
 
 	<script id="kick-tmpl" type="text/x-jquery-tmpl">
+		<a target="_self" href="?k=${id}" title="${title}">
+			<div id="${id}" class="arch-entry shadow">
+				<div class="image-container">
+					<img src="${image}"/>
+					<div class="clipboard-container">
+						<div class="copy-orig" copy="https://kick.com/video/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
+					</div>
+				</div>
+				<div class="info-container">
+					<div class="title">${title}</div>
+					<div class="date">${date}</div>
+				</div>
+			</div>
+		</a>
+	</script>
+
+	<script id="kick-redirect-tmpl" type="text/x-jquery-tmpl">
 		<a target="_blank" href="https://kick.com/video/${id}" title="${title}">
 			<div id="${id}" class="arch-entry shadow">
 				<div class="image-container">
