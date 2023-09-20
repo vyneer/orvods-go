@@ -48,6 +48,7 @@
 						<div class="length"><span class="octicon octicon-watch"></span>&nbsp;${length}</div>
 					</div>
 					<div class="clipboard-container">
+						<div class="nochat-button" data-href="?id=${id}&nochat=true"><i class="fa-solid fa-comment-slash" title="Play w/o chat"></i>&nbsp;Play w/o chat</div>
 						<div class="copy-orig" copy="https://twitch.tv/videos/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
 					</div>
 				</div>
@@ -65,6 +66,7 @@
 				<div class="image-container">
 					<img src="${image}"/>
 					<div class="clipboard-container">
+						<div class="nochat-button" data-href="?v=${id}&start=${starttime}&end=${endtime}&nochat=true"><i class="fa-solid fa-comment-slash" title="Play w/o chat"></i>&nbsp;Play w/o chat</div>
 						<div class="copy-orig" copy="https://youtu.be/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
 					</div>
 				</div>
@@ -82,6 +84,7 @@
 				<div class="image-container">
 					<img src="${image}"/>
 					<div class="clipboard-container">
+						<div class="nochat-button" data-href="?${type}=${id}&start=${starttime}&end=${endtime}&nochat=true"><i class="fa-solid fa-comment-slash" title="Play w/o chat"></i>&nbsp;Play w/o chat</div>
 						<div class="copy-orig" copy="https://polecat.me/vodstiny?id=${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
 					</div>
 				</div>
@@ -102,6 +105,7 @@
 						<div class="length"><span class="octicon octicon-watch"></span>&nbsp;${length}</div>
 					</div>
 					<div class="clipboard-container">
+						<div class="nochat-button" data-href="?od=${id}&start=${starttime}&end=${endtime}&nochat=true"><i class="fa-solid fa-comment-slash" title="Play w/o chat"></i>&nbsp;Play w/o chat</div>
 						<div class="copy-orig" copy="https://odysee.com/@odysteve:7/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
 					</div>
 				</div>
@@ -119,6 +123,7 @@
 				<div class="image-container">
 					<img src="${image}"/>
 					<div class="clipboard-container">
+						<div class="nochat-button" data-href="?r=${id}&start=${starttime}&end=${endtime}&nochat=true"><i class="fa-solid fa-comment-slash" title="Play w/o chat"></i>&nbsp;Play w/o chat</div>
 						<div class="copy-orig" copy="https://rumble.com${link}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
 					</div>
 				</div>
@@ -136,6 +141,7 @@
 				<div class="image-container">
 					<img src="${image}"/>
 					<div class="clipboard-container">
+						<div class="nochat-button" data-href="?k=${id}&nochat=true"><i class="fa-solid fa-comment-slash" title="Play w/o chat"></i>&nbsp;Play w/o chat</div>
 						<div class="copy-orig" copy="https://kick.com/video/${id}"><span class="octicon octicon-clippy"></span>&nbsp;Copy source</div>
 					</div>
 				</div>
@@ -182,8 +188,19 @@
 
 	<div id="header" class="shadow">
 		<div id="main-links">
+			<div id="copy-button">
+				<i class="fa-solid fa-stopwatch" title="Copy with time"></i>
+				<span class="text-disabled">Copy with time</span>
+			</div>
+			<div id="disable-chat-button">
+				<i class="fa-solid fa-comment-slash" title="Disable chat"></i>
+				<span class="text-disabled">Disable chat</span>
+			</div>
+			<div id="enable-chat-button">
+				<i class="fa-solid fa-comment" title="Enable chat"></i>
+				<span class="text-disabled">Enable chat</span>
+			</div>
 			<div id="lwod-button"><a>LWOD</a></div>
-			<div id="copy-button"><a>Copy with time</a></div>
 		</div>
 		<div id="header-links">
 			<div class="header-links">

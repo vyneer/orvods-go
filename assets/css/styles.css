@@ -45,19 +45,27 @@ body {
 	color: white;
 }
 
-#lwod-button, #copy-button {
+#lwod-button, #copy-button, #disable-chat-button, #enable-chat-button {
 	color: #DDD;
 	font-size: 20px;
 	padding: 15px;
 	cursor: pointer;
 }
 
-#lwod-button, #copy-button {
+#lwod-button, #copy-button, #disable-chat-button, #enable-chat-button {
 	display: none;
 }
 
-#lwod-button:hover, #copy-button:hover {
+#copy-button .text-disabled, #disable-chat-button .text-disabled, #enable-chat-button .text-disabled {
+	display: none;
+}
+
+#lwod-button:hover, #copy-button:hover, #disable-chat-button:hover, #enable-chat-button:hover {
 	color: white;
+}
+
+#copy-button:hover .text-disabled, #disable-chat-button:hover .text-disabled, #enable-chat-button:hover .text-disabled {
+	display: inline;
 }
 
 #header-links {
@@ -67,7 +75,7 @@ body {
 	color: white;
 	font-size: 20px;
 	margin-right: 10px;
-	width: 380px;
+	gap: 10px;
 }
 
 .header-links {
@@ -355,7 +363,8 @@ body {
 	position: sticky;
 	bottom: 5px;
 	display: flex;
-	flex-direction: row-reverse;
+	flex-direction: row;
+	justify-content: space-between;
 }
 
 .clipboard-container div {
@@ -367,7 +376,7 @@ body {
 	color: white;
 }
 
-.copy-orig:hover {
+.copy-orig:hover, .nochat-button:hover {
 	box-shadow: 0px 0px 10px white;
 }
 

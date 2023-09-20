@@ -16,6 +16,7 @@ $(document).ready(function() {
     var start = urlParams.get("start");
     var end = urlParams.get("end");
     var provider = (urlParams.get("provider")) ? urlParams.get("provider") : "orl";
+    var nochat = (urlParams.get("nochat")) ? urlParams.get("nochat") : "";
     var page = 1;
     var playerActive = 0;
     var lwodActive = 0;
@@ -136,10 +137,10 @@ $(document).ready(function() {
             loadVODs("vodstiny").then(result => {
                 return result[1];
             }).then((map) => {
-                loadPlayer(vidId, time, playerType, cdn, start, end, provider, map);
+                loadPlayer(vidId, time, playerType, cdn, start, end, provider, map, nochat);
             });
         } else {
-            loadPlayer(vidId, time, playerType, cdn, start, end, provider);
+            loadPlayer(vidId, time, playerType, cdn, start, end, provider, null, nochat);
         }
         $("#browse").hide();
         $("#player").show();
@@ -170,15 +171,17 @@ $(document).ready(function() {
         playerActive = 0;
     }
 
-    globals.splitInstance = Split(splits, {
-        sizes: globals.sizes,
-        gutterSize: 8,
-        minSize: 200,
-        cursor: 'col-resize',
-        onDragEnd: function(sizes) {
-            localStorage.setItem('split-sizes', JSON.stringify(sizes));
-        }
-    });
+    if (!nochat) {
+        globals.splitInstance = Split(splits, {
+            sizes: globals.sizes,
+            gutterSize: 8,
+            minSize: 200,
+            cursor: 'col-resize',
+            onDragEnd: function(sizes) {
+                localStorage.setItem('split-sizes', JSON.stringify(sizes));
+            }
+        });
+    }
 
     $("#lwod-button").click(function() {
         if (lwodActive === 0) {
@@ -614,8 +617,25 @@ $(document).ready(function() {
         }
     });
 
+    $("#disable-chat-button").click(function () {
+        let params = new URLSearchParams(window.location.search);
+        params.set("nochat", "true");
+        window.location.search = decodeURIComponent(params.toString());
+    });
+
+    $("#enable-chat-button").click(function () {
+        let params = new URLSearchParams(window.location.search);
+        params.delete("nochat");
+        window.location.search = decodeURIComponent(params.toString());
+    });
+
     $("body").on("click", ".copy-orig", function(ev) {
         navigator.clipboard.writeText($(this).attr("copy"));
+        ev.preventDefault();
+    });
+
+    $("body").on("click", ".nochat-button", function(ev) {
+        window.location.href = window.location.href + $(this).attr("data-href");
         ev.preventDefault();
     });
 });
@@ -741,8 +761,16 @@ async function loadVODs(type) {
 
 var pageCursor = 0;
 
-var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
+var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat) {
     $("#player").css("display", "flex");
+
+    if (nochat) {
+        $("#chat-container").hide();
+        $("#video-player").css("width", "100%")
+        $("#enable-chat-button").show();
+    } else {
+        $("#disable-chat-button").show();
+    }
 
     switch (type) {
         case "twitch":
@@ -752,18 +780,23 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             $("#copy-button").click(function () {
                 let params = new URLSearchParams(window.location.href);
                 params.set("t", convertSecondsToTime(player.getCurrentTime()));
+                if (nochat) {
+                    params.set("nochat", "true");
+                }
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
 
-            var chat = new Chat(id, player, type, start, end, provider);
             var lwod = new LWOD(id, type, player);
-            player.addEventListener(Twitch.Player.PLAYING, function() {
-                chat.startChatStream();
-            });
-        
-            player.addEventListener(Twitch.Player.PAUSE, function() {
-                chat.pauseChatStream();
-            });
+            if (!nochat) {
+                var chat = new Chat(id, player, type, start, end, provider);
+                player.addEventListener(Twitch.Player.PLAYING, function() {
+                    chat.startChatStream();
+                });
+            
+                player.addEventListener(Twitch.Player.PAUSE, function() {
+                    chat.pauseChatStream();
+                });
+            }
             break;
         case "youtube":
             var player;
@@ -774,23 +807,30 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             document.querySelector("#video-player").appendChild(replacedDiv);
             window.onYouTubeIframeAPIReady = function() {
                 player = new YT.Player("yt-player", { videoId: id , playerVars: {"start": time, "autoplay": 1, "playsinline": 1}});
-    
-                $("#copy-button").show();
-                $("#copy-button").click(function () {
-                    let params = new URLSearchParams(window.location.href);
-                    params.set("t", convertSecondsToTime(player.getCurrentTime()));
-                    navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
-                });
-    
-                chat = new Chat(id, player, type, start, end, provider);
-                lwod = new LWOD(id, type, player);
-                player.addEventListener("onStateChange", function(event) {
-                    if (event.data == YT.PlayerState.PLAYING) {
-                        chat.startChatStream();
-                    } else {
-                        chat.pauseChatStream();
+
+                player.addEventListener("onReady", function () {
+                    $("#copy-button").show();
+                    $("#copy-button").click(function () {
+                        let params = new URLSearchParams(window.location.href);
+                        params.set("t", convertSecondsToTime(player.getCurrentTime()));
+                        if (nochat) {
+                            params.set("nochat", "true");
+                        }
+                        navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
+                    });
+        
+                    if (!nochat) {
+                        chat = new Chat(id, player, type, start, end, provider);
+                        player.addEventListener("onStateChange", function(event) {
+                            if (event.data == YT.PlayerState.PLAYING) {
+                                chat.startChatStream();
+                            } else {
+                                chat.pauseChatStream();
+                            }
+                        });
                     }
-                });
+                    lwod = new LWOD(id, type, player);
+                })
             }
             // add yt embed api after creating the function so it calls it after loading
             var tag = document.createElement('script');
@@ -830,19 +870,24 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             replacedVideo.crossOrigin = 'anonymous';
             replacedVideo.currentTime = time;
     
-            var chat = new Chat(id, replacedVideo, type, start, end, provider);
-            replacedVideo.addEventListener("play", function () {
-                chat.startChatStream();
-            })
-        
-            replacedVideo.addEventListener("pause", function() {
-                chat.pauseChatStream();
-            });
+            if (!nochat) {
+                var chat = new Chat(id, replacedVideo, type, start, end, provider);
+                replacedVideo.addEventListener("play", function () {
+                    chat.startChatStream();
+                })
+            
+                replacedVideo.addEventListener("pause", function() {
+                    chat.pauseChatStream();
+                });
+            }
     
             $("#copy-button").show();
             $("#copy-button").click(function () {
                 let params = new URLSearchParams(window.location.href);
                 params.set("t", convertSecondsToTime(replacedVideo.currentTime));
+                if (nochat) {
+                    params.set("nochat", "true");
+                }
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
             break;
@@ -860,19 +905,24 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             replacedVideo.src = videoSrc;
             replacedVideo.currentTime = time;
     
-            var chat = new Chat(id, replacedVideo, type, start, end, provider);
-            replacedVideo.addEventListener("play", function () {
-                chat.startChatStream();
-            })
-        
-            replacedVideo.addEventListener("pause", function() {
-                chat.pauseChatStream();
-            });
-    
+            if (!nochat) {
+                var chat = new Chat(id, replacedVideo, type, start, end, provider);
+                replacedVideo.addEventListener("play", function () {
+                    chat.startChatStream();
+                })
+            
+                replacedVideo.addEventListener("pause", function() {
+                    chat.pauseChatStream();
+                });
+            }
+
             $("#copy-button").show();
             $("#copy-button").click(function () {
                 let params = new URLSearchParams(window.location.href);
                 params.set("t", convertSecondsToTime(replacedVideo.currentTime));
+                if (nochat) {
+                    params.set("nochat", "true");
+                }
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
             break;
@@ -905,19 +955,24 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 replacedVideo.src = `https://odysee.com/$/download/${data['result'][decodeURI(id).replace(":", "#")]['permanent_url'].substring(7).replace('#', '/')}`;
                 replacedVideo.currentTime = time;
     
-                var chat = new Chat(id, replacedVideo, type, start, end, provider);
-                replacedVideo.addEventListener("play", function () {
-                    chat.startChatStream();
-                })
-            
-                replacedVideo.addEventListener("pause", function() {
-                    chat.pauseChatStream();
-                });
+                if (!nochat) {
+                    var chat = new Chat(id, replacedVideo, type, start, end, provider);
+                    replacedVideo.addEventListener("play", function () {
+                        chat.startChatStream();
+                    })
+                
+                    replacedVideo.addEventListener("pause", function() {
+                        chat.pauseChatStream();
+                    });
+                }
         
                 $("#copy-button").show();
                 $("#copy-button").click(function () {
                     let params = new URLSearchParams(window.location.href);
                     params.set("t", convertSecondsToTime(replacedVideo.currentTime));
+                    if (nochat) {
+                        params.set("nochat", "true");
+                    }
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
             });
@@ -933,19 +988,24 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
             })
             playerObservser.observe(document.querySelector('#video-player'), { attributes: true, subtree: true })
             Rumble("play", { video: id , div: "video-player", api: function(api) {
-                var chat = new Chat(id, api, type, start, end, provider);
-                api.on("play", function() {
-                    chat.startChatStream();
-                });
-            
-                api.on("pause", function() {
-                    chat.pauseChatStream();
-                });
+                if (!nochat) {
+                    var chat = new Chat(id, api, type, start, end, provider);
+                    api.on("play", function() {
+                        chat.startChatStream();
+                    });
+                
+                    api.on("pause", function() {
+                        chat.pauseChatStream();
+                    });
+                }
 
                 $("#copy-button").show();
                 $("#copy-button").click(function () {
                     let params = new URLSearchParams(window.location.href);
                     params.set("t", convertSecondsToTime(api.getCurrentTime()));
+                    if (nochat) {
+                        params.set("nochat", "true");
+                    }
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
             }});
@@ -994,6 +1054,9 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map) {
                 $("#copy-button").click(function () {
                     let params = new URLSearchParams(window.location.href);
                     params.set("t", convertSecondsToTime(replacedVideo.currentTime));
+                    if (nochat) {
+                        params.set("nochat", "true");
+                    }
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
             })
