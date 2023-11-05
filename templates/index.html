@@ -17,6 +17,7 @@
 	<link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 	<link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/microtip@0.2.2/microtip.min.css" rel="stylesheet">
 
 	<script src="https://player.twitch.tv/js/embed/v1.js"></script>
 	<script async defer src="https://buttons.github.io/buttons.js"></script>
@@ -188,17 +189,14 @@
 
 	<div id="header" class="shadow">
 		<div id="main-links">
-			<div id="copy-button">
+			<div aria-label="Copy with time" data-microtip-position="bottom" data-microtip-size="fit" role="tooltip" id="copy-button">
 				<i class="fa-solid fa-stopwatch" title="Copy with time"></i>
-				<span class="text-disabled">Copy with time</span>
 			</div>
-			<div id="disable-chat-button">
+			<div aria-label="Disable chat" data-microtip-position="bottom" data-microtip-size="fit" role="tooltip" id="disable-chat-button">
 				<i class="fa-solid fa-comment-slash" title="Disable chat"></i>
-				<span class="text-disabled">Disable chat</span>
 			</div>
-			<div id="enable-chat-button">
+			<div aria-label="Enable chat" data-microtip-position="bottom" data-microtip-size="fit" role="tooltip" id="enable-chat-button">
 				<i class="fa-solid fa-comment" title="Enable chat"></i>
-				<span class="text-disabled">Enable chat</span>
 			</div>
 			<div id="lwod-button"><a>LWOD</a></div>
 		</div>
