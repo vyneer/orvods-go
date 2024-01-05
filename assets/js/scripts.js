@@ -1,6 +1,7 @@
 var globals = {};
 
 $(document).ready(function() {
+    shaka.polyfill.installAll();
     var urlParams = new URLSearchParams(window.location.search);
     var id = (platforms.includes("twitch")) ? urlParams.get("id") : "";
     var v = (platforms.includes("youtube")) ? urlParams.get("v") : "";
@@ -773,7 +774,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
     }
 
     switch (type) {
-        case "twitch":
+        case "twitch": {
             var player = new Twitch.Player("video-player", { video: id , time: time });
 
             $("#copy-button").show();
@@ -798,7 +799,8 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 });
             }
             break;
-        case "youtube":
+        }
+        case "youtube": {
             var player;
             var chat;
             // creating a div to be replaced by yt's iframe
@@ -839,11 +841,13 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             var firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
             break;
-        case "chatonly":
+        }
+        case "chatonly": {
             var chat = new Chat(id, player, type, start, end, provider);
             chat.startChatStream();
             break;
-        case "m3u8":
+        }
+        case "m3u8": {
             var replacedVideo = document.createElement('video');
             replacedVideo.controls = true;
             replacedVideo.autoplay = true;
@@ -891,7 +895,8 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
             break;
-        case "vodstiny":
+        }
+        case "vodstiny": {
             var replacedVideo = document.createElement('video');
             replacedVideo.controls = true;
             replacedVideo.autoplay = true;
@@ -926,7 +931,8 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
             });
             break;
-        case "odysee":
+        }
+        case "odysee": {
             var replacedVideo = document.createElement('video');
             replacedVideo.controls = true;
             replacedVideo.autoplay = true;
@@ -977,7 +983,8 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 });
             });
             break;
-        case "rumble":
+        }
+        case "rumble": {
             const playerObservser = new MutationObserver(mutations => {
                 mutations.forEach(mutation => {
                     if (mutation.attributeName === 'src') {
@@ -1010,31 +1017,27 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 });
             }});
             break;
-        case "kick":
+        }
+        case "kick": {
             var replacedVideo = document.createElement('video');
-            replacedVideo.controls = true;
             replacedVideo.autoplay = true;
-            replacedVideo.muted = true;
             replacedVideo.id = "m3u8-player";
             replacedVideo.style.width = "100%";
             replacedVideo.style.objectFit = "contain";
             replacedVideo.style.height = "100%";
-            document.querySelector("#video-player").appendChild(replacedVideo);
+            const playerContainer = document.querySelector("#video-player");
+            playerContainer.appendChild(replacedVideo);
+            playerContainer.classList.add("youtube-theme");
+            const shakaPlayer = new shaka.Player();
+            new shaka.ui.Overlay(shakaPlayer, playerContainer, replacedVideo);
+            shakaPlayer.getNetworkingEngine().registerRequestFilter(function(type, request, context) {
+                request.headers['X-Requested-With'] = 'vyneer.me';
+            });
+            shakaPlayer.attach(replacedVideo);
             fetch(`https://kick.com/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                 var videoSrc = `${corsProxyUrl}/${data.source}`;
-                if (Hls.isSupported()) {
-                    var hls = new Hls({
-                        enableWorker: true,
-                        xhrSetup: function (xhr) {
-                            xhr.setRequestHeader('X-Requested-With', 'vyneer.me');
-                        },
-                    });
-                    hls.loadSource(videoSrc);
-                    hls.attachMedia(replacedVideo);
-                }
-                else if (replacedVideo.canPlayType('application/vnd.apple.mpegurl')) {
-                    replacedVideo.src = videoSrc;
-                }
+                shakaPlayer.load(videoSrc);
+
                 replacedVideo.crossOrigin = 'anonymous';
                 replacedVideo.currentTime = time;
 
@@ -1061,6 +1064,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 });
             })
             break;
+        }
     }
 
     $("body").css("overflow", "hidden");
