@@ -384,7 +384,6 @@ var Chat = function(id, player, type, start, end, provider) {
 
 	self.chatFunction = function() {
 		if (self.status == "running" && self.chat) {
-			self.chatonlyCounter += 0.5;
 			self.chatonlyCounter += 1;
 			var currentTimeOffset = (self.playerType === "chatonly") ? Math.floor(self.chatonlyCounter) : (self.playerType === "m3u8" || self.playerType === "vodstiny" || self.playerType === "odysee") ? Math.floor(self.videoPlayer.currentTime) : Math.floor(self.videoPlayer.getCurrentTime());
 			var utcFormat = [];
