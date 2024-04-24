@@ -130,6 +130,7 @@ $(document).ready(function() {
                 break;
             case "chatonly":
                 vidId = "nothing";
+                $(".chatonly-setting").css('display', 'block');
                 break;
             default:
                 break;

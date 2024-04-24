@@ -610,6 +610,10 @@ a:visited .info-container {
 	padding-top: 3px;
 }
 
+.chatonly-setting {
+	display: none;
+}
+
 .show {display: block;}
 
 #dec-delay-button, #inc-delay-button, #switch-sides-button, #settings-button, #manual-button, #skip-button {
