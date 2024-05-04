@@ -15,6 +15,8 @@ import (
 	log "github.com/vyneer/orvods-go/logger"
 )
 
+const rumbleUA string = "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0"
+
 type RumbleSchemaBase struct {
 	T string `json:"@type"`
 }
@@ -34,14 +36,20 @@ type Rumble struct {
 }
 
 func rumbleScrape(u *url.URL) (*Rumble, error) {
-	response, err := http.Get(u.String())
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", rumbleUA)
+
+	response, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		return nil, errors.New(fmt.Sprintf("%d", response.StatusCode))
+		return nil, fmt.Errorf("%d", response.StatusCode)
 	}
 
 	doc, err := goquery.NewDocumentFromReader(response.Body)
@@ -100,7 +108,7 @@ func rumbleEmbedScrape(u *url.URL) (*url.URL, error) {
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		return nil, errors.New(fmt.Sprintf("%d", response.StatusCode))
+		return nil, fmt.Errorf("%d", response.StatusCode)
 	}
 
 	doc, err := goquery.NewDocumentFromReader(response.Body)
@@ -137,15 +145,16 @@ func getRumbleInfo(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid URL")
 	}
 
+	var realURL *url.URL
 	if strings.Contains(u.Path, "embed") {
-		u, err = rumbleEmbedScrape(u)
+		realURL, err = rumbleEmbedScrape(u)
 		if err != nil {
 			log.FiberErrorf("HTTP error during the Rumble scraping (%s): %s", c, u.String(), err)
 			return c.Status(500).SendString("Rumble info error")
 		}
 	}
 
-	rumble, err := rumbleScrape(u)
+	rumble, err := rumbleScrape(realURL)
 	if err != nil {
 		log.FiberErrorf("HTTP error during the Rumble scraping (%s): %s", c, u.String(), err)
 		return c.Status(500).SendString("Rumble info error")
