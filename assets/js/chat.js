@@ -22,7 +22,7 @@ var Chat = function(id, player, type, start, end, provider) {
 	this.letterVis = document.querySelector("#letterVis").checked
 	this.asciiLimit = document.querySelector("#asciiLimit").valueAsNumber
 	this.ignoredPhrases = document.querySelector("#ignoredPhrases").value !== "" ? document.querySelector("#ignoredPhrases").value.split(",") : []
-	this.ignoredPhrases.forEach((el, index) => this.ignoredPhrases[index] = el.trim())
+	this.ignoredPhrases.forEach((el, index) => this.ignoredPhrases[index] = el.trim().toLowerCase())
 	this.badWords = document.querySelector("#badWords").checked
 	this.badWordsRegex = /(fuck|shit|cunt|whore|bitch|faggot|fag|nigger|nigga|gusano|cracker|rape)/gi
 
