@@ -959,8 +959,27 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             }).then(resp => {
                 return resp.json();
             }).then(data => {
-                replacedVideo.src = `https://odysee.com/$/download/${data['result'][decodeURI(id).replace(":", "#")]['permanent_url'].substring(7).replace('#', '/')}`;
-                replacedVideo.currentTime = time;
+                const m3u8URL = `https://player.odycdn.com/v6/streams/${data['result'][decodeURI(id).replace(":", "#")]['claim_id']}/${data['result'][decodeURI(id).replace(":", "#")]['value']['source']['sd_hash']}/master.m3u8`;
+                const downloadURL = `https://odysee.com/$/download/${data['result'][decodeURI(id).replace(":", "#")]['permanent_url'].substring(7).replace('#', '/')}`;
+
+                fetch(m3u8URL).then((resp) => {
+                    if (resp.status === 200) {
+                            const playerContainer = document.querySelector("#video-player");
+                            playerContainer.classList.add("youtube-theme");
+                            const shakaPlayer = new shaka.Player();
+                            new shaka.ui.Overlay(shakaPlayer, playerContainer, replacedVideo);
+                            shakaPlayer.attach(replacedVideo);
+                            shakaPlayer.load(m3u8URL);
+                            replacedVideo.controls = false;
+                            replacedVideo.currentTime = time;
+                    } else {
+                        throw new Error('status != 200')
+                    }
+                }).catch((err) => {
+                    console.warn('unable to get odysee m3u8 vod', err)
+                    replacedVideo.src = downloadURL;
+                    replacedVideo.currentTime = time;
+                });
     
                 if (!nochat) {
                     var chat = new Chat(id, replacedVideo, type, start, end, provider);
