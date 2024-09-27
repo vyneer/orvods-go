@@ -216,8 +216,8 @@ function vodURL(url) {
         if (urlCheck.hostname === "www.kick.com" || urlCheck.hostname === "kick.com") {
             if (!platforms.includes("kick")) return;
             const videoCheck = urlCheck.pathname.split('/').filter(e => e.length);
-            if (videoCheck.length > 0 && videoCheck[0] === "video") {
-                window.location.href = window.location.origin + window.location.pathname + "?k=" + videoCheck[1] + timestamps;
+            if (videoCheck.length > 0 && videoCheck[1] === "videos") {
+                window.location.href = window.location.origin + window.location.pathname + "?k=" + videoCheck[2] + timestamps;
             }
         }
     } catch (e) {
