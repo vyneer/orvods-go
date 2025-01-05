@@ -751,7 +751,7 @@ async function loadVODs(type) {
             return vodArray;
         }
         case "kick": {
-            let response = await fetch('https://kick.com/api/v1/channels/destiny', {
+            let response = await fetch('https://kick.vyneer-cors.duckdns.org/api/v1/channels/destiny', {
                 method: 'GET',
             });
             let data = await response.json();
@@ -1054,7 +1054,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 request.headers['X-Requested-With'] = 'vyneer.me';
             });
             shakaPlayer.attach(replacedVideo);
-            fetch(`https://kick.com/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
+            fetch(`https://kick.vyneer-cors.duckdns.org/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                 var videoSrc = `${corsProxyUrl}/${data.source}`;
                 shakaPlayer.load(videoSrc);
 
