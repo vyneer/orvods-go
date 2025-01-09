@@ -1057,7 +1057,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             });
             shakaPlayer.attach(replacedVideo);
             fetch(`https://kick.vyneer-cors.duckdns.org/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
-                var videoSrc = `${corsProxyUrl}/${data.source}`;
+                var videoSrc = data.source;
                 shakaPlayer.load(videoSrc);
 
                 replacedVideo.crossOrigin = 'anonymous';
