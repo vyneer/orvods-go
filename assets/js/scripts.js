@@ -751,12 +751,17 @@ async function loadVODs(type) {
             return vodArray;
         }
         case "kick": {
-            let response = await fetch('https://kick.vyneer-cors.duckdns.org/api/v1/channels/destiny', {
+            return await fetch('https://kick.com/api/v2/channels/destiny/videos', {
                 method: 'GET',
+            }).then((response) => {
+                return response.json()
+            }).catch(async () => {
+                return await fetch('https://kick.vyneer-cors.duckdns.org/api/v2/channels/destiny/videos', {
+                    method: 'GET',
+                }).then((response) => {
+                    return response.json()
+                })
             });
-            let data = await response.json();
-            vodArray.push(...data['previous_livestreams']);
-            return vodArray;
         }
     }
 };
@@ -1052,11 +1057,8 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             playerContainer.classList.add("youtube-theme");
             const shakaPlayer = new shaka.Player();
             new shaka.ui.Overlay(shakaPlayer, playerContainer, replacedVideo);
-            shakaPlayer.getNetworkingEngine().registerRequestFilter(function(type, request, context) {
-                request.headers['X-Requested-With'] = 'vyneer.me';
-            });
             shakaPlayer.attach(replacedVideo);
-            fetch(`https://kick.vyneer-cors.duckdns.org/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
+            fetch(`https://kick.com/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                 var videoSrc = data.source;
                 shakaPlayer.load(videoSrc);
 
@@ -1084,7 +1086,37 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                     }
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
-            })
+            }).catch(() => {
+                fetch(`https://kick.vyneer-cors.duckdns.org/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
+                    var videoSrc = data.source;
+                    shakaPlayer.load(videoSrc);
+
+                    replacedVideo.crossOrigin = 'anonymous';
+                    replacedVideo.currentTime = time;
+
+                    const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
+                    const endTime = end ?? Date.parse(startTime) + data?.livestream?.duration
+
+                    var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
+                    replacedVideo.addEventListener("play", function() {
+                        chat.startChatStream();
+                    })
+
+                    replacedVideo.addEventListener("pause", function() {
+                        chat.pauseChatStream();
+                    });
+
+                    $("#copy-button").show();
+                    $("#copy-button").click(function() {
+                        let params = new URLSearchParams(window.location.href);
+                        params.set("t", convertSecondsToTime(replacedVideo.currentTime));
+                        if (nochat) {
+                            params.set("nochat", "true");
+                        }
+                        navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
+                    });
+                });
+            });
             break;
         }
     }
