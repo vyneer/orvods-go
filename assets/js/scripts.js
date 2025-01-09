@@ -60,9 +60,9 @@ $(document).ready(function() {
         }
     })
 
-    if (!chatSide) { 
+    if (!chatSide) {
         chatSide = 'right'
-        localStorage.setItem('chatSide', chatSide); 
+        localStorage.setItem('chatSide', chatSide);
     }
 
     if (chatSide === 'right') {
@@ -232,7 +232,7 @@ $(document).ready(function() {
             page = 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            nineEntries = allVODs.slice((page-1)*9,page*9);
+            nineEntries = allVODs.slice((page - 1) * 9, page * 9);
             createVodEntries(nineEntries, tabType);
         }
     })
@@ -254,7 +254,7 @@ $(document).ready(function() {
             page = 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            nineEntries = allVids.slice((page-1)*9,page*9);
+            nineEntries = allVids.slice((page - 1) * 9, page * 9);
             createVodEntries(nineEntries, tabType);
         }
     })
@@ -281,12 +281,12 @@ $(document).ready(function() {
                     allArch = result[0];
                     return result[0];
                 }).then((arr) => {
-                    return arr.slice((page-1)*9,page*9);
+                    return arr.slice((page - 1) * 9, page * 9);
                 }).then((slice) => {
                     createVodEntries(slice, tabType);
                 });
             } else {
-                nineEntries = allArch.slice((page-1)*9,page*9);
+                nineEntries = allArch.slice((page - 1) * 9, page * 9);
                 createVodEntries(nineEntries, tabType);
             }
         }
@@ -314,12 +314,12 @@ $(document).ready(function() {
                     allOdysteve = result[0];
                     return result[0];
                 }).then((arr) => {
-                    return arr.slice((page-1)*9,page*9);
+                    return arr.slice((page - 1) * 9, page * 9);
                 }).then((slice) => {
                     createVodEntries(slice, tabType);
                 });
             } else {
-                nineEntries = allOdysteve.slice((page-1)*9,page*9);
+                nineEntries = allOdysteve.slice((page - 1) * 9, page * 9);
                 createVodEntries(nineEntries, tabType);
             }
         }
@@ -347,12 +347,12 @@ $(document).ready(function() {
                     allOmnimirror = result;
                     return result;
                 }).then((arr) => {
-                    return arr.slice((page-1)*9,page*9);
+                    return arr.slice((page - 1) * 9, page * 9);
                 }).then((slice) => {
                     createVodEntries(slice, tabType);
                 });
             } else {
-                nineEntries = allOmnimirror.slice((page-1)*9,page*9);
+                nineEntries = allOmnimirror.slice((page - 1) * 9, page * 9);
                 createVodEntries(nineEntries, tabType);
             }
         }
@@ -380,12 +380,12 @@ $(document).ready(function() {
                     allRumblevods = result;
                     return result;
                 }).then((arr) => {
-                    return arr.slice((page-1)*9,page*9);
+                    return arr.slice((page - 1) * 9, page * 9);
                 }).then((slice) => {
                     createVodEntries(slice, tabType);
                 });
             } else {
-                nineEntries = allRumblevods.slice((page-1)*9,page*9);
+                nineEntries = allRumblevods.slice((page - 1) * 9, page * 9);
                 createVodEntries(nineEntries, tabType);
             }
         }
@@ -413,12 +413,12 @@ $(document).ready(function() {
                     allKickvods = result;
                     return result;
                 }).then((arr) => {
-                    return arr.slice((page-1)*9,page*9);
+                    return arr.slice((page - 1) * 9, page * 9);
                 }).then((slice) => {
                     createVodEntries(slice, tabType);
                 });
             } else {
-                nineEntries = allKickvods.slice((page-1)*9,page*9);
+                nineEntries = allKickvods.slice((page - 1) * 9, page * 9);
                 createVodEntries(nineEntries, tabType);
             }
         }
@@ -449,20 +449,20 @@ $(document).ready(function() {
                 vodinfo = allKickvods;
                 break;
         }
-        if (page != Math.ceil(vodinfo.length/9)) {
+        if (page != Math.ceil(vodinfo.length / 9)) {
             page += 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            nineEntries = vodinfo.slice((page-1)*9,page*9);
+            nineEntries = vodinfo.slice((page - 1) * 9, page * 9);
             createVodEntries(nineEntries, tabType);
         }
 
-        if (page === Math.ceil(vodinfo.length/9)) {
+        if (page === Math.ceil(vodinfo.length / 9)) {
             $("#next-page-button").addClass("disabled");
         } else {
             $("#next-page-button").removeClass("disabled");
         }
-        
+
         if (page === 1) {
             $("#previous-page-button").addClass("disabled");
         } else {
@@ -495,15 +495,15 @@ $(document).ready(function() {
                 vodinfo = allKickvods;
                 break;
         }
-        if (page > 1) { 
+        if (page > 1) {
             page -= 1;
             $("#page-number").text(page);
             $("#vod-list").empty();
-            nineEntries = vodinfo.slice((page-1)*9,page*9);
+            nineEntries = vodinfo.slice((page - 1) * 9, page * 9);
             createVodEntries(nineEntries, tabType);
         }
 
-        if (page === Math.ceil(vodinfo.length/9)) {
+        if (page === Math.ceil(vodinfo.length / 9)) {
             $("#next-page-button").addClass("disabled");
         } else {
             $("#next-page-button").removeClass("disabled");
@@ -561,11 +561,11 @@ $(document).ready(function() {
         }
     });
 
-    $("#log-fallback-button").click(function () {
+    $("#log-fallback-button").click(function() {
         window.location.href += "&provider=vyneer";
     });
 
-    $("#dgg-controls").click(function () {
+    $("#dgg-controls").click(function() {
         if (globals.dgg) {
             splits = ['#video-player', '#chat-container'];
             let percent = globals.sizes[0];
@@ -595,10 +595,10 @@ $(document).ready(function() {
             splits = ['#live-chat-container', '#video-player', '#chat-container'];
             let percent;
             if (globals.sizes[0] > globals.sizes[1]) {
-                percent = globals.sizes[0]/5;
+                percent = globals.sizes[0] / 5;
                 globals.sizes[0] = globals.sizes[0] - percent;
             } else {
-                percent = globals.sizes[1]/5;
+                percent = globals.sizes[1] / 5;
                 globals.sizes[1] = globals.sizes[1] - percent;
             }
             globals.sizes.unshift(percent);
@@ -619,13 +619,13 @@ $(document).ready(function() {
         }
     });
 
-    $("#disable-chat-button").click(function () {
+    $("#disable-chat-button").click(function() {
         let params = new URLSearchParams(window.location.search);
         params.set("nochat", "true");
         window.location.search = decodeURIComponent(params.toString());
     });
 
-    $("#enable-chat-button").click(function () {
+    $("#enable-chat-button").click(function() {
         let params = new URLSearchParams(window.location.search);
         params.delete("nochat");
         window.location.search = decodeURIComponent(params.toString());
@@ -776,10 +776,10 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
 
     switch (type) {
         case "twitch": {
-            var player = new Twitch.Player("video-player", { video: id , time: time });
+            var player = new Twitch.Player("video-player", { video: id, time: time });
 
             $("#copy-button").show();
-            $("#copy-button").click(function () {
+            $("#copy-button").click(function() {
                 let params = new URLSearchParams(window.location.href);
                 params.set("t", convertSecondsToTime(player.getCurrentTime()));
                 if (nochat) {
@@ -794,7 +794,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 player.addEventListener(Twitch.Player.PLAYING, function() {
                     chat.startChatStream();
                 });
-            
+
                 player.addEventListener(Twitch.Player.PAUSE, function() {
                     chat.pauseChatStream();
                 });
@@ -809,11 +809,11 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             replacedDiv.id = "yt-player";
             document.querySelector("#video-player").appendChild(replacedDiv);
             window.onYouTubeIframeAPIReady = function() {
-                player = new YT.Player("yt-player", { videoId: id , playerVars: {"start": time, "autoplay": 1, "playsinline": 1}});
+                player = new YT.Player("yt-player", { videoId: id, playerVars: { "start": time, "autoplay": 1, "playsinline": 1 } });
 
-                player.addEventListener("onReady", function () {
+                player.addEventListener("onReady", function() {
                     $("#copy-button").show();
-                    $("#copy-button").click(function () {
+                    $("#copy-button").click(function() {
                         let params = new URLSearchParams(window.location.href);
                         params.set("t", convertSecondsToTime(player.getCurrentTime()));
                         if (nochat) {
@@ -821,7 +821,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                         }
                         navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                     });
-        
+
                     if (!nochat) {
                         chat = new Chat(id, player, type, start, end, provider);
                         player.addEventListener("onStateChange", function(event) {
@@ -837,7 +837,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             }
             // add yt embed api after creating the function so it calls it after loading
             var tag = document.createElement('script');
-    
+
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.getElementsByTagName('script')[0];
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -862,7 +862,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             if (Hls.isSupported()) {
                 var hls = new Hls({
                     enableWorker: true,
-                    xhrSetup: function (xhr) {
+                    xhrSetup: function(xhr) {
                         xhr.setRequestHeader('X-Requested-With', 'vyneer.me');
                     },
                 });
@@ -874,20 +874,20 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             }
             replacedVideo.crossOrigin = 'anonymous';
             replacedVideo.currentTime = time;
-    
+
             if (!nochat) {
                 var chat = new Chat(id, replacedVideo, type, start, end, provider);
-                replacedVideo.addEventListener("play", function () {
+                replacedVideo.addEventListener("play", function() {
                     chat.startChatStream();
                 })
-            
+
                 replacedVideo.addEventListener("pause", function() {
                     chat.pauseChatStream();
                 });
             }
-    
+
             $("#copy-button").show();
-            $("#copy-button").click(function () {
+            $("#copy-button").click(function() {
                 let params = new URLSearchParams(window.location.href);
                 params.set("t", convertSecondsToTime(replacedVideo.currentTime));
                 if (nochat) {
@@ -910,20 +910,20 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             var videoSrc = `https://dgg.sfo3.digitaloceanspaces.com/vods/${map[id].file}`;
             replacedVideo.src = videoSrc;
             replacedVideo.currentTime = time;
-    
+
             if (!nochat) {
                 var chat = new Chat(id, replacedVideo, type, start, end, provider);
-                replacedVideo.addEventListener("play", function () {
+                replacedVideo.addEventListener("play", function() {
                     chat.startChatStream();
                 })
-            
+
                 replacedVideo.addEventListener("pause", function() {
                     chat.pauseChatStream();
                 });
             }
 
             $("#copy-button").show();
-            $("#copy-button").click(function () {
+            $("#copy-button").click(function() {
                 let params = new URLSearchParams(window.location.href);
                 params.set("t", convertSecondsToTime(replacedVideo.currentTime));
                 if (nochat) {
@@ -964,14 +964,14 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
 
                 fetch(m3u8URL).then((resp) => {
                     if (resp.status === 200) {
-                            const playerContainer = document.querySelector("#video-player");
-                            playerContainer.classList.add("youtube-theme");
-                            const shakaPlayer = new shaka.Player();
-                            new shaka.ui.Overlay(shakaPlayer, playerContainer, replacedVideo);
-                            shakaPlayer.attach(replacedVideo);
-                            shakaPlayer.load(m3u8URL);
-                            replacedVideo.controls = false;
-                            replacedVideo.currentTime = time;
+                        const playerContainer = document.querySelector("#video-player");
+                        playerContainer.classList.add("youtube-theme");
+                        const shakaPlayer = new shaka.Player();
+                        new shaka.ui.Overlay(shakaPlayer, playerContainer, replacedVideo);
+                        shakaPlayer.attach(replacedVideo);
+                        shakaPlayer.load(m3u8URL);
+                        replacedVideo.controls = false;
+                        replacedVideo.currentTime = time;
                     } else {
                         throw new Error('status != 200')
                     }
@@ -980,20 +980,20 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                     replacedVideo.src = downloadURL;
                     replacedVideo.currentTime = time;
                 });
-    
+
                 if (!nochat) {
                     var chat = new Chat(id, replacedVideo, type, start, end, provider);
-                    replacedVideo.addEventListener("play", function () {
+                    replacedVideo.addEventListener("play", function() {
                         chat.startChatStream();
                     })
-                
+
                     replacedVideo.addEventListener("pause", function() {
                         chat.pauseChatStream();
                     });
                 }
-        
+
                 $("#copy-button").show();
-                $("#copy-button").click(function () {
+                $("#copy-button").click(function() {
                     let params = new URLSearchParams(window.location.href);
                     params.set("t", convertSecondsToTime(replacedVideo.currentTime));
                     if (nochat) {
@@ -1014,28 +1014,30 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 })
             })
             playerObservser.observe(document.querySelector('#video-player'), { attributes: true, subtree: true })
-            Rumble("play", { video: id , div: "video-player", api: function(api) {
-                if (!nochat) {
-                    var chat = new Chat(id, api, type, start, end, provider);
-                    api.on("play", function() {
-                        chat.startChatStream();
-                    });
-                
-                    api.on("pause", function() {
-                        chat.pauseChatStream();
+            Rumble("play", {
+                video: id, div: "video-player", api: function(api) {
+                    if (!nochat) {
+                        var chat = new Chat(id, api, type, start, end, provider);
+                        api.on("play", function() {
+                            chat.startChatStream();
+                        });
+
+                        api.on("pause", function() {
+                            chat.pauseChatStream();
+                        });
+                    }
+
+                    $("#copy-button").show();
+                    $("#copy-button").click(function() {
+                        let params = new URLSearchParams(window.location.href);
+                        params.set("t", convertSecondsToTime(api.getCurrentTime()));
+                        if (nochat) {
+                            params.set("nochat", "true");
+                        }
+                        navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                     });
                 }
-
-                $("#copy-button").show();
-                $("#copy-button").click(function () {
-                    let params = new URLSearchParams(window.location.href);
-                    params.set("t", convertSecondsToTime(api.getCurrentTime()));
-                    if (nochat) {
-                        params.set("nochat", "true");
-                    }
-                    navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
-                });
-            }});
+            });
             break;
         }
         case "kick": {
@@ -1063,18 +1065,18 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
 
                 const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
                 const endTime = end ?? Date.parse(startTime) + data?.livestream?.duration
-        
+
                 var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
-                replacedVideo.addEventListener("play", function () {
+                replacedVideo.addEventListener("play", function() {
                     chat.startChatStream();
                 })
-            
+
                 replacedVideo.addEventListener("pause", function() {
                     chat.pauseChatStream();
                 });
-        
+
                 $("#copy-button").show();
-                $("#copy-button").click(function () {
+                $("#copy-button").click(function() {
                     let params = new URLSearchParams(window.location.href);
                     params.set("t", convertSecondsToTime(replacedVideo.currentTime));
                     if (nochat) {
@@ -1094,20 +1096,20 @@ var createVodEntries = function(vodData, type) {
     if (type === "twitch") {
         vodData.forEach(function(vod) {
             createVodEntry({
-                id: vod.id, 
-                title: vod.title, 
-                image: vod.thumbnail_url.replace(/%([\s\S]*)(?=\.)/, "320x180"), 
-                views: vod.view_count, 
-                date: formatDate(vod.created_at), 
+                id: vod.id,
+                title: vod.title,
+                image: vod.thumbnail_url.replace(/%([\s\S]*)(?=\.)/, "320x180"),
+                views: vod.view_count,
+                date: formatDate(vod.created_at),
                 length: vod.duration
             });
         })
     } else if (type === "youtube") {
         vodData.forEach(function(vod) {
             createVidEntry({
-                id: vod.id, 
-                title: vod.title, 
-                image: vod.thumbnail, 
+                id: vod.id,
+                title: vod.title,
+                image: vod.thumbnail,
                 date: formatDate(vod.starttime),
                 starttime: vod.starttime,
                 endtime: vod.endtime
@@ -1230,10 +1232,10 @@ var createLWODTimestamps = function(data, type) {
     if (type === "twitch") {
         data.forEach(function(timestamp) {
             createLWODEntry({
-                starttime: timestamp.starttime, 
-                endtime: timestamp.endtime, 
-                game: timestamp.game, 
-                subject: timestamp.subject, 
+                starttime: timestamp.starttime,
+                endtime: timestamp.endtime,
+                game: timestamp.game,
+                subject: timestamp.subject,
                 topic: timestamp.topic
             }, type);
         })
@@ -1241,15 +1243,15 @@ var createLWODTimestamps = function(data, type) {
         data.forEach(function(timestamp) {
             $("th.end").remove();
             var fullSec = timestamp.time;
-            var hoursFloat = fullSec/(60*60);
+            var hoursFloat = fullSec / (60 * 60);
             var hoursInt = Math.floor(hoursFloat);
-            var minutesFloat = (hoursFloat - hoursInt)*60;
+            var minutesFloat = (hoursFloat - hoursInt) * 60;
             var minutesInt = Math.floor(minutesFloat);
-            var secInt = fullSec - (minutesInt*60 + hoursInt*60*60);
+            var secInt = fullSec - (minutesInt * 60 + hoursInt * 60 * 60);
             createLWODEntry({
-                starttime: `${hoursInt.toString().padStart(2, "0")}:${minutesInt.toString().padStart(2, "0")}:${secInt.toString().padStart(2, "0")}`, 
-                game: timestamp.game, 
-                subject: timestamp.subject, 
+                starttime: `${hoursInt.toString().padStart(2, "0")}:${minutesInt.toString().padStart(2, "0")}:${secInt.toString().padStart(2, "0")}`,
+                game: timestamp.game,
+                subject: timestamp.subject,
                 topic: timestamp.topic
             }, type);
         })
