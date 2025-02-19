@@ -58,7 +58,7 @@ func getChat(c *fiber.Ctx) error {
 				case errors.Is(err, parser.ErrBadRequest), errors.Is(err, parser.ErrNotFound),
 					errors.Is(err, parser.ErrForbidden), errors.Is(err, parser.ErrTooManyRequests),
 					errors.Is(err, parser.ErrInternalServerError), errors.Is(err, parser.ErrBadGateway),
-					errors.Is(err, parser.ErrServiceUnavailable), errors.Is(err, parser.ErrMovedTemporarily), os.IsTimeout(err):
+					errors.Is(err, parser.ErrServiceUnavailable), errors.Is(err, parser.ErrMovedTemporarily), os.IsTimeout(err), errors.Is(err, parser.ErrDownloadError):
 					log.FiberErrorf("wasn't able to get logs from OverRustleLogs, falling back to vyneer.me logs (from: %s, to: %s)", c, fromParam, toParam)
 					jsonResponse, err := parser.GetDBLines(fromParam, toParam)
 					if err != nil {
@@ -91,7 +91,7 @@ func getChat(c *fiber.Ctx) error {
 					case errors.Is(err, parser.ErrBadRequest), errors.Is(err, parser.ErrNotFound),
 						errors.Is(err, parser.ErrForbidden), errors.Is(err, parser.ErrTooManyRequests),
 						errors.Is(err, parser.ErrInternalServerError), errors.Is(err, parser.ErrBadGateway),
-						errors.Is(err, parser.ErrServiceUnavailable), errors.Is(err, parser.ErrMovedTemporarily), os.IsTimeout(err):
+						errors.Is(err, parser.ErrServiceUnavailable), errors.Is(err, parser.ErrMovedTemporarily), os.IsTimeout(err), errors.Is(err, parser.ErrDownloadError):
 						log.FiberErrorf("wasn't able to get logs from OverRustleLogs, falling back to vyneer.me logs (from: %s, to: %s)", c, fromParam, toParam)
 						jsonResponse, err := parser.GetDBLines(fromParam, toParam)
 						if err != nil {

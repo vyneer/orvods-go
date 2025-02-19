@@ -23,6 +23,7 @@ var ErrInternalServerError = errors.New("500 Internal Server Error")
 var ErrBadGateway = errors.New("502 Bad Gateway")
 var ErrServiceUnavailable = errors.New("503 Service Unavailable")
 var ErrMovedTemporarily = errors.New("302 Moved Temporarily")
+var ErrDownloadError = errors.New("download error")
 
 var transport http.RoundTripper = &http.Transport{
 	DisableKeepAlives: true,
@@ -224,7 +225,7 @@ func GetTextFiles(from, to string) ([]string, error) {
 
 	pages, err := downloadMultipleFiles(client, arr)
 	if err != nil {
-		return []string{"error"}, err
+		return []string{"error"}, errors.Join(err, ErrDownloadError)
 	}
 
 	flat, err := pancake.Strings(pages)
