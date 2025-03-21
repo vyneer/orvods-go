@@ -756,7 +756,7 @@ async function loadVODs(type) {
             }).then((response) => {
                 return response.json()
             }).catch(async () => {
-                return await fetch('https://kick.vyneer-cors.duckdns.org/api/v2/channels/destiny/videos', {
+                return await fetch('https://kapi.vyneer.me/api/v2/channels/destiny/videos', {
                     method: 'GET',
                 }).then((response) => {
                     return response.json()
@@ -1087,7 +1087,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                     navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
                 });
             }).catch(() => {
-                fetch(`https://kick.vyneer-cors.duckdns.org/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
+                fetch(`https://kapi.vyneer.me/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                     var videoSrc = data.source;
                     shakaPlayer.load(videoSrc);
 
