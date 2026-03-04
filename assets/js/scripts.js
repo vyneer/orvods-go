@@ -162,6 +162,16 @@ $(document).ready(function() {
                 createVodEntries(nineEntries, "youtube");
             });
         }
+        if (vodModules.includes("kick") && kickButton.classList.contains("active")) {
+            loadVODs("kick").then(result => {
+                allKickvods = result;
+                return result;
+            }).then((arr) => {
+                return arr.slice((page - 1) * 9, page * 9);
+            }).then((slice) => {
+                createVodEntries(slice, "kick");
+            });
+        }
         $("#player").hide();
         $("#browse").show();
         $("#lwod").hide();
