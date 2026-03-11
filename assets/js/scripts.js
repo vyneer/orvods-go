@@ -23,7 +23,7 @@ $(document).ready(function() {
     var lwodActive = 0;
     var chatSide = localStorage.getItem('chatSide');
     var playerType = (id) ? "twitch" : (v) ? "youtube" : (hash) ? "m3u8" : (chatonly) ? "chatonly" : (vodstinyTwitch || vodstinyYoutube) ? "vodstiny" : (odysee) ? "odysee" : (rumble) ? "rumble" : (kick) ? "kick" : null;
-    var tabType = "youtube";
+    var tabType = "kick";
     const twitchButton = document.getElementById("twitch-button");
     const rumbleButton = document.getElementById("rumble-button");
     const kickButton = document.getElementById("kick-button");
