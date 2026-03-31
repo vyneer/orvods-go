@@ -984,9 +984,8 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                         const shakaPlayer = new shaka.Player();
                         new shaka.ui.Overlay(shakaPlayer, playerContainer, replacedVideo);
                         shakaPlayer.attach(replacedVideo);
-                        shakaPlayer.load(m3u8URL);
+                        shakaPlayer.load(m3u8URL, time);
                         replacedVideo.controls = false;
-                        replacedVideo.currentTime = time;
                     } else {
                         throw new Error('status != 200')
                     }
@@ -1070,10 +1069,9 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             shakaPlayer.attach(replacedVideo);
             fetch(`https://kick.com/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                 var videoSrc = data.source;
-                shakaPlayer.load(videoSrc);
+                shakaPlayer.load(videoSrc, time);
 
                 replacedVideo.crossOrigin = 'anonymous';
-                replacedVideo.currentTime = time;
 
                 const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
                 const endTime = end ?? Date.parse(startTime) + data?.livestream?.duration
@@ -1099,10 +1097,9 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             }).catch(() => {
                 fetch(`https://kapi.vyneer.me/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                     var videoSrc = data.source;
-                    shakaPlayer.load(videoSrc);
+                    shakaPlayer.load(videoSrc, time);
 
                     replacedVideo.crossOrigin = 'anonymous';
-                    replacedVideo.currentTime = time;
 
                     const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
                     const endTime = end ?? Date.parse(startTime) + data?.livestream?.duration
