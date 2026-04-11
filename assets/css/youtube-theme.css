@@ -51,11 +51,6 @@
       -ms-flex-order: -3;
           order: -3;
 }
-.youtube-theme .shaka-mute-button {
-  -webkit-box-ordinal-group: -1;
-      -ms-flex-order: -2;
-          order: -2;
-}
 .youtube-theme .shaka-controls-button-panel > * {
   margin: 0;
   padding: 3px 8px;
@@ -75,9 +70,6 @@
   position: relative;
   z-index: 10;
   left: -1px;
-  -webkit-box-ordinal-group: 0;
-      -ms-flex-order: -1;
-          order: -1;
   opacity: 0;
   width: 0px;
   -webkit-transition: width 0.2s cubic-bezier(0.4, 0, 1, 1);
