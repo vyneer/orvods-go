@@ -1069,21 +1069,37 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             shakaPlayer.attach(replacedVideo);
             fetch(`https://kick.com/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                 var videoSrc = data.source;
-                shakaPlayer.load(videoSrc, time);
-
                 replacedVideo.crossOrigin = 'anonymous';
 
-                const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
-                const endTime = end ?? Date.parse(startTime) + data?.livestream?.duration
+                if (data?.livestream?.duration) {
+                    shakaPlayer.load(videoSrc, time);
 
-                var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
-                replacedVideo.addEventListener("play", function() {
-                    chat.startChatStream();
-                })
+                    const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
+                    const endTime = end ?? Date.parse(startTime) + data?.livestream?.duration
 
-                replacedVideo.addEventListener("pause", function() {
-                    chat.pauseChatStream();
-                });
+                    var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
+                    replacedVideo.addEventListener("play", function() {
+                        chat.startChatStream();
+                    })
+
+                    replacedVideo.addEventListener("pause", function() {
+                        chat.pauseChatStream();
+                    });
+                } else {
+                    shakaPlayer.load(videoSrc, time).then(() => {
+                        const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
+                        const endTime = end ?? Date.parse(startTime) + (replacedVideo.duration * 1000);
+
+                        var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
+                        replacedVideo.addEventListener("play", function() {
+                            chat.startChatStream();
+                        })
+
+                        replacedVideo.addEventListener("pause", function() {
+                            chat.pauseChatStream();
+                        });
+                    })
+                }
 
                 $("#copy-button").show();
                 $("#copy-button").click(function() {
@@ -1097,21 +1113,37 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             }).catch(() => {
                 fetch(`https://kapi.vyneer.me/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                     var videoSrc = data.source;
-                    shakaPlayer.load(videoSrc, time);
-
                     replacedVideo.crossOrigin = 'anonymous';
 
-                    const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
-                    const endTime = end ?? Date.parse(startTime) + data?.livestream?.duration
+                    if (data?.livestream?.duration) {
+                        shakaPlayer.load(videoSrc, time);
 
-                    var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
-                    replacedVideo.addEventListener("play", function() {
-                        chat.startChatStream();
-                    })
+                        const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
+                        const endTime = end ?? Date.parse(startTime) + data?.livestream?.duration
 
-                    replacedVideo.addEventListener("pause", function() {
-                        chat.pauseChatStream();
-                    });
+                        var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
+                        replacedVideo.addEventListener("play", function() {
+                            chat.startChatStream();
+                        })
+
+                        replacedVideo.addEventListener("pause", function() {
+                            chat.pauseChatStream();
+                        });
+                    } else {
+                        shakaPlayer.load(videoSrc, time).then(() => {
+                            const startTime = start ?? data?.livestream?.created_at?.split(' ').join('T') + 'Z'
+                            const endTime = end ?? Date.parse(startTime) + (replacedVideo.duration * 1000);
+
+                            var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
+                            replacedVideo.addEventListener("play", function() {
+                                chat.startChatStream();
+                            })
+
+                            replacedVideo.addEventListener("pause", function() {
+                                chat.pauseChatStream();
+                            });
+                        })
+                    }
 
                     $("#copy-button").show();
                     $("#copy-button").click(function() {
