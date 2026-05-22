@@ -631,7 +631,6 @@ a:visited .info-container {
 	overflow-y: scroll;
 	box-sizing: border-box;
 	background: #080808;
-	overflow-anchor: none;
 }
 
 .hide-on-focus .msg-chat {
