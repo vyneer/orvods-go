@@ -281,10 +281,10 @@ var Chat = function(id, player, type, start, end, provider) {
 			usernameField = `<span onclick='document._addFocusRule("${username}")' class='user-${username} user ${featuresList}'>${username}</span><span class='message-divider'>:</span> `;
 		}
 
-		self.chatStream.append("<div class='msg-chat' data-username='" + username + "'>" + 
-			timeFormatted + featuresField + usernameField + 
-			"<span class='message' onclick='document._removeFocusRule()'>" +
-		  	message + "</span></div>");
+		self.chatStream.append("<div class='msg-chat' data-username='" + username + "'>" +
+			timeFormatted + featuresField + usernameField +
+			"<span class='message text' onclick='document._removeFocusRule()'>" +
+			message + "</span></div>");
 	}
 
 	this._generateDestinyEmoteImage = function(emote) {
