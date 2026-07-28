@@ -1067,6 +1067,75 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
             const shakaPlayer = new shaka.Player();
             new shaka.ui.Overlay(shakaPlayer, playerContainer, replacedVideo);
             shakaPlayer.attach(replacedVideo);
+            if (id.includes("/")) {
+                const split = id.split("/");
+                const channelName = split[0];
+                const videoId = split[1];
+
+                fetch(`https://kick.com/api/v2/channels/${channelName}`).then(resp => resp.json()).then(channelData => {
+                    fetch(`https://web.kick.com/api/v1/channels/${channelData.id}/videos`).then(resp => resp.json()).then(videosData => {
+                        const filteredVideoData = videosData.data.find(v => v.id === videoId);
+                        if (!filteredVideoData) {
+                            return;
+                        };
+
+                        // https://images.kick.com/video_thumbnails/0PMYoN0I2p4i/vl7JH7HCJpHR/720.webp
+                        const thumbnailFragment = filteredVideoData.thumbnail.src.split("/")[5];
+
+                        fetch(`https://kick.com/api/v2/channels/${channelName}/videos`).then(resp => resp.json()).then(finalVideosData => {
+                            const filteredFinalVideo = finalVideosData.find(v => v.thumbnail.src.includes(thumbnailFragment));
+                            if (!filteredFinalVideo) {
+                                return;
+                            }
+
+                            var videoSrc = filteredFinalVideo.source;
+                            replacedVideo.crossOrigin = 'anonymous';
+
+                            if (filteredFinalVideo.duration) {
+                                shakaPlayer.load(videoSrc, time);
+
+                                const startTime = start ?? filteredFinalVideo.created_at?.split(' ').join('T') + 'Z'
+                                const endTime = end ?? Date.parse(startTime) + filteredFinalVideo.duration
+
+                                var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
+                                replacedVideo.addEventListener("play", function() {
+                                    chat.startChatStream();
+                                })
+
+                                replacedVideo.addEventListener("pause", function() {
+                                    chat.pauseChatStream();
+                                });
+                            } else {
+                                shakaPlayer.load(videoSrc, time).then(() => {
+                                    const startTime = start ?? filteredFinalVideo.created_at?.split(' ').join('T') + 'Z'
+                                    const endTime = end ?? Date.parse(startTime) + (replacedVideo.duration * 1000);
+
+                                    var chat = new Chat(id, replacedVideo, "m3u8", startTime, endTime, provider);
+                                    replacedVideo.addEventListener("play", function() {
+                                        chat.startChatStream();
+                                    })
+
+                                    replacedVideo.addEventListener("pause", function() {
+                                        chat.pauseChatStream();
+                                    });
+                                })
+                            }
+
+                            $("#copy-button").show();
+                            $("#copy-button").click(function() {
+                                let params = new URLSearchParams(window.location.href);
+                                params.set("t", convertSecondsToTime(replacedVideo.currentTime));
+                                if (nochat) {
+                                    params.set("nochat", "true");
+                                }
+                                navigator.clipboard.writeText(`${decodeURIComponent(params.toString())}`);
+                            });
+                        });
+                    });
+                });
+                break;
+            }
+
             fetch(`https://kick.com/api/v1/video/${id}`).then(resp => resp.json()).then(data => {
                 var videoSrc = data.source;
                 replacedVideo.crossOrigin = 'anonymous';
