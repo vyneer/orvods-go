@@ -1073,7 +1073,7 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                 const videoId = split[1];
 
                 fetch(`https://kick.com/api/v2/channels/${channelName}`).then(resp => resp.json()).then(channelData => {
-                    fetch(`https://kapi.vyneer.me/api/v3/channels/${channelData.id}/videos`).then(resp => resp.json()).then(videosData => {
+                    fetch(`https://kapi.vyneer.me/api/v1-web/channels/${channelData.id}/videos`).then(resp => resp.json()).then(videosData => {
                         const filteredVideoData = videosData.data.find(v => v.id === videoId);
                         if (!filteredVideoData) {
                             return;
