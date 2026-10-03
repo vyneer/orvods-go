@@ -388,8 +388,8 @@ $(document).ready(function () {
     $("head").append("<style id='timeFormatStyle'></style>");
     $("head").append("<style id='flairStyle'></style>");
     $("head").append("<style id='fontSizeStyle'></style>");
-    $("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/emotes/emotes.css?_=' + (parseInt((new Date()).getTime()/1000) - (parseInt((new Date()).getTime()/1000) % 1800)) + '" type="text/css"/>');
-    $("head").append('<link rel="stylesheet" href="https://cdn.destiny.gg/flairs/flairs.css?_=' + (parseInt((new Date()).getTime()/1000) - (parseInt((new Date()).getTime()/1000) % 1800)) + '" type="text/css">');
+    $("head").append('<link rel="stylesheet" href="https://r2cdn.destiny.gg/emotes/emotes.css?_=' + (parseInt((new Date()).getTime() / 1000) - (parseInt((new Date()).getTime() / 1000) % 1800)) + '" type="text/css"/>');
+    $("head").append('<link rel="stylesheet" href="https://r2cdn.destiny.gg/flairs/flairs.css?_=' + (parseInt((new Date()).getTime() / 1000) - (parseInt((new Date()).getTime() / 1000) % 1800)) + '" type="text/css">');
 
     document.querySelector(".ignore-label").addEventListener("click", () => {
         document.querySelector(".ignore-list").classList.toggle(

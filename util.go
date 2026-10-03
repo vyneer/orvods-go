@@ -21,7 +21,7 @@ func Marshal(v interface{}) ([]byte, error) {
 func getEmotes(c *fiber.Ctx) error {
 	log.FiberInfof("getting d.gg emotes", c)
 
-	req, _ := http.NewRequest("GET", "https://cdn.destiny.gg/emotes/emotes.json", nil)
+	req, _ := http.NewRequest("GET", "https://r2cdn.destiny.gg/emotes/emotes.json", nil)
 	emotesResponse, err := httpClient.Do(req)
 	if err != nil {
 		log.FiberErrorf("couldn't get d.gg emotes (HTTP error): %v", c, err)
