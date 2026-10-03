@@ -1079,11 +1079,10 @@ var loadPlayer = function(id, time, type, cdn, start, end, provider, map, nochat
                             return;
                         };
 
-                        // https://images.kick.com/video_thumbnails/0PMYoN0I2p4i/vl7JH7HCJpHR/720.webp
-                        const thumbnailFragment = filteredVideoData.thumbnail.src.split("/")[5];
+                        const startTimeWebAPI = Date.parse(filteredVideoData.start_time);
 
                         fetch(`https://kick.com/api/v2/channels/${channelName}/videos`).then(resp => resp.json()).then(finalVideosData => {
-                            const filteredFinalVideo = finalVideosData.find(v => v.thumbnail.src.includes(thumbnailFragment));
+                            const filteredFinalVideo = finalVideosData.find(v => Date.parse(v.start_time + 'Z') === startTimeWebAPI);
                             if (!filteredFinalVideo) {
                                 return;
                             }
